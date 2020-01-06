@@ -112,7 +112,7 @@ public class LoginActivity extends AppCompatActivity {
                         if (response != null) {
                             UserLoginEntity body = response.body();
                             if (null != body) {
-                                  if(body.getCode().equals("200")){
+                                  if(body.getCode().equals("success")){
 
                                       CommonData.khsname=body.getData().getSname();
                                       CommonData.posid=body.getData().getPosid();

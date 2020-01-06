@@ -1,6 +1,9 @@
 package com.example.selfshopcenter;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -41,5 +44,19 @@ public class IndexActivity extends AppCompatActivity {
         CommonData.orderInfo=null;
 
 
+
+        //绑定 开始购物
+        Button button_shape=findViewById(R.id.shopping);
+        button_shape.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public  void  onClick(View view) {
+
+                //Toast.makeText(IndexActivity.this,"正在跳转，请等待",Toast.LENGTH_SHORT).show();
+                //跳转到商品录入界面
+                Intent intent = new Intent(IndexActivity.this, CarItemsActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 }

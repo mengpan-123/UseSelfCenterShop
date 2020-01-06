@@ -5,6 +5,8 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
 
+import com.example.selfshopcenter.net.CreateAddAdapter;
+
 public class CommonData {
     //自定义一个全局变量，作为表名称，多个地方使用
     public static String    tablename="userinfo";
@@ -16,6 +18,10 @@ public class CommonData {
 
     public  static  String  app_version="";
 
+    //订单流水号，命名规则为 销售日期和 一个三位的序号,这里只使用序号
+    public static  int    number=1;
+
+    public static  String     ordernumber="";  //订单流水号
 
     public  static  String  khid="";
 
@@ -39,6 +45,8 @@ public class CommonData {
     //静态字段，减少购物车产品
     public  static String SubCar="REDUCE";
 
+
+    public static CreateAddAdapter list_adaptor=null;
 
   //====================以下是公共方法=================================
 

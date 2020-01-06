@@ -46,11 +46,11 @@ public class  SplnfoList {
         this.pluTypeId = pluTypeId;
     }
 
-    public Double getMainPrice() {
+    public String getMainPrice() {
         return mainPrice;
     }
 
-    public void setMainPrice(Double mainPrice) {
+    public void setMainPrice(String mainPrice) {
         this.mainPrice = mainPrice;
     }
 
@@ -119,7 +119,7 @@ public class  SplnfoList {
     private int pluTypeId;
 
 
-    private double mainPrice ;
+    private String mainPrice ;
 
     //产品数量
     private int packNum;

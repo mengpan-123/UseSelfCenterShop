@@ -1,6 +1,7 @@
 package com.example.selfshopcenter.bean;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class AddGoodsEntity implements Serializable {
     /**
@@ -10,8 +11,8 @@ public class AddGoodsEntity implements Serializable {
      * msg : 操作成功
      * maxPage : 1
      * currentPage : 0
-     * Reqguid : d7c2e5c9-1088-4d57-8234-193129a87cdb
-     * data : {"barcode":"2591738625454","dprice":"11","price":"12","qyid":"2019053100002","sname":"香片","spid":"10100029","unit":"个","qty":"2","net":"24"}
+     * Reqguid : bc6e1f7c-6594-43af-9bd7-55ce93d540af
+     * data : {"khid":"KH1911220000001","totAmount":"299","disAmount":"0","leaveNote":"","totalQty":2,"orderNumber":"KH1911220000001120200106145805","itemsList":[{"disrule":"暂无折扣","discmoney":"0","items":[{"barcode":"2001109013371","dprice":"11","price":"12","qyid":"2019112200001","sname":"草莓星座蛋糕10寸","spid":"1090100006","unit":"1","weight":"","disc":"0","net":"288","qty":"1"},{"barcode":"2591738625454","dprice":"11","price":"12","qyid":"2019112200001","sname":"香片","spid":"10100029","unit":"个","weight":"","disc":"0","net":"11","qty":"1"}]}]}
      */
 
     private String code;
@@ -89,106 +90,229 @@ public class AddGoodsEntity implements Serializable {
 
     public static class DataBean {
         /**
-         * barcode : 2591738625454
-         * dprice : 11
-         * price : 12
-         * qyid : 2019053100002
-         * sname : 香片
-         * spid : 10100029
-         * unit : 个
-         * qty : 2
-         * net : 24
+         * khid : KH1911220000001
+         * totAmount : 299
+         * disAmount : 0
+         * leaveNote :
+         * totalQty : 2
+         * orderNumber : KH1911220000001120200106145805
+         * itemsList : [{"disrule":"暂无折扣","discmoney":"0","items":[{"barcode":"2001109013371","dprice":"11","price":"12","qyid":"2019112200001","sname":"草莓星座蛋糕10寸","spid":"1090100006","unit":"1","weight":"","disc":"0","net":"288","qty":"1"},{"barcode":"2591738625454","dprice":"11","price":"12","qyid":"2019112200001","sname":"香片","spid":"10100029","unit":"个","weight":"","disc":"0","net":"11","qty":"1"}]}]
          */
 
-        private String barcode;
-        private String dprice;
-        private String price;
-        private String qyid;
-        private String sname;
-        private String spid;
-        private String unit;
-        private String qty;
-        private String net;
-        private String disc;
+        private String khid;
+        private String totAmount;
+        private String disAmount;
+        private String leaveNote;
+        private int totalQty;
+        private String orderNumber;
+        private List<ItemsListBean> itemsList;
 
-        public String getBarcode() {
-            return barcode;
+        public String getKhid() {
+            return khid;
         }
 
-        public void setBarcode(String barcode) {
-            this.barcode = barcode;
+        public void setKhid(String khid) {
+            this.khid = khid;
         }
 
-        public String getDprice() {
-            return dprice;
+        public String getTotAmount() {
+            return totAmount;
         }
 
-        public void setDprice(String dprice) {
-            this.dprice = dprice;
+        public void setTotAmount(String totAmount) {
+            this.totAmount = totAmount;
         }
 
-        public String getPrice() {
-            return price;
+        public String getDisAmount() {
+            return disAmount;
         }
 
-        public void setPrice(String price) {
-            this.price = price;
+        public void setDisAmount(String disAmount) {
+            this.disAmount = disAmount;
         }
 
-        public String getQyid() {
-            return qyid;
+        public String getLeaveNote() {
+            return leaveNote;
         }
 
-        public void setQyid(String qyid) {
-            this.qyid = qyid;
+        public void setLeaveNote(String leaveNote) {
+            this.leaveNote = leaveNote;
         }
 
-        public String getSname() {
-            return sname;
+        public int getTotalQty() {
+            return totalQty;
         }
 
-        public void setSname(String sname) {
-            this.sname = sname;
+        public void setTotalQty(int totalQty) {
+            this.totalQty = totalQty;
         }
 
-        public String getSpid() {
-            return spid;
+        public String getOrderNumber() {
+            return orderNumber;
         }
 
-        public void setSpid(String spid) {
-            this.spid = spid;
+        public void setOrderNumber(String orderNumber) {
+            this.orderNumber = orderNumber;
         }
 
-        public String getUnit() {
-            return unit;
+        public List<ItemsListBean> getItemsList() {
+            return itemsList;
         }
 
-        public void setUnit(String unit) {
-            this.unit = unit;
+        public void setItemsList(List<ItemsListBean> itemsList) {
+            this.itemsList = itemsList;
         }
 
-        public String getQty() {
-            return qty;
-        }
+        public static class ItemsListBean {
+            /**
+             * disrule : 暂无折扣
+             * discmoney : 0
+             * items : [{"barcode":"2001109013371","dprice":"11","price":"12","qyid":"2019112200001","sname":"草莓星座蛋糕10寸","spid":"1090100006","unit":"1","weight":"","disc":"0","net":"288","qty":"1"},{"barcode":"2591738625454","dprice":"11","price":"12","qyid":"2019112200001","sname":"香片","spid":"10100029","unit":"个","weight":"","disc":"0","net":"11","qty":"1"}]
+             */
 
-        public void setQty(String qty) {
-            this.qty = qty;
-        }
+            private String disrule;
+            private String discmoney;
+            private List<ItemsBean> items;
 
-        public String getNet() {
-            return net;
-        }
+            public String getDisrule() {
+                return disrule;
+            }
 
-        public void setNet(String net) {
-            this.net = net;
-        }
-        public String getDisc() {
-            return disc;
-        }
+            public void setDisrule(String disrule) {
+                this.disrule = disrule;
+            }
 
-        public void setDisc(String disc) {
-            this.disc = disc;
+            public String getDiscmoney() {
+                return discmoney;
+            }
+
+            public void setDiscmoney(String discmoney) {
+                this.discmoney = discmoney;
+            }
+
+            public List<ItemsBean> getItems() {
+                return items;
+            }
+
+            public void setItems(List<ItemsBean> items) {
+                this.items = items;
+            }
+
+            public static class ItemsBean {
+                /**
+                 * barcode : 2001109013371
+                 * dprice : 11
+                 * price : 12
+                 * qyid : 2019112200001
+                 * sname : 草莓星座蛋糕10寸
+                 * spid : 1090100006
+                 * unit : 1
+                 * weight :
+                 * disc : 0
+                 * net : 288
+                 * qty : 1
+                 */
+
+                private String barcode;
+                private String dprice;
+                private String price;
+                private String qyid;
+                private String sname;
+                private String spid;
+                private String unit;
+                private String weight;
+                private double disc;
+                private String net;
+                private int qty;
+
+                public String getBarcode() {
+                    return barcode;
+                }
+
+                public void setBarcode(String barcode) {
+                    this.barcode = barcode;
+                }
+
+                public String getDprice() {
+                    return dprice;
+                }
+
+                public void setDprice(String dprice) {
+                    this.dprice = dprice;
+                }
+
+                public String getPrice() {
+                    return price;
+                }
+
+                public void setPrice(String price) {
+                    this.price = price;
+                }
+
+                public String getQyid() {
+                    return qyid;
+                }
+
+                public void setQyid(String qyid) {
+                    this.qyid = qyid;
+                }
+
+                public String getSname() {
+                    return sname;
+                }
+
+                public void setSname(String sname) {
+                    this.sname = sname;
+                }
+
+                public String getSpid() {
+                    return spid;
+                }
+
+                public void setSpid(String spid) {
+                    this.spid = spid;
+                }
+
+                public String getUnit() {
+                    return unit;
+                }
+
+                public void setUnit(String unit) {
+                    this.unit = unit;
+                }
+
+                public String getWeight() {
+                    return weight;
+                }
+
+                public void setWeight(String weight) {
+                    this.weight = weight;
+                }
+
+                public Double getDisc() {
+                    return disc;
+                }
+
+                public void setDisc(Double disc) {
+                    this.disc = disc;
+                }
+
+                public String getNet() {
+                    return net;
+                }
+
+                public void setNet(String net) {
+                    this.net = net;
+                }
+
+                public int getQty() {
+                    return qty;
+                }
+
+                public void setQty(int qty) {
+                    this.qty = qty;
+                }
+            }
         }
     }
-
 }
