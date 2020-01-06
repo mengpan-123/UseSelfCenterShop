@@ -101,4 +101,32 @@ public class RetrofitHelper {
         return mAPIService.UserloginInfo(requestBody);
     }
 
+    /**
+     * 查询产品基础信息并添加
+     *
+     * @param barcode 商品条码
+     * @param stype  操作类型  SEARCH  查询并添加    REDUCE  移除一个产品
+     */
+    public Call<AddGoodsEntity> AddGoodInfo(String barcode, String  stype) {
+
+
+
+        String  s="{\n" +
+                "    \"appid\": \"keengee\",\n" +
+                "    \"apiname\": \"GetGoodsInfo\",\n" +
+                "    \"req_operator\": \"zp\",\n" +
+                "    \"data\": {\n" +
+                "        \"barcode\": \""+barcode+"\",\n" +
+                "        \"posid\":\""+CommonData.posid+"\",\n" +
+                "        \"khid\": \""+CommonData.khid+"\"\n" +
+                "        \"stype\": \""+stype+"\"\n" +
+                "    }\n" +
+                "}\n";
+
+
+        RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), s);
+        return mAPIService.AddGoodInfo(requestBody);
+    }
+
+
 }

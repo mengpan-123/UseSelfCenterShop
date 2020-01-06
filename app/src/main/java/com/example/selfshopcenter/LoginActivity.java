@@ -57,7 +57,7 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }
 
-        CommonData.app_version=getAppVersion(this);
+        CommonData.app_version=CommonData.getAppVersion(this);
 
 
         //2.0  先从本地选取初始化数据，如果拿到了，说明初始化过，则直接跳转，跳过登录
@@ -173,30 +173,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
 
-    //获取程序的版本号
-    public static int getAppVersioncode(Context context) {
-        PackageManager manager = context.getPackageManager();
-        int code = 0;
-        try {
-            PackageInfo info = manager.getPackageInfo(context.getPackageName(), 0);
-            code = info.versionCode;
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
-        return code;
-    }
-    //版本号名称
-    public static String getAppVersion(Context context) {
-        PackageManager manager = context.getPackageManager();
-        String code = "";
-        try {
-            PackageInfo info = manager.getPackageInfo(context.getPackageName(), 0);
-            code = info.versionName;
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
-        return code;
-    }
+
 
     public void WirttenDataToSqlite() {
 

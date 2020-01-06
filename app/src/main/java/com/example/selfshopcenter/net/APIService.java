@@ -16,4 +16,12 @@ public interface APIService {
      */
     @POST("Export/GetUseBleData")
     Call<UserLoginEntity> UserloginInfo(@Body RequestBody requestBody);
+
+
+
+    /**
+     * 增加或减少产品
+     */
+    @POST("Export/GetUseBleData")
+    Call<AddGoodsEntity> AddGoodInfo(@Body RequestBody requestBody);
 }
