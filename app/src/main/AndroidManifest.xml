@@ -25,6 +25,9 @@
         <activity android:name=".CarItemsActivity">
 
         </activity>
+        <activity android:name=".ChoosepaywayActivity">
+
+        </activity>
     </application>
 
 </manifest>

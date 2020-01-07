@@ -1,6 +1,7 @@
 package com.example.selfshopcenter;
 
 import android.app.Dialog;
+import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.text.InputType;
@@ -169,6 +170,63 @@ public class CarItemsActivity extends AppCompatActivity implements View.OnClickL
     }
 
 
+
+    /**
+     * deletecar
+     * 清空购物车
+     */
+
+    public void deletecar(View view) {
+        //清空listmap的值
+        listmap.clear();
+        MapList.clear();
+
+        //清空会员基础信息，清空购物车信息
+        Call<ClearCarEntity>  ClearCar= RetrofitHelper.getInstance().ClearCarInfo(CommonData.khid, CommonData.posid);
+        ClearCar.enqueue(new Callback<ClearCarEntity>() {
+            @Override
+            public void onResponse(Call<ClearCarEntity> call, Response<ClearCarEntity> response) {
+
+                if (response.body() != null) {
+
+                    if (response.body().getCode().equals("success")||response.body().getMsg().equals("没有符合条件的数据")) {
+
+                    }
+                    else
+                    {
+                        ToastUtil.showToast(CarItemsActivity.this, "购物车清除通知", response.body().getMsg());
+
+                    }
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ClearCarEntity> call, Throwable t) {
+
+            }
+        });
+
+
+        CommonData.orderInfo.totalPrice="0";
+        CommonData.orderInfo.totalCount=0;
+        CommonData.orderInfo.totalDisc="0";
+        CommonData.orderInfo.spList.clear();
+
+
+        //清空列表页面
+        adapter = new CreateAddAdapter(CarItemsActivity.this, listmap);
+        listview.setAdapter(adapter);
+        adapter.setRefreshPriceInterface(CarItemsActivity.this);
+
+        priceControl(adapter.getPitchOnMap());
+        shopcar_num.setText("0");
+        //加载出空购物车页面
+        listview.setEmptyView(text_tip);
+
+    }
+
+
     /**
      * Created by zhoupan on 2019/11/7.
      * <p>
@@ -198,6 +256,7 @@ public class CarItemsActivity extends AppCompatActivity implements View.OnClickL
                         CommonData.orderInfo.totalCount = body.getData().getTotalQty();
                         CommonData.orderInfo.totalPrice = body.getData().getTotAmount();
                         CommonData.orderInfo.totalDisc = body.getData().getDisAmount();
+                        CommonData.ordernumber=body.getData().getOrderNumber();//拿到订单号
 
 
                         List<AddGoodsEntity.DataBean.ItemsListBean> itemsList = body.getData().getItemsList();
@@ -280,7 +339,7 @@ public class CarItemsActivity extends AppCompatActivity implements View.OnClickL
 
             @Override
             public void onFailure(Call<AddGoodsEntity> call, Throwable t) {
-                ToastUtil.showToast(CarItemsActivity.this, "商品查询通知", "请求失败");
+                ToastUtil.showToast(CarItemsActivity.this, "商品查询通知", t.toString());
                 return;
             }
         });
@@ -433,5 +492,36 @@ public class CarItemsActivity extends AppCompatActivity implements View.OnClickL
         }
     }
 
+
+
+
+    /**
+     * to_pay
+     * 去支付，首先选择去支付的支付方式
+     */
+
+    public void to_pay(View view) {
+        //首先要判断是否增加了产品
+        if (CommonData.orderInfo == null || CommonData.orderInfo.spList.size()==0) {
+            ToastUtil.showToast(CarItemsActivity.this, "支付通知", "请先录入要支付的商品");
+            return;
+        }
+
+        //如果有会员，如何操作
+
+        //判断支付订单号
+        if(CommonData.ordernumber.equals("")){
+            ToastUtil.showToast(CarItemsActivity.this, "支付通知", "请检查订单号是否为空");
+            return;
+        }
+
+
+
+        Intent intent = new Intent(CarItemsActivity.this, ChoosepaywayActivity.class);
+        //Intent intent = new Intent(CarItemsActicity.this, FinishActivity.class);
+
+        startActivity(intent);
+
+    }
 
 }

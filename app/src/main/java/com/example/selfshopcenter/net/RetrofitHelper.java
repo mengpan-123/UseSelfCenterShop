@@ -1,8 +1,10 @@
 package com.example.selfshopcenter.net;
 
+import com.alibaba.fastjson.JSON;
 import com.example.selfshopcenter.bean.*;
 import com.example.selfshopcenter.commoncls.CommonData;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.Interceptor;
@@ -105,7 +107,7 @@ public class RetrofitHelper {
      * 查询产品基础信息并添加
      *
      * @param barcode 商品条码
-     * @param stype  操作类型  SEARCH  查询并添加    REDUCE  移除一个产品
+     * @param stype  操作类型  SEARCH  查询   ADD添加    REDUCE  移除一个产品
      */
     public Call<AddGoodsEntity> AddGoodInfo(String barcode, String  stype) {
 
@@ -116,9 +118,9 @@ public class RetrofitHelper {
                 "    \"apiname\": \"GetGoodsInfo\",\n" +
                 "    \"req_operator\": \"zp\",\n" +
                 "    \"data\": {\n" +
-                "        \"barcode\": \""+barcode+"\",\n" +
+                "        \"barcode\": \"2365918224054\",\n" +
                 "        \"posid\":\""+CommonData.posid+"\",\n" +
-                "        \"khid\": \""+CommonData.khid+"\"\n" +
+                "        \"khid\": \""+CommonData.khid+"\",\n" +
                 "        \"stype\": \""+stype+"\"\n" +
                 "    }\n" +
                 "}\n";
@@ -128,5 +130,72 @@ public class RetrofitHelper {
         return mAPIService.AddGoodInfo(requestBody);
     }
 
+
+
+    /**
+     * 查询产品基础信息并添加
+     *
+     * @param khid   门店信息
+     * @param posid  款台编号
+     */
+    public Call<ClearCarEntity> ClearCarInfo(String khid, String  posid) {
+
+
+
+        String  s="{\n" +
+                "    \"appid\": \"keengee\",\n" +
+                "    \"apiname\": \"CLEARCAR\",\n" +
+                "    \"req_operator\": \"zp\",\n" +
+                "    \"data\": {\n" +
+                "        \"khid\": \""+khid+"\",\n" +
+                "        \"posid\": \""+posid+"\"\n" +
+                "    }\n" +
+                "}";
+
+
+        RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), s);
+        return mAPIService.ClearCarInfo(requestBody);
+    }
+
+    /***
+     * 订单支付接口
+     *请求方式 POST，数据格式application/json
+     * */
+    public Call<OrderpayRequest> Orderpay(
+                                          String AuthCode,
+                                          String appid,
+                                          String setWxshid,
+                                          String  openid,
+                                          String  transId,
+                                          List<OrderpayRequest.DataBean.PluMapBean> pluMap,
+                                          List<OrderpayRequest.DataBean.PayMapBean> payMap){
+
+        OrderpayRequest requestSignBean = new OrderpayRequest();
+
+        requestSignBean.getData().setKhid(CommonData.khid);
+        requestSignBean.getData().setPosid(CommonData.posid);
+        requestSignBean.getData().setPayWay(CommonData.payWay);
+        requestSignBean.getData().setPaycode(AuthCode);
+        requestSignBean.getData().setAppid(appid);
+        requestSignBean.getData().setWxshid(setWxshid);
+        requestSignBean.getData().setPrepayId(CommonData.orderInfo.prepayId);//支付单号
+
+
+        requestSignBean.getData().setPluMap(pluMap);
+        requestSignBean.getData().setPayMap(payMap);
+
+
+        //如果是刷脸支付可能需要多使用一些参数
+
+
+
+        String s= JSON.toJSONString(requestSignBean);
+
+
+
+        RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), s);
+        return mAPIService.Orderpay(requestBody);
+
+    }
 
 }

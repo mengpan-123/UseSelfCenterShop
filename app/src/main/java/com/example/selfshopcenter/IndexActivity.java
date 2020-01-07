@@ -8,7 +8,14 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.selfshopcenter.bean.*;
 import com.example.selfshopcenter.commoncls.CommonData;
+import com.example.selfshopcenter.commoncls.ToastUtil;
+import com.example.selfshopcenter.net.RetrofitHelper;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class IndexActivity extends AppCompatActivity {
 
@@ -35,8 +42,30 @@ public class IndexActivity extends AppCompatActivity {
 
 
         //清空会员基础信息，清空购物车信息
+        Call<ClearCarEntity>  ClearCar= RetrofitHelper.getInstance().ClearCarInfo(CommonData.khid, CommonData.posid);
+        ClearCar.enqueue(new Callback<ClearCarEntity>() {
+            @Override
+            public void onResponse(Call<ClearCarEntity> call, Response<ClearCarEntity> response) {
 
+                if (response.body() != null) {
 
+                    if (response.body().getCode().equals("success")||response.body().getMsg().equals("没有符合条件的数据")) {
+
+                    }
+                    else
+                    {
+                        ToastUtil.showToast(IndexActivity.this, "购物车清除通知", response.body().getMsg());
+
+                    }
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ClearCarEntity> call, Throwable t) {
+
+            }
+        });
 
 
         //避免万一断网情况下，数据未正常清空。清空失败 这种情况呢？
@@ -58,5 +87,18 @@ public class IndexActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+    }
+
+
+    /**
+     *
+     * MembersLogin 会员登录
+     * */
+
+    public  void  MembersLogin(View view){
+
+
+        ToastUtil.showToast(IndexActivity.this, "会员信息验证", "正在开发中");
+
     }
 }

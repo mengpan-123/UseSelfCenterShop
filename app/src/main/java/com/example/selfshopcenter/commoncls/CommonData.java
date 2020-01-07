@@ -13,7 +13,7 @@ public class CommonData {
 
 
     //公共的接口访问地址
-    public static String    CommonUrl="http://122.112.234.28:8017";
+    public static String    CommonUrl="http://122.112.234.28:8017/";
 
 
     public  static  String  app_version="";
@@ -32,6 +32,9 @@ public class CommonData {
 
     public  static  String khsname="";
 
+    //当前用户选择的支付方式
+    public  static  String payWay="";
+
 
     public static HyMessage  hyMessage=null;
 
@@ -40,10 +43,13 @@ public class CommonData {
     public static OrderInfo orderInfo=null;
 
 
+
+    //静态字段，查询购物车产品，一般仅做测试使用
+    public  static String searchCar="SEARCH";
     //静态字段，增加购物车产品
-    public  static String AddCar="SEARCH";
+    public  static String AddCar="ADD";
     //静态字段，减少购物车产品
-    public  static String SubCar="REDUCE";
+    public  static String Reduce="REDUCE";
 
 
     public static CreateAddAdapter list_adaptor=null;

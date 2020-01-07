@@ -22,6 +22,20 @@ public interface APIService {
     /**
      * 增加或减少产品
      */
-    @POST("Export/GetUseBleData")
+    @POST("AddspinDetails/Addspinfo")
     Call<AddGoodsEntity> AddGoodInfo(@Body RequestBody requestBody);
+
+
+    /**
+     * 增加或减少产品
+     */
+    @POST("Export/GetUseBleData")
+    Call<ClearCarEntity> ClearCarInfo(@Body RequestBody requestBody);
+
+
+    /**
+     * 增加或减少产品
+     */
+    @POST("AddspinDetails/OrderPay")
+    Call<OrderpayRequest> Orderpay(@Body RequestBody requestBody);
 }
