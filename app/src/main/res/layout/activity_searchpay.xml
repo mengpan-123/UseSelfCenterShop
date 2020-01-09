@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#EEF7FA">
+    <!--顶部颜色#0FB6A4-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="125dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginStart="0dp"
+        android:layout_marginLeft="0dp"
+        android:orientation="horizontal"
+        android:background="#0FB6A4"
+        android:id="@+id/shop_top">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
+        <!--&lt;!&ndash;首页和首页图标&ndash;&gt;-->
+        <!--<LinearLayout-->
+        <!--android:layout_width="80dp"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:orientation="vertical"-->
+        <!--android:id="@+id/return_home"-->
+        <!--android:onClick="return_home">-->
+        <!--<ImageView-->
+        <!--android:layout_width="30dp"-->
+        <!--android:layout_marginTop="5dp"-->
+        <!--android:layout_height="30dp"-->
+        <!--android:layout_gravity="center"-->
+        <!--android:background="@drawable/shouye"/>-->
+        <!--<TextView-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="首页"-->
+        <!--android:textColor="#F0F0F0"-->
+        <!--android:textSize="14dp"-->
+        <!--android:gravity="center"/>-->
+        <!--</LinearLayout>-->
+    </LinearLayout>
+
+    <!--支付等待图片-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_marginTop="160dp">
+        <!--<ImageView-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:background="@drawable/paywait" />-->
+        <pl.droidsonroids.gif.GifImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/timeout"/>
+
+    </LinearLayout>
+    <!--支付等待文字-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_marginTop="70dp">
+        <TextView
+            android:id="@+id/pay_status"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="支付等待"
+            android:gravity="center"
+            android:textSize="43dp"
+            android:textStyle="bold"/>
+    </LinearLayout>
+    <!--支付等待文字-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_marginTop="60dp">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="支付信息正在提交，请耐心等待"
+            android:gravity="center"
+            android:textSize="34dp" />
+    </LinearLayout>
+</LinearLayout>

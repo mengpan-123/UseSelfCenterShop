@@ -90,16 +90,24 @@ public class UserLoginEntity implements Serializable {
 
     public static class DataBean {
         /**
-         * client_type : ZY
-         * khid : KH1911190000001
-         * sname : 1119商家门店测试
-         * posid : 3
+         {
+         "client_type": "ZY",
+         "khid": "KH1911190000001",
+         "sname": "1119商家门店测试",
+         "zfbappid": "2015020500030465",
+         "wxappid": "1",
+         "wxshid": "1345898901",
+         "posid": "2"
+         }
          */
 
         private String client_type;
         private String khid;
         private String sname;
         private String posid;
+        private String zfbappid;
+        private String wxappid;
+        private String wxshid;
 
         public String getClient_type() {
             return client_type;
@@ -131,6 +139,31 @@ public class UserLoginEntity implements Serializable {
 
         public void setPosid(String posid) {
             this.posid = posid;
+        }
+
+        public String getZfbappid() {
+            return zfbappid;
+        }
+
+        public void setZfbappid(String zfbappid) {
+            this.zfbappid = zfbappid;
+        }
+
+        public String getWxshid() {
+            return wxshid;
+        }
+
+        public void setWxshid(String posid) {
+            this.wxshid = wxshid;
+        }
+
+
+        public String getWxappid() {
+            return wxappid;
+        }
+
+        public void setWxappid(String wxappid) {
+            this.wxappid = wxappid;
         }
     }
 }

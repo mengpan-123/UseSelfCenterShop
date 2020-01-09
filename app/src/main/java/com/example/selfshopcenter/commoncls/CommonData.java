@@ -9,7 +9,7 @@ import com.example.selfshopcenter.net.CreateAddAdapter;
 
 public class CommonData {
     //自定义一个全局变量，作为表名称，多个地方使用
-    public static String    tablename="userinfo";
+    public static String    tablename="CenterTable";
 
 
     //公共的接口访问地址
@@ -20,6 +20,7 @@ public class CommonData {
 
     //订单流水号，命名规则为 销售日期和 一个三位的序号,这里只使用序号
     public static  int    number=1;
+
 
     public static  String     ordernumber="";  //订单流水号
 
@@ -33,7 +34,12 @@ public class CommonData {
     public  static  String khsname="";
 
     //当前用户选择的支付方式
+     //WXPaymentCodePay  微信支付   AliPaymentCodePay  支付宝支付   WXFacePay  刷脸支付
     public  static  String payWay="";
+
+
+    //支付交易单号
+    public  static  String  paytrad_no="";
 
 
     public static HyMessage  hyMessage=null;
@@ -51,6 +57,12 @@ public class CommonData {
     //静态字段，减少购物车产品
     public  static String Reduce="REDUCE";
 
+
+    //支付信息相关的,由于子商户号这些暂时用不到，所以先不写
+    public  static String   zfbappid="";
+    public  static String   wxappid="";
+    public  static String   wxshid="";
+    public  static String   appKey="";
 
     public static CreateAddAdapter list_adaptor=null;
 

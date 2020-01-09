@@ -256,7 +256,8 @@ public class CarItemsActivity extends AppCompatActivity implements View.OnClickL
                         CommonData.orderInfo.totalCount = body.getData().getTotalQty();
                         CommonData.orderInfo.totalPrice = body.getData().getTotAmount();
                         CommonData.orderInfo.totalDisc = body.getData().getDisAmount();
-                        CommonData.ordernumber=body.getData().getOrderNumber();//拿到订单号
+                        CommonData.orderInfo.prepayId=body.getData().getOrderNumber();//拿到订单号
+
 
 
                         List<AddGoodsEntity.DataBean.ItemsListBean> itemsList = body.getData().getItemsList();

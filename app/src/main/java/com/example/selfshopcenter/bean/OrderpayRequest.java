@@ -176,11 +176,11 @@ public class OrderpayRequest {
 
             private String goodsId;
             private String barcode;
-            private String pluQty;
+            private int pluQty;
             private String pluPrice;
-            private int realPrice;
-            private int pluAmount;
-            private int pluDis;
+            private double realPrice;
+            private double pluAmount;
+            private double pluDis;
 
             public String getGoodsId() {
                 return goodsId;
@@ -198,13 +198,11 @@ public class OrderpayRequest {
                 this.barcode = barcode;
             }
 
-            public String getPluQty() {
+            public int getPluQty() {
                 return pluQty;
             }
 
-            public void setPluQty(String pluQty) {
-                this.pluQty = pluQty;
-            }
+            public void setPluQty(int  pluQty) { this.pluQty = pluQty; }
 
             public String getPluPrice() {
                 return pluPrice;
@@ -214,27 +212,27 @@ public class OrderpayRequest {
                 this.pluPrice = pluPrice;
             }
 
-            public int getRealPrice() {
+            public double getRealPrice() {
                 return realPrice;
             }
 
-            public void setRealPrice(int realPrice) {
+            public void setRealPrice(double realPrice) {
                 this.realPrice = realPrice;
             }
 
-            public int getPluAmount() {
+            public double getPluAmount() {
                 return pluAmount;
             }
 
-            public void setPluAmount(int pluAmount) {
+            public void setPluAmount(double pluAmount) {
                 this.pluAmount = pluAmount;
             }
 
-            public int getPluDis() {
+            public double getPluDis() {
                 return pluDis;
             }
 
-            public void setPluDis(int pluDis) {
+            public void setPluDis(double pluDis) {
                 this.pluDis = pluDis;
             }
         }
@@ -247,7 +245,7 @@ public class OrderpayRequest {
              */
 
             private String paySn;
-            private int payTypeId;
+            private String payTypeId;
             private double payVal;
 
             public String getPaySn() {
@@ -258,11 +256,11 @@ public class OrderpayRequest {
                 this.paySn = paySn;
             }
 
-            public int getPayTypeId() {
+            public String getPayTypeId() {
                 return payTypeId;
             }
 
-            public void setPayTypeId(int payTypeId) {
+            public void setPayTypeId(String  payTypeId) {
                 this.payTypeId = payTypeId;
             }
 

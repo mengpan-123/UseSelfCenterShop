@@ -118,7 +118,7 @@ public class RetrofitHelper {
                 "    \"apiname\": \"GetGoodsInfo\",\n" +
                 "    \"req_operator\": \"zp\",\n" +
                 "    \"data\": {\n" +
-                "        \"barcode\": \"2365918224054\",\n" +
+                "        \"barcode\": \""+barcode+"\",\n" +
                 "        \"posid\":\""+CommonData.posid+"\",\n" +
                 "        \"khid\": \""+CommonData.khid+"\",\n" +
                 "        \"stype\": \""+stype+"\"\n" +
@@ -161,10 +161,8 @@ public class RetrofitHelper {
      * 订单支付接口
      *请求方式 POST，数据格式application/json
      * */
-    public Call<OrderpayRequest> Orderpay(
+    public Call<OrderpayResponse> Orderpay(
                                           String AuthCode,
-                                          String appid,
-                                          String setWxshid,
                                           String  openid,
                                           String  transId,
                                           List<OrderpayRequest.DataBean.PluMapBean> pluMap,
@@ -172,30 +170,89 @@ public class RetrofitHelper {
 
         OrderpayRequest requestSignBean = new OrderpayRequest();
 
-        requestSignBean.getData().setKhid(CommonData.khid);
-        requestSignBean.getData().setPosid(CommonData.posid);
-        requestSignBean.getData().setPayWay(CommonData.payWay);
-        requestSignBean.getData().setPaycode(AuthCode);
-        requestSignBean.getData().setAppid(appid);
-        requestSignBean.getData().setWxshid(setWxshid);
-        requestSignBean.getData().setPrepayId(CommonData.orderInfo.prepayId);//支付单号
+        requestSignBean.setAppid("keengee");
+        requestSignBean.setApiname("ORDERPAY");
+        requestSignBean.setReq_operator("zhoupan");
+
+        OrderpayRequest.DataBean   dataBeaninfo=new  OrderpayRequest.DataBean();
 
 
-        requestSignBean.getData().setPluMap(pluMap);
-        requestSignBean.getData().setPayMap(payMap);
+        dataBeaninfo.setKhid(CommonData.khid);
+        dataBeaninfo.setPosid(CommonData.posid);
+        dataBeaninfo.setPayWay(CommonData.payWay);
+        dataBeaninfo.setPaycode(AuthCode);
+        if (CommonData.payWay.equals("AliPaymentCodePay"))
+        {
+            dataBeaninfo.setAppid(CommonData.zfbappid);
+        }
+        else if (CommonData.payWay.equals("WXPaymentCodePay"))
+        {
+            dataBeaninfo.setAppid(CommonData.wxappid);
+            dataBeaninfo.setWxshid(CommonData.wxshid);
+        }
+        else
+        {
+
+        }
+
+        dataBeaninfo.setPrepayId(CommonData.orderInfo.prepayId);//支付单号
+
+
+        dataBeaninfo.setPluMap(pluMap);
+        dataBeaninfo.setPayMap(payMap);
 
 
         //如果是刷脸支付可能需要多使用一些参数
 
 
 
-        String s= JSON.toJSONString(requestSignBean);
+        //String s= JSON.toJSONString(requestSignBean);
+
+
+        requestSignBean.setData(dataBeaninfo);
+        String postJson= JSON.toJSONString(requestSignBean);
+
+//        String  postJson="{\n" +
+//                "    \"appid\": \"keengee\",\n" +
+//                "    \"apiname\": \"ORDERPAY\",\n" +
+//                "    \"req_operator\": \"zp\",\n" +
+//                "    \"data\": {\n" +s+
+//                "    }\n" +
+//                "}";
 
 
 
-        RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), s);
+        RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), postJson);
         return mAPIService.Orderpay(requestBody);
 
     }
+
+    /**
+     * 获取刷脸支付使用的 authinfo 信息
+     *
+     */
+    public Call<AuthInfoEntity> GetAuthInfo(String rawdata) {
+
+
+
+        String  s="{\n" +
+                "    \"appid\": \"keengee\",\n" +
+                "    \"apiname\": \"GetAuthInfo\",\n" +
+                "    \"req_operator\": \"zp\",\n" +
+                "    \"data\": {\n" +
+                "        \"khid\": \""+CommonData.khid+"\",\n" +
+                "        \"rowdata\": \""+rawdata+"\",\n" +
+                "        \"appid\": \""+CommonData.wxappid+"\",\n" +
+                "        \"device_id\": \""+CommonData.deviceid+"\",\n" +
+                "        \"wxshid\": \""+CommonData.wxshid+"\"\n" +
+                "    }\n" +
+                "}\n";
+
+
+        RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), s);
+        return mAPIService.GetAuthInfo(requestBody);
+    }
+
+
 
 }

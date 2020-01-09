@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+
+    android:background="#EEF7FA">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="740dp"
+        android:background="@mipmap/paysuccess"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="80dp"
+            android:gravity="center"
+            android:orientation="vertical">
+            <ImageView
+                android:layout_width="170dp"
+                android:layout_height="160dp"
+                android:background="@mipmap/paylogo"
+                android:gravity="center"
+                />
+            <TextView
+                android:layout_marginTop="20dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorPrimary"
+                android:text="支付成功"
+                android:textSize="50dp"
+                android:gravity="center"
+                />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="90dp"
+            android:gravity="center">
+            <TextView
+                android:id="@+id/havepaynet"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#e02b19"
+                android:text="￥600"
+                android:textStyle="bold"
+                android:textSize="60dp"
+                android:gravity="center"
+                />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="120dp"
+            android:layout_marginTop="30dp"
+            android:gravity="left">
+            <TextView
+                android:layout_width="180dp"
+                android:layout_height="wrap_content"
+
+                android:textColor="@color/colortext"
+                android:text="订单编号："
+                android:textSize="34dp"
+
+                />
+            <TextView
+                android:id="@+id/ordernumber"
+                android:layout_width="380dp"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colortext"
+                android:text="1111111111111"
+                android:textSize="34dp"
+
+                />
+
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="120dp"
+            android:layout_marginTop="40dp"
+            android:gravity="left">
+            <TextView
+                android:layout_width="180dp"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colortext"
+                android:text="支付方式："
+                android:textSize="34dp"
+                android:gravity="left"
+                />
+            <TextView
+                android:id="@+id/paytype"
+                android:layout_width="380dp"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colortext"
+                android:text="支付宝"
+                android:textSize="34dp"
+                android:gravity="left"
+                />
+
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="100dp"
+        android:gravity="center">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colortext"
+            android:text="请收取小票，欢迎下次光临"
+            android:textSize="32dp"
+            android:gravity="center"
+            />
+    </LinearLayout>
+
+
+
+    <!--这一块浮动的目的就是 为了按钮始终在最下面-->
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:gravity="center">
+
+        <TextView
+            android:id="@+id/tv_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="5"
+            android:padding="10dp"
+            android:textColor="#EC1D1D"
+            android:textSize="33dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:gravity="center"
+            android:text="后自动返回到首页"
+
+            android:textColor="@color/colortext"
+            android:textSize="30dp" />
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:gravity="center">
+
+        <Button
+            android:clickable="true"
+            android:id="@+id/backhome"
+            android:layout_width="800dp"
+            android:layout_height="130dp"
+            android:text="返回首页"
+            android:textSize="46dp"
+            android:background="@drawable/button_shape"
+            android:textColor="#F0F0F0"
+            android:gravity="center"
+            android:padding="10dp"
+
+            />
+    </LinearLayout>
+
+</LinearLayout>

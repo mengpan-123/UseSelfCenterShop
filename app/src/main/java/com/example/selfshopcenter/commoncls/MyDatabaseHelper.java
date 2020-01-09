@@ -24,11 +24,13 @@ import android.database.sqlite.SQLiteOpenHelper;
 
                 + "date_lr date, "
 
-                + "sub_mch_id text, "
+                + "zfbappid text, "
 
                 + "number integer, "   //流水号
 
-                + "mch_id text )";
+                + "wxappid text ,"   //微信appid
+
+                + "wxshid text )";   //微信商户号
 
 
         //构造函数

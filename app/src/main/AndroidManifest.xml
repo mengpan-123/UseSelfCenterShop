@@ -7,7 +7,7 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/zylogo"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
@@ -26,6 +26,15 @@
 
         </activity>
         <activity android:name=".ChoosepaywayActivity">
+
+        </activity>
+        <activity android:name=".ShowpayActivity">
+
+        </activity>
+        <activity android:name=".FinishActivity">
+
+        </activity>
+        <activity android:name=".SearchingPayActivity">
 
         </activity>
     </application>

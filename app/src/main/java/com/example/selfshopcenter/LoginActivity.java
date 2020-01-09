@@ -116,6 +116,11 @@ public class LoginActivity extends AppCompatActivity {
 
                                       CommonData.khsname=body.getData().getSname();
                                       CommonData.posid=body.getData().getPosid();
+                                      CommonData.zfbappid=body.getData().getZfbappid();
+                                      CommonData.wxappid=body.getData().getWxappid();
+                                      CommonData.wxshid=body.getData().getWxshid();
+
+
 
                                       WirttenDataToSqlite();
 
@@ -162,6 +167,9 @@ public class LoginActivity extends AppCompatActivity {
                     CommonData.khid = cursor.getString(cursor.getColumnIndex("khid"));
                     CommonData.posid = cursor.getString(cursor.getColumnIndex("posid"));
                     CommonData.khsname = cursor.getString(cursor.getColumnIndex("khsname"));
+                    CommonData.wxappid = cursor.getString(cursor.getColumnIndex("wxappid"));
+                    CommonData.zfbappid = cursor.getString(cursor.getColumnIndex("zfbappid"));
+                    CommonData.wxshid = cursor.getString(cursor.getColumnIndex("wxshid"));
 
                 }
                 while
@@ -192,8 +200,10 @@ public class LoginActivity extends AppCompatActivity {
             String today = sdf.format(date);
 
             values.put("date_lr", today);
-            values.put("mch_id", "");
+            values.put("zfbappid", CommonData.zfbappid);
+            values.put("wxappid", CommonData.wxappid);
             values.put("number", 1);
+            values.put("wxshid", CommonData.wxshid);
 
             db.insert(CommonData.tablename, null, values);
 

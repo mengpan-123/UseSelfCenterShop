@@ -37,5 +37,12 @@ public interface APIService {
      * 增加或减少产品
      */
     @POST("AddspinDetails/OrderPay")
-    Call<OrderpayRequest> Orderpay(@Body RequestBody requestBody);
+    Call<OrderpayResponse> Orderpay(@Body RequestBody requestBody);
+
+
+    /**
+     * 增加或减少产品
+     */
+    @POST("AddspinDetails/GetAuthInfo")
+    Call<AuthInfoEntity> GetAuthInfo(@Body RequestBody requestBody);
 }

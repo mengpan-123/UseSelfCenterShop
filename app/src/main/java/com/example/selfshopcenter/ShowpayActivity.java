@@ -13,10 +13,20 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.selfshopcenter.bean.OrderpayRequest;
+import com.example.selfshopcenter.bean.OrderpayResponse;
+import com.example.selfshopcenter.bean.UserLoginEntity;
 import com.example.selfshopcenter.commoncls.CommonData;
+import com.example.selfshopcenter.commoncls.SplnfoList;
+import com.example.selfshopcenter.commoncls.ToastUtil;
+import com.example.selfshopcenter.net.RetrofitHelper;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ShowpayActivity  extends AppCompatActivity {
 
@@ -24,6 +34,8 @@ public class ShowpayActivity  extends AppCompatActivity {
     private String payAuthCode = "";
 
     private Boolean isPay=true;
+
+    private retrofit2.Call<OrderpayResponse> OrderpayResponseCall;
 
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -122,7 +134,93 @@ public class ShowpayActivity  extends AppCompatActivity {
         //1.0 初始化所有的产品信息,
         List<OrderpayRequest.DataBean.PluMapBean> pluMap = new ArrayList<OrderpayRequest.DataBean.PluMapBean>();
 
+        try {
 
+            for (Map.Entry<String, List<SplnfoList>> entry : CommonData.orderInfo.spList.entrySet()) {
+
+                OrderpayRequest.DataBean.PluMapBean payMapcls = new OrderpayRequest.DataBean.PluMapBean();
+                payMapcls.setBarcode(entry.getValue().get(0).getBarcode());
+                payMapcls.setGoodsId(entry.getValue().get(0).getGoodsId());
+                payMapcls.setPluQty(entry.getValue().get(0).getPackNum());
+                payMapcls.setRealPrice(Double.valueOf(entry.getValue().get(0).getRealPrice()));  //单项实付金额
+                payMapcls.setPluPrice(entry.getValue().get(0).getMainPrice());  //单品单价
+                payMapcls.setPluDis(entry.getValue().get(0).getTotaldisc());  //单品优惠
+                payMapcls.setPluAmount(Double.valueOf(entry.getValue().get(0).getRealPrice()));   //单项小计
+                pluMap.add(payMapcls);
+            }
+        } catch (Exception ex) {
+
+        }
+        String payid="1";
+        if (CommonData.payWay.equals("AliPaymentCodePay"))
+        {
+            payid="2";
+        }
+        else if (CommonData.payWay.equals("WXPaymentCodePay"))
+        {
+            payid="1";
+        }
+
+        //支付方式
+        List<OrderpayRequest.DataBean.PayMapBean> payMap = new ArrayList<OrderpayRequest.DataBean.PayMapBean>();
+        OrderpayRequest.DataBean.PayMapBean pmp = new OrderpayRequest.DataBean.PayMapBean();
+        pmp.setPayTypeId(payid);
+        pmp.setPayVal(Double.valueOf(CommonData.orderInfo.totalPrice));
+        payMap.add(pmp);
+
+        OrderpayResponseCall= RetrofitHelper.getInstance().Orderpay(payAuthCode,"",CommonData.orderInfo.prepayId,pluMap,payMap);
+        OrderpayResponseCall.enqueue(new Callback<OrderpayResponse>() {
+            @Override
+            public void onResponse(Call<OrderpayResponse> call, Response<OrderpayResponse> response) {
+                isPay=true;  //只有当这一笔支付完成 之后  才可以重新进行支付
+                if(response != null) {
+                    if (null != response.body()) {
+
+                        if (response.body().getCode().equals("success")) {
+                            //返回成功
+                            //拿到交易流水号
+                            CommonData.paytrad_no = response.body().getData().getOut_trad_no();
+                            if(response.body().getData().getPaycode().equals("200")) {
+                                //跳转到支付成功界面(因为现在已经没有轮询的方式)
+                                Intent intent = new Intent(ShowpayActivity.this, FinishActivity.class);
+                                startActivity(intent);
+                                finish();
+                                return;
+
+                            }
+                            else if(response.body().getData().getPaycode().equals("3"))
+                            {
+                                //说明支付在等待，跳转到支付轮询界面
+
+                                Intent intent = new Intent(ShowpayActivity.this, SearchingPayActivity.class);
+                                startActivity(intent);
+                                finish();
+                                return;
+                            }
+
+                        }
+                        else{
+                            ToastUtil.showToast(ShowpayActivity.this, "支付失败", response.body().getMsg());
+                            return;
+                        }
+                    }
+
+                }
+                else
+                {
+                    ToastUtil.showToast(ShowpayActivity.this, "支付通知", "操作异常");
+                    return;
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<OrderpayResponse> call, Throwable t) {
+                isPay=true;  //只有当这一笔支付完成 之后  才可以重新进行支付
+                ToastUtil.showToast(ShowpayActivity.this, "支付通知", "操作异常");
+                return;
+            }
+        });
     }
 
 }
