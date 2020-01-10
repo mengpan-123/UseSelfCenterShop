@@ -399,9 +399,84 @@ public class CarItemsActivity extends AppCompatActivity implements View.OnClickL
      **/
     public void input_bags(View view) {
 
+        final Dialog dialog = new Dialog(this,
+                R.style.myNewsDialogStyle);
 
-        ToastUtil.showToast(CarItemsActivity.this, "功能异常通知", "功能正在开发，请耐心等待");
-        return;
+        // 自定义对话框布局
+        layout = View.inflate(this, R.layout.shopbag_list,
+                null);
+        dialog.setContentView(layout);
+
+        ListView listView = (ListView) layout.findViewById(R.id.lv_baginfo);
+
+        listView.setDividerHeight(20);
+        List<Map<String, Object>> carbag_list = new ArrayList<Map<String, Object>>();
+
+        TextView closegwd=layout.findViewById(R.id.closegwd);
+
+        closegwd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                dialog.dismiss();
+
+            }
+        });
+
+
+        Call<ShopBagEntity>  ShopBag= RetrofitHelper.getInstance().GetshopBag();
+        ShopBag.enqueue(new Callback<ShopBagEntity>() {
+            @Override
+            public void onResponse(Call<ShopBagEntity> call, Response<ShopBagEntity> response) {
+                if (null!=response){
+                    if (response.body().getCode().equals("success")){
+
+                        List<ShopBagEntity.DataBean.ShobagBean>  item_bags=  response.body().getData().getShobag();
+                        int n = 20;
+                        int[] img_expense = new int[n];
+                        String[] tv_bagname = new String[n];
+                        String[] tv_bagpic = new String[n];
+                        String[] tv_goodsid = new String[n];
+                        for (int m = 0; m < item_bags.size(); m++) {
+
+                            Map<String, Object> map = new HashMap<String, Object>();
+                            map.put("img_expense", R.drawable.gwd);
+                            map.put("tv_bagname", item_bags.get(m).getSname());
+                            map.put("tv_bagpic", item_bags.get(m).getPrice());
+                            map.put("tv_goodsid", item_bags.get(m).getBarcode());
+                            carbag_list.add(map);
+                        }
+                        SimpleAdapter adapter = new SimpleAdapter(CarItemsActivity.this, carbag_list, R.layout.shopbag_info,
+                                new String[]{"tv_bagname", "tv_bagpic", "img_expense", "tv_goodsid"}, new int[]{R.id.tv_bagname, R.id.tv_bagpic, R.id.img_expense, R.id.tv_goodsid});
+                        listView.setAdapter(adapter);
+                        dialog.show();
+                        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                HashMap<String, String> map = (HashMap<String, String>) listView.getItemAtPosition(position);
+                                String title = map.get("tv_bagname");
+                                String bagpic = map.get("tv_bagpic");
+                                String bagsid = map.get("tv_goodsid");
+
+                                AddnewSpid(bagsid);
+                                dialog.dismiss();
+                            }
+                        });
+
+                    }
+                    else
+                    {
+                        ToastUtil.showToast(CarItemsActivity.this, "购物袋查询失败", response.body().getMsg());
+                        return;
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ShopBagEntity> call, Throwable t) {
+
+            }
+        });
     }
 
     /**
@@ -434,6 +509,11 @@ public class CarItemsActivity extends AppCompatActivity implements View.OnClickL
                 EditText editText1 = layout.findViewById(R.id.username);
                 String inputbarcode = editText1.getText().toString();
 
+                if (inputbarcode.length()==0){
+                    ToastUtil.showToast(CarItemsActivity.this, "支付通知", "请输入商品条码进行支付");
+                    return;
+                }
+
                 AddnewSpid(inputbarcode);
                 dialog.dismiss();
 
@@ -449,6 +529,10 @@ public class CarItemsActivity extends AppCompatActivity implements View.OnClickL
                 EditText editText1 = layout.findViewById(R.id.username);
                 String inputbarcode = editText1.getText().toString();
 
+                if (inputbarcode.length()==0){
+                    ToastUtil.showToast(CarItemsActivity.this, "支付通知", "请输入商品条码进行支付");
+                    return;
+                }
                 AddnewSpid(inputbarcode);
                 dialog.dismiss();
 

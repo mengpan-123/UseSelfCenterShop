@@ -97,7 +97,9 @@ public class LoginActivity extends AppCompatActivity {
 
                  //请求接口，获取最新基础信息
                 TextView inputkhid = findViewById(R.id.inputkhid);
+                TextView inputqyid = findViewById(R.id.inputqyid);
 
+                CommonData.QYID = inputqyid.getText().toString();
                 CommonData.khid = inputkhid.getText().toString();
                 if (CommonData.khid.length() == 0) {
                     ToastUtil.showToast(LoginActivity.this, "输入消息通知", "请输入完整的门店号或者设备号");
@@ -127,6 +129,7 @@ public class LoginActivity extends AppCompatActivity {
                                   }
                                   else
                                   {
+                                      CommonData.QYID="";
                                       ToastUtil.showToast(LoginActivity.this, "接口异常", body.getMsg());
                                       return;
                                   }
@@ -224,6 +227,17 @@ public class LoginActivity extends AppCompatActivity {
     public   void PrepareUpdateVersion(){
 
         try {
+
+            String Path="http://www.ikengee.com.cn/testexample/index.mp4";
+            File f1 = new File(Path);
+            long time=f1.lastModified();
+
+            File f2= new File(Path);
+            long time2=f1.lastModified();
+
+            if (time==time2){
+
+            }
 
         }
         catch(Exception ex){

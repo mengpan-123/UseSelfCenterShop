@@ -71,6 +71,7 @@ public class OrderpayRequest {
         private String paycode;
         private String appid;
         private String wxshid;
+        private String openid;
         private String prepayId;
         private List<PluMapBean> pluMap;
         private List<PayMapBean> payMap;
@@ -138,6 +139,15 @@ public class OrderpayRequest {
         public void setWxshid(String wxshid) {
             this.wxshid = wxshid;
         }
+
+        public String getOpenid() {
+            return openid;
+        }
+
+        public void setOpenid(String openid) {
+            this.openid = openid;
+        }
+
 
         public String getPrepayId() {
             return prepayId;

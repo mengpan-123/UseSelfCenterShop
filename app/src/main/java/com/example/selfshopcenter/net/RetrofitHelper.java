@@ -94,7 +94,8 @@ public class RetrofitHelper {
                 "    \"data\": {\n" +
                 "        \"deviceid\": \""+deviceid+"\",\n" +
                 "        \"client_type\":\""+client_type+"\",\n" +
-                "        \"khid\": \""+khid+"\"\n" +
+                "        \"khid\": \""+khid+"\",\n" +
+                "        \"qyid\": \""+CommonData.QYID+"\"\n" +
                 "    }\n" +
                 "}\n";
 
@@ -190,8 +191,11 @@ public class RetrofitHelper {
             dataBeaninfo.setAppid(CommonData.wxappid);
             dataBeaninfo.setWxshid(CommonData.wxshid);
         }
-        else
+        else if (CommonData.payWay.equals("WXFacePay"))
         {
+            dataBeaninfo.setAppid(CommonData.wxappid);
+            dataBeaninfo.setWxshid(CommonData.wxshid);
+            dataBeaninfo.setOpenid(openid);
 
         }
 
@@ -248,11 +252,45 @@ public class RetrofitHelper {
                 "    }\n" +
                 "}\n";
 
+       /* String  s="{\n" +
+                "    \"appid\": \"keengee\",\n" +
+                "    \"apiname\": \"GetAuthInfo\",\n" +
+                "    \"req_operator\": \"zp\",\n" +
+                "    \"data\": {\n" +
+                "        \"khid\": \""+CommonData.khid+"\",\n" +
+                "        \"rowdata\": \""+rawdata+"\",\n" +
+                "        \"device_id\": \""+CommonData.deviceid+"\"\n" +
+                "    }\n" +
+                "}\n";*/
+
 
         RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), s);
         return mAPIService.GetAuthInfo(requestBody);
     }
 
+
+    /**
+     * 获取刷脸支付使用的 authinfo 信息
+     *
+     */
+    public Call<ShopBagEntity> GetshopBag() {
+
+
+
+        String  s="{\n" +
+                "    \"appid\": \"keengee\",\n" +
+                "    \"apiname\": \"GETSHOPBAG\",\n" +
+                "    \"req_operator\": \"zp\",\n" +
+                "    \"data\": {\n" +
+                "        \"khid\": \""+CommonData.khid+"\",\n" +
+                "        \"posid\": \""+CommonData.posid+"\"\n" +
+                "    }\n" +
+                "}\n";
+
+
+        RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), s);
+        return mAPIService.GetshopBag(requestBody);
+    }
 
 
 }

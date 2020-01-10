@@ -41,8 +41,15 @@ public interface APIService {
 
 
     /**
-     * 增加或减少产品
+     * 获取刷脸信息
      */
     @POST("AddspinDetails/GetAuthInfo")
     Call<AuthInfoEntity> GetAuthInfo(@Body RequestBody requestBody);
+
+
+    /**
+     * 增加或减少产品
+     */
+    @POST("Export/GetUseBleData")
+    Call<ShopBagEntity> GetshopBag(@Body RequestBody requestBody);
 }

@@ -11,7 +11,10 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.selfshopcenter.bean.AuthInfoEntity;
+import com.example.selfshopcenter.bean.OrderpayRequest;
+import com.example.selfshopcenter.bean.OrderpayResponse;
 import com.example.selfshopcenter.commoncls.CommonData;
+import com.example.selfshopcenter.commoncls.SplnfoList;
 import com.example.selfshopcenter.commoncls.ToastUtil;
 import com.example.selfshopcenter.net.RetrofitHelper;
 import com.tencent.wxpayface.IWxPayfaceCallback;
@@ -19,7 +22,9 @@ import com.tencent.wxpayface.WxPayFace;
 import com.tencent.wxpayface.WxfacePayCommonCode;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.net.ssl.HostnameVerifier;
@@ -41,13 +46,18 @@ public class ChoosepaywayActivity  extends AppCompatActivity {
     public static final String RETURN_MSG = "return_msg";
     public static final String TAG = "ChoosepaywayActivity";
     private String mAuthInfo;   //获取的个人用户信息
+    //支付识别码
+    private String payAuthCode = "";
+
+    private Boolean isPay=true;
+
 
     private String openid;      //刷脸支付获取微信openid
 
     private String Facecode;      //刷脸支付获取微信人脸识别码
 
     private Call<AuthInfoEntity> AuthInfoEntityCall;
-
+    private retrofit2.Call<OrderpayResponse> OrderpayResponseCall;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -210,10 +220,10 @@ public class ChoosepaywayActivity  extends AppCompatActivity {
 
                             //3.0 然后调用首先获取  facecode。用于人脸支付
                             Map<String, String> m1 = new HashMap<String, String>();
-                            m1.put("appid", CommonData.wxappid); // 公众号，必填
-                            m1.put("mch_id", CommonData.wxshid); // 商户号，必填
-                            //m1.put("sub_appid", responnse_subAppid); // 商户号，必填
-                            //m1.put("sub_mch_id", responnse_submachid); // 商户号，必填
+                            m1.put("appid", "wx2d784531bbb9a017"); // 公众号，必填
+                            m1.put("mch_id", "1334045901"); // 商户号，必填
+                            m1.put("sub_appid", CommonData.wxappid); // 商户号，必填
+                            m1.put("sub_mch_id", CommonData.wxshid); // 商户号，必填
                             m1.put("store_id", CommonData.khid); // 门店编号，必填
                             m1.put("out_trade_no", CommonData.orderInfo.prepayId); // 商户订单号， 必填
                             m1.put("total_fee", String.valueOf(total_fee)); // 订单金额（数字），单位：分，必填
@@ -258,7 +268,7 @@ public class ChoosepaywayActivity  extends AppCompatActivity {
                                         String faceCode = info.get("face_code").toString(); // 人脸凭证，用于刷脸支付
                                         openid = info.get("openid").toString(); // 人脸凭证，用于刷脸支付
                                         //在这里处理业务逻辑
-                                        //payAuthCode = faceCode;//将刷脸支付返回码进行订单调用
+                                        Facecode = faceCode;//将刷脸支付返回码进行订单调用
 
                                         wxFaceMoneypay();
                                     }
@@ -341,9 +351,132 @@ public class ChoosepaywayActivity  extends AppCompatActivity {
     }
 
 
+
     public void wxFaceMoneypay() {
 
+        //默认值为 true，表示  可以支付了 ，只有为 true 的时候才可以进行支付
+        if (!isPay){
+            return;
+        }
 
+        isPay=false;   //说明 已经开始支付了，避免一次 扫码扫到连个触发两次
+
+        //1.0 初始化所有的产品信息,
+        List<OrderpayRequest.DataBean.PluMapBean> pluMap = new ArrayList<OrderpayRequest.DataBean.PluMapBean>();
+
+        try {
+
+            for (Map.Entry<String, List<SplnfoList>> entry : CommonData.orderInfo.spList.entrySet()) {
+
+                OrderpayRequest.DataBean.PluMapBean payMapcls = new OrderpayRequest.DataBean.PluMapBean();
+                payMapcls.setBarcode(entry.getValue().get(0).getBarcode());
+                payMapcls.setGoodsId(entry.getValue().get(0).getGoodsId());
+                payMapcls.setPluQty(entry.getValue().get(0).getPackNum());
+                payMapcls.setRealPrice(Double.valueOf(entry.getValue().get(0).getRealPrice()));  //单项实付金额
+                payMapcls.setPluPrice(entry.getValue().get(0).getMainPrice());  //单品单价
+                payMapcls.setPluDis(entry.getValue().get(0).getTotaldisc());  //单品优惠
+                payMapcls.setPluAmount(Double.valueOf(entry.getValue().get(0).getRealPrice()));   //单项小计
+                pluMap.add(payMapcls);
+            }
+        } catch (Exception ex) {
+
+        }
+        String payid="1";
+        if (CommonData.payWay.equals("AliPaymentCodePay"))
+        {
+            payid="2";
+        }
+        else if (CommonData.payWay.equals("WXPaymentCodePay"))
+        {
+            payid="1";
+        }
+        else if (CommonData.payWay.equals("WXFacePay"))
+        {
+            payid="3";
+        }
+
+        //支付方式
+        List<OrderpayRequest.DataBean.PayMapBean> payMap = new ArrayList<OrderpayRequest.DataBean.PayMapBean>();
+        OrderpayRequest.DataBean.PayMapBean pmp = new OrderpayRequest.DataBean.PayMapBean();
+        pmp.setPayTypeId(payid);
+        pmp.setPayVal(Double.valueOf(CommonData.orderInfo.totalPrice));
+        payMap.add(pmp);
+
+        OrderpayResponseCall= RetrofitHelper.getInstance().Orderpay(Facecode,openid,CommonData.orderInfo.prepayId,pluMap,payMap);
+        OrderpayResponseCall.enqueue(new Callback<OrderpayResponse>() {
+            @Override
+            public void onResponse(Call<OrderpayResponse> call, Response<OrderpayResponse> response) {
+                isPay=true;  //只有当这一笔支付完成 之后  才可以重新进行支付
+                if(response != null) {
+                    if (null != response.body()) {
+
+                        if (response.body().getCode().equals("success")) {
+                            //返回成功
+                            //拿到交易流水号
+                            CommonData.paytrad_no = response.body().getData().getOut_trad_no();
+                            if(response.body().getData().getPaycode().equals("200")) {
+                                //跳转到支付成功界面(因为现在已经没有轮询的方式)
+                                Intent intent = new Intent(ChoosepaywayActivity.this, FinishActivity.class);
+                                startActivity(intent);
+                                finish();
+                                return;
+
+                            }
+                            else if(response.body().getData().getPaycode().equals("3"))
+                            {
+                                //说明支付在等待，跳转到支付轮询界面
+
+                                Intent intent = new Intent(ChoosepaywayActivity.this, SearchingPayActivity.class);
+                                startActivity(intent);
+                                finish();
+                                return;
+                            }
+
+                        }
+                        else{
+                            HashMap<String, String> map = new HashMap<String, String>();
+                            map.put("authinfo", mAuthInfo); // 调用凭证，必填
+                            WxPayFace.getInstance().stopWxpayface(map, new IWxPayfaceCallback() {
+                                @Override
+                                public void response(Map info) throws RemoteException {
+                                    if (info == null) {
+                                        new RuntimeException("调用返回为空").printStackTrace();
+                                        return;
+                                    }
+                                    String code = (String) info.get("return_code"); // 错误码
+                                    String msg = (String) info.get("return_msg"); // 错误码描述
+                                    if (code == null || !code.equals("SUCCESS")) {
+                                        new RuntimeException("调用返回非成功信息,return_msg:" + msg + "   ").printStackTrace();
+                                        return;
+                                    }
+                                }
+                            });
+
+                            //释放刷脸资源
+                            WxPayFace.getInstance().releaseWxpayface(ChoosepaywayActivity.this);
+
+
+                            ToastUtil.showToast(ChoosepaywayActivity.this, "支付失败", response.body().getMsg());
+                            return;
+                        }
+                    }
+
+                }
+                else
+                {
+                    ToastUtil.showToast(ChoosepaywayActivity.this, "支付通知", "操作异常");
+                    return;
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<OrderpayResponse> call, Throwable t) {
+                isPay=true;  //只有当这一笔支付完成 之后  才可以重新进行支付
+                ToastUtil.showToast(ChoosepaywayActivity.this, "支付通知", "操作异常");
+                return;
+            }
+        });
     }
 
 

@@ -37,11 +37,44 @@
             >
 
             <TextView
+                android:id="@+id/title_qyid"
+                android:layout_width="120dp"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="企业代码"
+                android:textColor="#666"
+                android:textSize="28sp" />
+
+            <EditText
+                android:id="@+id/inputqyid"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@null"
+                android:lines="1"
+                android:padding="20dp"
+                android:singleLine="true"
+                android:text=""
+                android:hint="请输入服务商分配的企业代码"
+                android:textColorHint="#95A1AA"
+                android:textSize="24sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:layout_marginTop="30dp"
+            android:background="@drawable/borderbutton"
+            android:orientation="horizontal"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"
+            >
+
+            <TextView
                 android:id="@+id/title_khid"
                 android:layout_width="120dp"
                 android:layout_height="match_parent"
                 android:gravity="center"
-
                 android:text="门 店 号"
                 android:textColor="#666"
                 android:textSize="28sp" />

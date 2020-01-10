@@ -16,7 +16,7 @@ android {
         variant ->
             variant.outputs.all {
                 // 此处指定生成的apk文件名
-                outputFileName = "ZCZY.apk"
+                outputFileName = "ZCZYUSE.apk"
             }
     }
 

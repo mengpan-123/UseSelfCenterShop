@@ -41,6 +41,8 @@ public class CommonData {
     //支付交易单号
     public  static  String  paytrad_no="";
 
+    public  static  String  QYID="";
+
 
     public static HyMessage  hyMessage=null;
 
@@ -63,6 +65,9 @@ public class CommonData {
     public  static String   wxappid="";
     public  static String   wxshid="";
     public  static String   appKey="";
+
+
+    public  static  long   lastUpdateTime=0;
 
     public static CreateAddAdapter list_adaptor=null;
 
@@ -88,6 +93,8 @@ public class CommonData {
         try {
             PackageInfo info = manager.getPackageInfo(context.getPackageName(), 0);
             code = info.versionName;
+
+            lastUpdateTime= info.lastUpdateTime;
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
