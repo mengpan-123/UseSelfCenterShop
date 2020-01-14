@@ -20,6 +20,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.example.selfshopcenter.bean.UpdateVersionEntity;
 import com.example.selfshopcenter.bean.UserLoginEntity;
 import com.example.selfshopcenter.commoncls.CommonData;
 import com.example.selfshopcenter.commoncls.MyDatabaseHelper;
@@ -41,13 +42,15 @@ public class LoginActivity extends AppCompatActivity {
 
     private String url = "http://192.168.0.108/222/MyApp1.apk";
 
+    private int  Appvercode=0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         //1.0  首先创建出数据库  BaseInfo ，用于保存信息
         try {
-            dbHelper = new MyDatabaseHelper(this, "userinfo.db", null, 1);
+            dbHelper = new MyDatabaseHelper(this, "centertable.db", null, 1);
             querydb = dbHelper.getWritableDatabase();
 
         } catch (Exception ex) {
@@ -58,7 +61,7 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         CommonData.app_version=CommonData.getAppVersion(this);
-
+        Appvercode=CommonData.getAppVersioncode(this);
 
         //2.0  先从本地选取初始化数据，如果拿到了，说明初始化过，则直接跳转，跳过登录
         InitData(querydb);
@@ -173,7 +176,7 @@ public class LoginActivity extends AppCompatActivity {
                     CommonData.wxappid = cursor.getString(cursor.getColumnIndex("wxappid"));
                     CommonData.zfbappid = cursor.getString(cursor.getColumnIndex("zfbappid"));
                     CommonData.wxshid = cursor.getString(cursor.getColumnIndex("wxshid"));
-
+                    CommonData.QYID= cursor.getString(cursor.getColumnIndex("qyid"));
                 }
                 while
                 (cursor.moveToNext());
@@ -192,7 +195,7 @@ public class LoginActivity extends AppCompatActivity {
             //然后将 以上获取到的 数据 写入到 本地数据库中
             SQLiteDatabase db = dbHelper.getWritableDatabase();
             ContentValues values = new ContentValues();
-
+            values.put("qyid", CommonData.QYID);
             values.put("khid", CommonData.khid);
             values.put("khsname", CommonData.khsname);
             values.put("posid", CommonData.posid);
@@ -214,7 +217,7 @@ public class LoginActivity extends AppCompatActivity {
 
         }
         catch (Exception ex) {
-
+            ToastUtil.showToast(LoginActivity.this, "输入消息通知", ex.toString());
         }
         //显示跳转
         Intent intent = new Intent(LoginActivity.this, IndexActivity.class);
@@ -228,17 +231,32 @@ public class LoginActivity extends AppCompatActivity {
 
         try {
 
-            String Path="http://www.ikengee.com.cn/testexample/index.mp4";
-            File f1 = new File(Path);
-            long time=f1.lastModified();
+            Call<UpdateVersionEntity>  updateversion = RetrofitHelper.getInstance().UpdateVersion();
+            updateversion.enqueue(new Callback<UpdateVersionEntity>() {
+                @Override
+                public void onResponse(Call<UpdateVersionEntity> call, Response<UpdateVersionEntity> response) {
+                    if (null!=response){
+                        if (response.body().getCode().equals("success")){
+                            if (response.body().getData().getV_VERSION()> Appvercode){
+                                //准备升级
+                                url=response.body().getData().getV_Updatepath();
 
-            File f2= new File(Path);
-            long time2=f1.lastModified();
+                                EnsureUPdate();
+                            }
 
-            if (time==time2){
+                        }
+                        else
+                        {
 
-            }
+                        }
+                    }
+                }
 
+                @Override
+                public void onFailure(Call<UpdateVersionEntity> call, Throwable t) {
+                    ToastUtil.showToast(LoginActivity.this, "输入消息通知", t.toString());
+                }
+            });
         }
         catch(Exception ex){
             ToastUtil.showToast(LoginActivity.this, "输入消息通知", ex.toString());
@@ -249,27 +267,35 @@ public class LoginActivity extends AppCompatActivity {
 
     public   void  EnsureUPdate(){
 
-        DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
-        //设置在什么网络情况下进行下载
-        //request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI);
+        try {
 
-        //设置通知栏标题
-        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE);
-        request.setTitle("任务进行中");
-        request.setDescription("应用程序正在下载中");
-        request.setAllowedOverRoaming(false);
-        //设置文件存放目录
-        request.setDestinationInExternalFilesDir(this, Environment.DIRECTORY_DOWNLOADS, "AIINBI.apk");
+            DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
+            //设置在什么网络情况下进行下载
+            //request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI);
 
-        DownloadManager downManager = (DownloadManager)getSystemService(Context.DOWNLOAD_SERVICE);
-        long id= downManager.enqueue(request);
+            //设置通知栏标题
+            request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE);
+            request.setTitle("任务进行中");
+            request.setDescription("应用程序正在下载中");
+            request.setAllowedOverRoaming(false);
+            //设置文件存放目录（此处如果异常，需要再买呢文件中设置读写权限）
+            request.setDestinationInExternalFilesDir(this, Environment.DIRECTORY_DOWNLOADS, "1.apk");
 
-        //确认要下载时 ，先删除 sqlite里面的表数据
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-        db.delete(CommonData.tablename,null,null);
+            DownloadManager downManager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
+            long id = downManager.enqueue(request);
+
+            //确认要下载时 ，先删除 sqlite里面的表数据
+            SQLiteDatabase db = dbHelper.getWritableDatabase();
+            db.delete(CommonData.tablename, null, null);
 
 
-        queryDownloadProgress(this,id,downManager);
+            queryDownloadProgress(this, id, downManager);
+        }
+        catch(Exception ex){
+            ToastUtil.showToast(LoginActivity.this, "支付通知", "请输入商品条码进行支付");
+            return;
+
+        }
     }
 
 

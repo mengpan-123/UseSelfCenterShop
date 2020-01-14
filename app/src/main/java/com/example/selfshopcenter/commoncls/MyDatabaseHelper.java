@@ -14,6 +14,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 
                 + "khid text  primary key, "
 
+                + "qyid text   , "   //后台返回的该机器使用的posid
+
                 + "posid text   , "   //后台返回的该机器使用的posid
 
                 + "khsname  text , "

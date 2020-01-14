@@ -63,6 +63,17 @@ public class CarItemsActivity extends AppCompatActivity implements View.OnClickL
 
 
         initView();
+
+
+        //点击退出按钮，之后回到首页
+        findViewById(R.id.exit).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(CarItemsActivity.this, IndexActivity.class);
+                startActivity(intent);
+            }
+        });
+
     }
 
 
@@ -98,6 +109,18 @@ public class CarItemsActivity extends AppCompatActivity implements View.OnClickL
         CommonData.list_adaptor = adapter;
     }
 
+
+    /**
+     *
+     * MembersLogin 会员登录
+     * */
+
+    public  void  MembersLogin(View view){
+
+
+        ToastUtil.showToast(CarItemsActivity.this, "会员信息验证", "未开发");
+
+    }
 
     /**
      * Created by zhoupan on 2019/11/6.
@@ -228,7 +251,7 @@ public class CarItemsActivity extends AppCompatActivity implements View.OnClickL
 
 
     /**
-     * Created by zhoupan on 2019/11/7.
+     * Created by zhoupan on 2020/01/01.
      * <p>
      * 扫码添加商品，封装方法，用于单个添加商品，和添加购物袋，仅用于添加商品，
      * 具体流程为 1：使用添加商品接口，
@@ -273,15 +296,16 @@ public class CarItemsActivity extends AppCompatActivity implements View.OnClickL
                                     //如果存在，拿到集合，增加数量，总价，折扣
                                     MapList.get(barcode).get(0).setPackNum(sub_itemsList.get(sk).getQty());
                                     MapList.get(barcode).get(0).setMainPrice(sub_itemsList.get(sk).getPrice());
-                                    MapList.get(barcode).get(0).setRealPrice(String.valueOf(sub_itemsList.get(sk).getDprice()));  //实际总售价
+                                    MapList.get(barcode).get(0).setRealPrice(String.valueOf(sub_itemsList.get(sk).getNet()));  //实际总售价
 
                                     //修改列表的数量
                                     for (int k = 0; k < listmap.size(); k++) {
                                         if (listmap.get(k).get("id").equals(barcode)) {
                                             listmap.get(k).put("count", String.valueOf(sub_itemsList.get(sk).getQty()));
                                             listmap.get(k).put("MainPrice", String.valueOf(nRealPrice));
-                                            listmap.get(k).put("realprice", String.valueOf(sub_itemsList.get(sk).getDprice()));
+                                            listmap.get(k).put("realprice", String.valueOf(sub_itemsList.get(sk).getNet()));
                                             listmap.get(k).put("actname", itemsList.get(sm).getDisrule());
+                                            listmap.get(k).put("disc", String.valueOf(sub_itemsList.get(sk).getDisc()));
                                         }
                                     }
                                 } else {
@@ -524,9 +548,9 @@ public class CarItemsActivity extends AppCompatActivity implements View.OnClickL
 
             @Override
             public void onClick(View v) {
-                //dialog.dismiss();
+                dialog.dismiss();
 
-                EditText editText1 = layout.findViewById(R.id.username);
+                /*EditText editText1 = layout.findViewById(R.id.username);
                 String inputbarcode = editText1.getText().toString();
 
                 if (inputbarcode.length()==0){
@@ -534,11 +558,25 @@ public class CarItemsActivity extends AppCompatActivity implements View.OnClickL
                     return;
                 }
                 AddnewSpid(inputbarcode);
-                dialog.dismiss();
+                dialog.dismiss();*/
 
             }
         });
 
+    }
+
+
+    /**
+     *键盘的清空数字按钮
+     */
+    public void deleteClick(View view) {
+
+        EditText editText = layout.findViewById(R.id.username);
+        if (null != editText.getText().toString() && editText.getText().toString().length() > 0) {
+            String old_text = editText.getText().toString();
+            editText.setText(old_text.substring(0, old_text.length() - 1));
+            editText.setSelection(editText.getText().toString().length());
+        }
     }
 
 

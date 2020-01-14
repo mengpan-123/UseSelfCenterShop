@@ -88,7 +88,7 @@ public class RetrofitHelper {
 
 
         String  s="{\n" +
-                "    \"appid\": \"keengee\",\n" +
+                "    \"appid\": \""+CommonData.kquser+"\",\n" +
                 "    \"apiname\": \"KHLOGIN\",\n" +
                 "    \"req_operator\": \"zp\",\n" +
                 "    \"data\": {\n" +
@@ -115,7 +115,7 @@ public class RetrofitHelper {
 
 
         String  s="{\n" +
-                "    \"appid\": \"keengee\",\n" +
+                "    \"appid\": \""+CommonData.kquser+"\",\n" +
                 "    \"apiname\": \"GetGoodsInfo\",\n" +
                 "    \"req_operator\": \"zp\",\n" +
                 "    \"data\": {\n" +
@@ -171,7 +171,7 @@ public class RetrofitHelper {
 
         OrderpayRequest requestSignBean = new OrderpayRequest();
 
-        requestSignBean.setAppid("keengee");
+        requestSignBean.setAppid(CommonData.kquser);
         requestSignBean.setApiname("ORDERPAY");
         requestSignBean.setReq_operator("zhoupan");
 
@@ -240,7 +240,7 @@ public class RetrofitHelper {
 
 
         String  s="{\n" +
-                "    \"appid\": \"keengee\",\n" +
+                "    \"appid\": \""+CommonData.kquser+"\",\n" +
                 "    \"apiname\": \"GetAuthInfo\",\n" +
                 "    \"req_operator\": \"zp\",\n" +
                 "    \"data\": {\n" +
@@ -278,7 +278,7 @@ public class RetrofitHelper {
 
 
         String  s="{\n" +
-                "    \"appid\": \"keengee\",\n" +
+                "    \"appid\": \""+CommonData.kquser+"\",\n" +
                 "    \"apiname\": \"GETSHOPBAG\",\n" +
                 "    \"req_operator\": \"zp\",\n" +
                 "    \"data\": {\n" +
@@ -290,6 +290,32 @@ public class RetrofitHelper {
 
         RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), s);
         return mAPIService.GetshopBag(requestBody);
+    }
+
+
+
+    /**
+     * 获取刷脸支付使用的 authinfo 信息
+     *
+     */
+    public Call<UpdateVersionEntity> UpdateVersion() {
+
+
+
+        String  s="{\n" +
+                "    \"appid\": \""+CommonData.kquser+"\",\n" +
+                "    \"apiname\": \"UPDATEVERSION\",\n" +
+                "    \"req_operator\": \"zp\",\n" +
+                "    \"data\": {\n" +
+                "       \n" +
+                "        \"khid\": \""+CommonData.khid+"\",\n" +
+                "        \"qyid\": \""+CommonData.QYID+"\"\n" +
+                "    }\n" +
+                "}";
+
+
+        RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), s);
+        return mAPIService.UpdateVersion(requestBody);
     }
 
 

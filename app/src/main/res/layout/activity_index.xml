@@ -5,11 +5,11 @@
     android:background="#f9ffff">
 
 
-    <!--<VideoView
+    <VideoView
         android:id="@+id/video"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        />-->
+        />
 
     <!--开始购物-->
     <LinearLayout

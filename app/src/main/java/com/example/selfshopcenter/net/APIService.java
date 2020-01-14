@@ -52,4 +52,11 @@ public interface APIService {
      */
     @POST("Export/GetUseBleData")
     Call<ShopBagEntity> GetshopBag(@Body RequestBody requestBody);
+
+
+    /**
+     * 增加或减少产品
+     */
+    @POST("Export/GetUseBleData")
+    Call<UpdateVersionEntity> UpdateVersion(@Body RequestBody requestBody);
 }

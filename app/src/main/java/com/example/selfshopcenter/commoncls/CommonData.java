@@ -9,7 +9,7 @@ import com.example.selfshopcenter.net.CreateAddAdapter;
 
 public class CommonData {
     //自定义一个全局变量，作为表名称，多个地方使用
-    public static String    tablename="CenterTable";
+    public static String    tablename="CenterTable2";
 
 
     //公共的接口访问地址
@@ -25,6 +25,9 @@ public class CommonData {
     public static  String     ordernumber="";  //订单流水号
 
     public  static  String  khid="";
+
+
+    public  static  String  kquser="keengee";  //用户编号
 
     public  static  String  posid="";
 

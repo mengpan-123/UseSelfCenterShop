@@ -76,7 +76,7 @@
             android:orientation="horizontal"
             android:id="@+id/wxuseinfo"
             android:layout_width="match_parent"
-            android:layout_height="10dp"
+            android:layout_height="770dp"
             android:background="@mipmap/banner1"
             >
         </ImageView>

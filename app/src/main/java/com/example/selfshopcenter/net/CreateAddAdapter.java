@@ -179,7 +179,7 @@ public class CreateAddAdapter extends BaseAdapter {
                                                     //如果存在，拿到集合，增加数量，总价，折扣
                                                     CommonData.orderInfo.spList.get(barcode).get(0).setPackNum(sub_itemsList.get(sk).getQty());
                                                     CommonData.orderInfo.spList.get(barcode).get(0).setMainPrice(sub_itemsList.get(sk).getPrice());
-                                                    CommonData.orderInfo.spList.get(barcode).get(0).setRealPrice(String.valueOf(sub_itemsList.get(sk).getDprice()));  //实际总售价
+                                                    CommonData.orderInfo.spList.get(barcode).get(0).setRealPrice(String.valueOf(sub_itemsList.get(sk).getNet()));  //实际总售价
 
                                                     //修改列表的数量
                                                     for (int k = 0; k < list.size(); k++) {
@@ -188,7 +188,7 @@ public class CreateAddAdapter extends BaseAdapter {
                                                             list.get(k).put("MainPrice", String.valueOf(nRealPrice));
                                                             list.get(k).put("realprice", String.valueOf(sub_itemsList.get(sk).getNet()));
                                                             list.get(k).put("actname", itemsList.get(sm).getDisrule());
-
+                                                            list.get(k).put("disc", String.valueOf(sub_itemsList.get(sk).getDisc()));
                                                         }
                                                     }
                                                 }
@@ -259,8 +259,7 @@ public class CreateAddAdapter extends BaseAdapter {
                                                 //如果存在，拿到集合，增加数量，总价，折扣
                                                 CommonData.orderInfo.spList.get(barcode).get(0).setPackNum(sub_itemsList.get(sk).getQty());
                                                 CommonData.orderInfo.spList.get(barcode).get(0).setMainPrice(sub_itemsList.get(sk).getPrice());
-                                                CommonData.orderInfo.spList.get(barcode).get(0).setRealPrice(String.valueOf(sub_itemsList.get(sk).getDprice()));  //实际总售价
-
+                                                CommonData.orderInfo.spList.get(barcode).get(0).setRealPrice(String.valueOf(sub_itemsList.get(sk).getNet()));
                                                 //修改列表的数量
                                                 String useqty = String.valueOf(sub_itemsList.get(sk).getQty());
 
@@ -269,9 +268,9 @@ public class CreateAddAdapter extends BaseAdapter {
                                                     if (list.get(k).get("id").equals(barcode)) {
                                                         list.get(k).put("count", useqty);
                                                         list.get(k).put("MainPrice", String.valueOf(nRealPrice));
-                                                        list.get(k).put("realprice", String.valueOf(sub_itemsList.get(sk).getDprice()));
+                                                        list.get(k).put("realprice", String.valueOf(sub_itemsList.get(sk).getNet()));
                                                         list.get(k).put("actname", itemsList.get(sm).getDisrule());
-
+                                                        list.get(k).put("disc", String.valueOf(sub_itemsList.get(sk).getDisc()));
                                                     }
                                                 }
                                             }
