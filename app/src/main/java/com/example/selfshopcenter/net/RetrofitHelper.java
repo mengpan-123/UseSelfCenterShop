@@ -120,6 +120,7 @@ public class RetrofitHelper {
                 "    \"req_operator\": \"zp\",\n" +
                 "    \"data\": {\n" +
                 "        \"barcode\": \""+barcode+"\",\n" +
+                "        \"qyid\": \""+CommonData.QYID+"\",\n" +
                 "        \"posid\":\""+CommonData.posid+"\",\n" +
                 "        \"khid\": \""+CommonData.khid+"\",\n" +
                 "        \"stype\": \""+stype+"\"\n" +
@@ -132,7 +133,6 @@ public class RetrofitHelper {
     }
 
 
-
     /**
      * 查询产品基础信息并添加
      *
@@ -140,8 +140,6 @@ public class RetrofitHelper {
      * @param posid  款台编号
      */
     public Call<ClearCarEntity> ClearCarInfo(String khid, String  posid) {
-
-
 
         String  s="{\n" +
                 "    \"appid\": \"keengee\",\n" +
@@ -179,11 +177,15 @@ public class RetrofitHelper {
 
 
         dataBeaninfo.setKhid(CommonData.khid);
+        dataBeaninfo.setKhsname(CommonData.khsname);
         dataBeaninfo.setPosid(CommonData.posid);
         dataBeaninfo.setPayWay(CommonData.payWay);
+
+
         dataBeaninfo.setPaycode(AuthCode);
         if (CommonData.payWay.equals("AliPaymentCodePay"))
         {
+            dataBeaninfo.setWxshid("");  //2020-01-15首先设置一个空字符串，备用
             dataBeaninfo.setAppid(CommonData.zfbappid);
         }
         else if (CommonData.payWay.equals("WXPaymentCodePay"))

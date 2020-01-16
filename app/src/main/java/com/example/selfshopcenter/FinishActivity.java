@@ -3,21 +3,31 @@ package com.example.selfshopcenter;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.selfshopcenter.commoncls.CommonData;
 import com.example.selfshopcenter.commoncls.MyDatabaseHelper;
+import com.example.selfshopcenter.commoncls.SplnfoList;
+import com.example.selfshopcenter.printer.PrintUtil;
+import com.example.selfshopcenter.printer.UsbPrintManager;
 
 
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -29,17 +39,22 @@ public class FinishActivity  extends AppCompatActivity {
     private TimerTask task=null;
     private  String  printpaytype="";
 
+    private UsbPrintManager printer = null;
+
 
    // SerialControl ComA;//串口
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+
+        getPrinter();
+
         setContentView(R.layout.activity_finishpay);  //设置页面
 
         TextView totalmoney = findViewById(R.id.havepaynet);
 
-        totalmoney.setText("￥" + String.valueOf(CommonData.orderInfo.totalPrice));
+        /*totalmoney.setText("￥" + String.valueOf(CommonData.orderInfo.totalPrice));
 
         TextView ordernumber = findViewById(R.id.ordernumber);
         ordernumber.setText(CommonData.orderInfo.prepayId);
@@ -56,7 +71,7 @@ public class FinishActivity  extends AppCompatActivity {
         }
         else{
             printpaytype="刷脸支付";
-        }
+        }*/
 
         TextView paytype = findViewById(R.id.paytype);
         paytype.setText(printpaytype);
@@ -86,6 +101,11 @@ public class FinishActivity  extends AppCompatActivity {
         startTime();
 
 
+        CommonData.player.reset();
+        CommonData.player= MediaPlayer.create(this,R.raw.finishpay);
+        CommonData.player.start();
+        CommonData.player.setLooping(false);
+
         //一旦支付成功，这个参数就自动加上1
         CommonData.number=CommonData.number+1;
 
@@ -111,6 +131,10 @@ public class FinishActivity  extends AppCompatActivity {
             //如果创建异常,不能影响其他
 
         }
+
+
+        //打印相关
+        printBill();
 
 
     }
@@ -144,45 +168,169 @@ public class FinishActivity  extends AppCompatActivity {
     };
 
 
+    @Override
+    public void onDestroy(){
+        if (printer != null) {
+            printer.onDestory();
+        }
+        super.onDestroy();
+    }
 
-   /* protected void print()
-    {
+    //USB打印机连接
+    private void getPrinter() {
+        printer = UsbPrintManager.getInstance();
+        printer.init(this);
+    }
+
+
+    private void printBill() {
+
+
+        StringBuffer sbb = new StringBuffer();
+
+        SimpleDateFormat form = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = new Date();
+        String day=form.format(date);
+
+
+
+        String Str="                   欢迎光临                   "+"\n";
+        //Str+="门店名称:"+CommonData.khsname+"\n";
+
+        Str+="流水号："+CommonData.orderInfo.prepayId+"     "+"\n";
+
+        Str+="日期   "+day+"     "+"\n";
+        Str+="==============================================="+"\n";
+        Str+="条码     名称     数量        单价     金额"+"\n";
+
+        for (Map.Entry<String, List<SplnfoList>> entry : CommonData.orderInfo.spList.entrySet()) {
+
+            String  barcode=entry.getValue().get(0).getBarcode();
+            String  sname=entry.getValue().get(0).getPluName();
+            String  qty="0";
+            String weight=entry.getValue().get(0).getNweight();
+            String   dj="0";
+            if (weight.equals("0")||weight.equals("0.0")||weight.equals("0.00")){
+                //说明重量是 0.  那就取显示数量
+                qty = String.valueOf(entry.getValue().get(0).getPackNum());
+                dj=String.valueOf(entry.getValue().get(0).getRealPrice());
+
+            }else {
+                //净重含量存在值 则显示重量
+                qty = entry.getValue().get(0).getNweight();
+                //根据 实际售价/重量  计算  单价
+                /*String a = entry.getValue().get(0).getMainPrice();
+                try{
+                    dj = txfloat(Double.valueOf(a), Double.valueOf(qty));}
+                catch(Exception ex) {
+
+                }*/
+                dj=String.valueOf(entry.getValue().get(0).getRealPrice());
+            }
+
+            String zj=entry.getValue().get(0).getRealPrice();
+
+            Str+= barcode+"\n";
+            Str+= sname+"     "+qty+"     "+dj+"    "+zj+"  "+"\n";
+        }
+
+        //付款方式
+        Str+="==============================================="+"\n";
+        Str+="付款方式             金额          总折扣"+"\n";
+
+        Str+=printpaytype+"             "+CommonData.orderInfo.totalPrice+ "          "+CommonData.orderInfo.totalDisc+"\n";
+
+        Str+="总数量         应收        找零"+"\n";
+        Str+=""+CommonData.orderInfo.totalCount+"             "+CommonData.orderInfo.totalPrice+"          0.00     "+"\n";
+
+
+
+        if (  CommonData.hyMessage!=null) {
+            //如果会员信息不等于null 的，则需要打印会员基础信息
+            Str += "会员卡号:" + CommonData.hyMessage.cardnumber + "\n";
+            //Str += "本次消费获得会员积分：" + CommonData.+ "\n";
+
+        }
+
+
         try {
-            // 小票标题
-            ComA.send(PrintCmd.GetStatus4());
-            m_blnStatus = true;
-            m_iStatusCount = 0;
-            m_iRecValue = -1;
-            ShowMessage(getString(R.string.State_query));
+            Bitmap prnLogoBmp = BitmapFactory.decodeResource(getResources(), R.drawable.logo_print);
+            PrintUtil.printReceipt(null,Str);
+            getPrintStatus();
 
-            
-        } catch (IOException e) {
+        }
+        catch (Exception e) {
             e.printStackTrace();
+
         }
     }
 
 
-    //----------------------------------------------------串口控制类// 走纸换行，再切纸，清理缓存
-    	private void PrintFeedCutpaper(int iLine) {
-    		try {
-    			ComA.send(PrintCmd.PrintFeedline(iLine));
-    			ComA.send(PrintCmd.PrintCutpaper(0));
-    			ComA.send(PrintCmd.SetClean());
-    		} catch (Exception e) {
-    			e.printStackTrace();
-    		}
-    	}
 
-    private class SerialControl extends SerialHelper {
-        public SerialControl() {
+    /**
+     * TODO 除法运算，保留小数
+     * @author 袁忠明
+     * @date 2018-4-17下午2:24:48
+     * @param num1 被除数
+     * @param num2 除数
+     * @return 商
+     */
+    public static String txfloat(double num1,double num2) {
+        // TODO 自动生成的方法存根
 
+        DecimalFormat df=new DecimalFormat("0.00");//设置保留位数
+
+        return df.format((float)num1/num2);
+
+    /*   BigDecimal  bignum = new  BigDecimal(num1/num2);
+        double myNum3 = bignum.setScale(2, java.math.BigDecimal.ROUND_CEILING).doubleValue();
+
+        return myNum3;*/
+    }
+
+
+    //查询打印机状态
+    private void getPrintStatus() {
+        String msg = "";
+        int iRet = PrintUtil.getPrintEndStatus();
+        switch (iRet) {
+            case 0:
+                msg = "正常";
+                break;
+            case 1:
+                msg = "打印机未连接或未上电";
+                break;
+            case 2:
+                msg = "打印机和调用库不匹配";
+                break;
+            case 3:
+                msg = "打印头打开";
+                break;
+            case 4:
+                msg = "切刀未复位";
+                break;
+            case 5:
+                msg = "打印头过热";
+                break;
+            case 6:
+                msg = "黑标错误";
+                break;
+            case 7:
+                msg = "纸尽";
+                break;
+            case 8:
+                msg = "纸将尽";
+                break;
+            case -1:
+                msg = "异常";
+                break;
         }
-        @Override
-        protected void onDataReceived(final ComBean ComRecData) {
-            DispQueue.AddQueue(ComRecData);// 线程定时刷新显示(推荐)
+        if (iRet != 0) {
+
+            Toast.makeText(FinishActivity.this, msg, Toast.LENGTH_SHORT).show();
         }
+    }
 
 
-    }*/
 
 }

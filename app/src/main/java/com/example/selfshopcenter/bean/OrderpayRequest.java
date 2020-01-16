@@ -51,6 +51,7 @@ public class OrderpayRequest {
     public static class DataBean {
         /**
          * khid : KH1911220000001
+         * khsname : 测试门店
          * posid : 1
          * xstype : 1
          * payWay : WXSmall
@@ -64,6 +65,7 @@ public class OrderpayRequest {
          */
 
         private String khid;
+        private String khsname;
         private String posid;
         private String xstype;
         private String payWay;
@@ -83,6 +85,15 @@ public class OrderpayRequest {
         public void setKhid(String khid) {
             this.khid = khid;
         }
+
+        public String getKhsname() {
+            return khsname;
+        }
+
+        public void setKhsname(String khsname) {
+            this.khsname = khsname;
+        }
+
 
         public String getPosid() {
             return posid;
@@ -186,7 +197,7 @@ public class OrderpayRequest {
 
             private String goodsId;
             private String barcode;
-            private int pluQty;
+            private double pluQty;
             private String pluPrice;
             private double realPrice;
             private double pluAmount;
@@ -208,11 +219,11 @@ public class OrderpayRequest {
                 this.barcode = barcode;
             }
 
-            public int getPluQty() {
+            public double getPluQty() {
                 return pluQty;
             }
 
-            public void setPluQty(int  pluQty) { this.pluQty = pluQty; }
+            public void setPluQty(double  pluQty) { this.pluQty = pluQty; }
 
             public String getPluPrice() {
                 return pluPrice;

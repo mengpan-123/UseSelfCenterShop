@@ -3,6 +3,7 @@ package com.example.selfshopcenter.commoncls;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.media.MediaPlayer;
 import android.os.Build;
 
 import com.example.selfshopcenter.net.CreateAddAdapter;
@@ -12,10 +13,14 @@ public class CommonData {
     public static String    tablename="CenterTable2";
 
 
+    public static MediaPlayer player=new MediaPlayer();
+
+    public static  boolean   dowloading = false;
+
     //公共的接口访问地址
-    public static String    CommonUrl="http://122.112.234.28:8017/";
+    //public static String    CommonUrl="http://52.81.85.108:8017";
 
-
+    public static String    CommonUrl="http://122.112.234.28:8017";
     public  static  String  app_version="";
 
     //订单流水号，命名规则为 销售日期和 一个三位的序号,这里只使用序号

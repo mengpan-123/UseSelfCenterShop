@@ -137,12 +137,20 @@ public class CreateAddAdapter extends BaseAdapter {
                     //调用减少购物车商品数量接口 ，然后调用接口获取购物车列表
                     if (list.size() == 0) {
                         ToastUtil.showToast(context, "商品移除通知", "请误操作太过于频繁");
+                        is_click = true;
                         return;
                     }
 
                     //初始化报文信息
                     try {
                         String getClickbarcode=list.get(position).get("id");
+                        String weight = list.get(position).get("weight");
+                        if ( !weight.equals("0")&&!weight.equals("")) {
+                            ToastUtil.showToast(context, "商品增加通知", "很抱歉，当前称重产品暂不支持移除，您可以选择清空重录");
+                            is_click = true;
+                            return;
+                        }
+
 
                         Call<AddGoodsEntity> substratGoods= RetrofitHelper.getInstance().AddGoodInfo(getClickbarcode, CommonData.Reduce);
                         substratGoods.enqueue(new Callback<AddGoodsEntity>() {
@@ -180,10 +188,10 @@ public class CreateAddAdapter extends BaseAdapter {
                                                     CommonData.orderInfo.spList.get(barcode).get(0).setPackNum(sub_itemsList.get(sk).getQty());
                                                     CommonData.orderInfo.spList.get(barcode).get(0).setMainPrice(sub_itemsList.get(sk).getPrice());
                                                     CommonData.orderInfo.spList.get(barcode).get(0).setRealPrice(String.valueOf(sub_itemsList.get(sk).getNet()));  //实际总售价
-
+                                                    CommonData.orderInfo.spList.get(barcode).get(0).setTotaldisc(sub_itemsList.get(sk).getDisc());
                                                     //修改列表的数量
                                                     for (int k = 0; k < list.size(); k++) {
-                                                        if (list.get(k).get("id").equals(barcode)) {
+                                                        if (list.get(k).get("barcode").equals(barcode)) {
                                                             list.get(k).put("count", String.valueOf(sub_itemsList.get(sk).getQty()));
                                                             list.get(k).put("MainPrice", String.valueOf(nRealPrice));
                                                             list.get(k).put("realprice", String.valueOf(sub_itemsList.get(sk).getNet()));
@@ -232,7 +240,12 @@ public class CreateAddAdapter extends BaseAdapter {
             add.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    String inputbarcode = list.get(position).get("id");
+                    String inputbarcode = list.get(position).get("barcode");
+                    String weight = list.get(position).get("weight");
+                    if ( !weight.equals("0")&&!weight.equals("")){
+                        ToastUtil.showToast(context, "商品增加通知", "当前称重产品暂不支持手动增加，请扫描商品条形码");
+                        return;
+                    }
 
                     Call<AddGoodsEntity> substratGoods= RetrofitHelper.getInstance().AddGoodInfo(inputbarcode, CommonData.AddCar);
                     substratGoods.enqueue(new Callback<AddGoodsEntity>() {
@@ -259,13 +272,14 @@ public class CreateAddAdapter extends BaseAdapter {
                                                 //如果存在，拿到集合，增加数量，总价，折扣
                                                 CommonData.orderInfo.spList.get(barcode).get(0).setPackNum(sub_itemsList.get(sk).getQty());
                                                 CommonData.orderInfo.spList.get(barcode).get(0).setMainPrice(sub_itemsList.get(sk).getPrice());
+                                                CommonData.orderInfo.spList.get(barcode).get(0).setTotaldisc(sub_itemsList.get(sk).getDisc());
                                                 CommonData.orderInfo.spList.get(barcode).get(0).setRealPrice(String.valueOf(sub_itemsList.get(sk).getNet()));
                                                 //修改列表的数量
                                                 String useqty = String.valueOf(sub_itemsList.get(sk).getQty());
 
                                                 //修改列表的数量
                                                 for (int k = 0; k < list.size(); k++) {
-                                                    if (list.get(k).get("id").equals(barcode)) {
+                                                    if (list.get(k).get("barcode").equals(barcode)) {
                                                         list.get(k).put("count", useqty);
                                                         list.get(k).put("MainPrice", String.valueOf(nRealPrice));
                                                         list.get(k).put("realprice", String.valueOf(sub_itemsList.get(sk).getNet()));
@@ -303,6 +317,7 @@ public class CreateAddAdapter extends BaseAdapter {
 
         } catch (Exception e) {
 
+            is_click = true;
             ToastUtil.showToast(context, "商品移除通知", "请误操作太过频繁");
             return  null;
         }

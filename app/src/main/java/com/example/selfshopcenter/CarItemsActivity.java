@@ -83,6 +83,12 @@ public class CarItemsActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private void initView() {
+        CommonData.player.reset();
+        CommonData.player=MediaPlayer.create(this,R.raw.lusp);
+        CommonData.player.start();
+        CommonData.player.setLooping(false);
+
+
         //一进来就得执行。初始化会员支付，初始化订单号
         Prepay();
 
@@ -151,13 +157,15 @@ public class CarItemsActivity extends AppCompatActivity implements View.OnClickL
 
                 for (Map.Entry<String, List<SplnfoList>> entry : CommonData.orderInfo.spList.entrySet()){
                     HashMap<String, String> temp_map = new HashMap<>();
-                    temp_map.put("id", entry.getValue().get(0).getBarcode());
+                    temp_map.put("id", entry.getValue().get(0).getGoodsId());
+                    temp_map.put("barcode", entry.getValue().get(0).getBarcode());
                     temp_map.put("name", entry.getValue().get(0).getPluName());
                     temp_map.put("MainPrice", String.valueOf(entry.getValue().get(0).getMainPrice()));
                     temp_map.put("realprice", String.valueOf(entry.getValue().get(0).getRealPrice()));
                     temp_map.put("count", String.valueOf(entry.getValue().get(0).getPackNum()));
                     temp_map.put("actname", String.valueOf(entry.getValue().get(0).getActname()));
                     temp_map.put("disc", String.valueOf(entry.getValue().get(0).getTotaldisc()));
+                    temp_map.put("weight", String.valueOf(entry.getValue().get(0).getNweight()));
                     listmap.add(temp_map);
                 }
                 MapList=CommonData.orderInfo.spList;
@@ -297,10 +305,11 @@ public class CarItemsActivity extends AppCompatActivity implements View.OnClickL
                                     MapList.get(barcode).get(0).setPackNum(sub_itemsList.get(sk).getQty());
                                     MapList.get(barcode).get(0).setMainPrice(sub_itemsList.get(sk).getPrice());
                                     MapList.get(barcode).get(0).setRealPrice(String.valueOf(sub_itemsList.get(sk).getNet()));  //实际总售价
+                                    MapList.get(barcode).get(0).setTotaldisc(sub_itemsList.get(sk).getDisc());
 
                                     //修改列表的数量
                                     for (int k = 0; k < listmap.size(); k++) {
-                                        if (listmap.get(k).get("id").equals(barcode)) {
+                                        if (listmap.get(k).get("barcode").equals(barcode)) {
                                             listmap.get(k).put("count", String.valueOf(sub_itemsList.get(sk).getQty()));
                                             listmap.get(k).put("MainPrice", String.valueOf(nRealPrice));
                                             listmap.get(k).put("realprice", String.valueOf(sub_itemsList.get(sk).getNet()));
@@ -308,7 +317,8 @@ public class CarItemsActivity extends AppCompatActivity implements View.OnClickL
                                             listmap.get(k).put("disc", String.valueOf(sub_itemsList.get(sk).getDisc()));
                                         }
                                     }
-                                } else {
+                                }
+                                else {
                                     List<SplnfoList> uselist = new ArrayList<SplnfoList>();
                                     SplnfoList usesplnfo = new SplnfoList();
                                     usesplnfo.setBarcode(sub_itemsList.get(sk).getBarcode());
@@ -336,6 +346,7 @@ public class CarItemsActivity extends AppCompatActivity implements View.OnClickL
                                     map.put("realprice", sub_itemsList.get(sk).getNet());
                                     map.put("count", String.valueOf(sub_itemsList.get(sk).getQty()));
                                     map.put("actname", itemsList.get(sm).getDisrule());
+                                    map.put("weight", sub_itemsList.get(sk).getWeight());
                                     listmap.add(map);
 
 

@@ -15,6 +15,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -53,6 +54,7 @@ public class LoginActivity extends AppCompatActivity {
             dbHelper = new MyDatabaseHelper(this, "centertable.db", null, 1);
             querydb = dbHelper.getWritableDatabase();
 
+
         } catch (Exception ex) {
             //如果创建异常
             //Toast.makeText(PosLoginActivity.this, ex.toString(), Toast.LENGTH_LONG).show();
@@ -66,11 +68,13 @@ public class LoginActivity extends AppCompatActivity {
         //2.0  先从本地选取初始化数据，如果拿到了，说明初始化过，则直接跳转，跳过登录
         InitData(querydb);
 
+
         //3.0  比较 app  版本号信息，是否需要升级
         PrepareUpdateVersion();
 
 
         if (!CommonData.khid.equals("") && !CommonData.posid.equals("")) {
+
             //说明已经初始化过了 ，直接跳转到欢迎的首界面,显示跳转
             Intent intent = new Intent(LoginActivity.this, IndexActivity.class);
             startActivity(intent);
@@ -87,6 +91,7 @@ public class LoginActivity extends AppCompatActivity {
             edt.setFocusableInTouchMode(false);
 
         }
+
 
 
 
@@ -125,9 +130,14 @@ public class LoginActivity extends AppCompatActivity {
                                       CommonData.wxappid=body.getData().getWxappid();
                                       CommonData.wxshid=body.getData().getWxshid();
 
-
+                                      if (CommonData.zfbappid==null||CommonData.zfbappid.equals("")){
+                                          ToastUtil.showToast(LoginActivity.this, "查询配置失败", "当前门店暂未配置支付相关信息，" +
+                                                  "暂无法使用，很抱歉");
+                                          return;
+                                      }
 
                                       WirttenDataToSqlite();
+
 
                                   }
                                   else
@@ -225,7 +235,6 @@ public class LoginActivity extends AppCompatActivity {
     }
 
 
-
     //准备预升级
     public   void PrepareUpdateVersion(){
 
@@ -315,6 +324,9 @@ public class LoginActivity extends AppCompatActivity {
                     int state = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS));
                     switch (state) {
                         case DownloadManager.STATUS_SUCCESSFUL://下载成功
+
+                            CommonData.dowloading=false;
+
                             isGoging=false;
                             Uri downloadFileUri;
                             Intent install = new Intent(Intent.ACTION_VIEW);
@@ -325,7 +337,8 @@ public class LoginActivity extends AppCompatActivity {
                             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) { // 6.0以下
                                 downloadFileUri = downloadManager.getUriForDownloadedFile(requestId);
 
-                            } else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N)
+                            }
+                            else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N)
                             { // 6.0 - 7.0
                                 String uriString = cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_LOCAL_URI));
                                 File apkFile = new File(Uri.parse(uriString).getPath());
@@ -361,6 +374,8 @@ public class LoginActivity extends AppCompatActivity {
                             /**
                              * 计算下载下载率；
                              */
+                            CommonData.dowloading=true; //说名正在下载中
+
                             int totalSize = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_TOTAL_SIZE_BYTES));
                             int currentSize = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR));
                             int progress = (int) (((float) currentSize) / ((float) totalSize) * 100);
@@ -385,4 +400,7 @@ public class LoginActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
+
+
+
 }

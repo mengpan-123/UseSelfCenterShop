@@ -68,6 +68,12 @@ public class ShowpayActivity  extends AppCompatActivity {
             findViewById(R.id.wxuseinfo).setBackgroundDrawable(d);
         }
 
+        CommonData.player.reset();
+        CommonData.player=MediaPlayer.create(this,R.raw.paytype);
+        CommonData.player.start();
+        CommonData.player.setLooping(false);
+
+
         //返回上衣界面，重选支付方式
         findViewById(R.id.returnchoose).setOnClickListener(new View.OnClickListener() {
             @Override

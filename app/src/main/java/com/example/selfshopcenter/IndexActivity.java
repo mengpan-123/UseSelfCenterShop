@@ -1,8 +1,12 @@
 package com.example.selfshopcenter;
 
 import android.Manifest;
+import android.app.DownloadManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.MediaPlayer;
@@ -10,7 +14,9 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.text.method.Touch;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.MediaController;
@@ -21,6 +27,7 @@ import android.widget.VideoView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
 
 import com.danikula.videocache.HttpProxyCacheServer;
 import com.example.selfshopcenter.bean.*;
@@ -38,7 +45,7 @@ import retrofit2.Response;
 
 public class IndexActivity extends AppCompatActivity {
 
-
+    private int  Appvercode=0;
     private  VideoView  video;
     private static final int MY_PERMISSIONS_WRITE_EXTERNAL_STORAGE = 1;
 
@@ -49,7 +56,7 @@ public class IndexActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_index);
 
-
+        Appvercode=CommonData.getAppVersioncode(this);
         video = (VideoView) findViewById(R.id.video);
         video.setVideoURI(Uri.parse("android.resource://com.example.selfshopcenter/"+R.raw.index));
         video.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
@@ -60,6 +67,27 @@ public class IndexActivity extends AppCompatActivity {
                 mp.setLooping(true);
             }
         });
+
+       /* Uri uri = Uri.parse("http://www.ikengee.com.cn/test1/index.mp4");//将路径转换成uri
+        video.setVideoURI(uri);//为视频播放器设置视频路径
+        video.setMediaController(new MediaController(IndexActivity.this));//显示控制栏
+
+
+        MediaController mc = new MediaController(this);
+        mc.setVisibility(View.INVISIBLE);
+        video.setMediaController(mc);
+
+        video.start();
+
+
+        video.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+            @Override
+            public void onPrepared(MediaPlayer mp) {
+                mp.start();
+                mp.setLooping(true);
+            }
+        });*/
+
 
 
 //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -124,6 +152,12 @@ public class IndexActivity extends AppCompatActivity {
         CommonData.orderInfo=null;
 
 
+        CommonData.player.reset();
+        CommonData.player= MediaPlayer.create(this,R.raw.main);
+        CommonData.player.start();
+        CommonData.player.setLooping(false);
+
+
 
         //绑定 开始购物
         Button button_shape=findViewById(R.id.shopping);
@@ -140,9 +174,14 @@ public class IndexActivity extends AppCompatActivity {
         });
 
 
+
+
         //printBill();
 
     }
+
+
+
 
 //
 //    private void initVideo() {
@@ -201,6 +240,9 @@ public class IndexActivity extends AppCompatActivity {
         ToastUtil.showToast(IndexActivity.this, "会员信息验证", "正在开发中");
 
     }
+
+
+
 
     //查询打印机状态
 //    private void getPrintStatus() {

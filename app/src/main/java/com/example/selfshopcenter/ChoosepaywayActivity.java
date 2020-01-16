@@ -1,6 +1,7 @@
 package com.example.selfshopcenter;
 
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.util.Log;
@@ -72,6 +73,11 @@ public class ChoosepaywayActivity  extends AppCompatActivity {
         TextView totalpay=findViewById(R.id.totalpay);
         totalpay.setText(CommonData.orderInfo.totalPrice);
 
+
+        CommonData.player.reset();
+        CommonData.player= MediaPlayer.create(this,R.raw.pay);
+        CommonData.player.start();
+        CommonData.player.setLooping(false);
 
 
         ImageView zfb = findViewById(R.id.zfb);
@@ -199,7 +205,7 @@ public class ChoosepaywayActivity  extends AppCompatActivity {
     }
 
 
-
+    //2020-01-15 author zhoupan
     private   void  PostGetAuthInfo(String rawdata){
 
         AuthInfoEntityCall= RetrofitHelper.getInstance().GetAuthInfo(rawdata);
@@ -273,7 +279,9 @@ public class ChoosepaywayActivity  extends AppCompatActivity {
                                         wxFaceMoneypay();
                                     }
 
-                                    //WxPayFace.getInstance().releaseWxpayface(payWayActivity.this);
+
+                                    //必须使用这个释放人脸资源，否则取消之后再次吊起刷脸支付就会存在问题
+                                    WxPayFace.getInstance().releaseWxpayface(ChoosepaywayActivity.this);
 
                                 }
                             });

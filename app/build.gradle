@@ -7,8 +7,8 @@ android {
         applicationId "com.example.selfshopcenter"
         minSdkVersion 15
         targetSdkVersion 29
-        versionCode 10
-        versionName "1.23"
+        versionCode 32
+        versionName "3.1.15"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -18,6 +18,11 @@ android {
                 // 此处指定生成的apk文件名
                 outputFileName = "ZCZYUSE.apk"
             }
+    }
+    //lambda 表达式相关
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 
     buildTypes {
@@ -42,12 +47,14 @@ android {
         jcenter()
     }
 
-    sourceSets {
-        main {
-            jni.srcDirs = []  //这一行加不加都可以
-            jniLibs.srcDirs = ['libs']//这个必须加，因为我们把.so文件放在了libs文件夹中
+
+    repositories {
+        flatDir {
+            dir 'libs'
         }
     }
+    sourceSets { main { jni.srcDirs = ['src/main/jni', 'src/main/jni/'] } }
+
     allprojects {
         gradle.projectsEvaluated {
             tasks.withType(JavaCompile) {
@@ -83,4 +90,7 @@ dependencies {
     //引入微信刷脸支付
     implementation(name: 'wxfacepay-release_2.11.288.834', ext: 'aar')
     implementation 'com.danikula:videocache:2.7.1'
+
+
+    implementation files('libs/printsdk0815-v2.2.jar')
 }
