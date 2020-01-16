@@ -18,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.selfshopcenter.commoncls.CommonData;
 import com.example.selfshopcenter.commoncls.MyDatabaseHelper;
 import com.example.selfshopcenter.commoncls.SplnfoList;
+import com.example.selfshopcenter.commoncls.ToastUtil;
 import com.example.selfshopcenter.printer.PrintUtil;
 import com.example.selfshopcenter.printer.UsbPrintManager;
 
@@ -47,14 +48,11 @@ public class FinishActivity  extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
-        getPrinter();
-
         setContentView(R.layout.activity_finishpay);  //设置页面
 
         TextView totalmoney = findViewById(R.id.havepaynet);
 
-        /*totalmoney.setText("￥" + String.valueOf(CommonData.orderInfo.totalPrice));
+        totalmoney.setText("￥" + String.valueOf(CommonData.orderInfo.totalPrice));
 
         TextView ordernumber = findViewById(R.id.ordernumber);
         ordernumber.setText(CommonData.orderInfo.prepayId);
@@ -71,7 +69,7 @@ public class FinishActivity  extends AppCompatActivity {
         }
         else{
             printpaytype="刷脸支付";
-        }*/
+        }
 
         TextView paytype = findViewById(R.id.paytype);
         paytype.setText(printpaytype);
@@ -88,9 +86,9 @@ public class FinishActivity  extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-
                 Intent intent = new Intent(FinishActivity.this, IndexActivity.class);
                 startActivity(intent);
+                finish();
             }
         });
 
@@ -129,58 +127,40 @@ public class FinishActivity  extends AppCompatActivity {
 
         } catch (Exception ex) {
             //如果创建异常,不能影响其他
+            ToastUtil.showToast(FinishActivity.this, "打印机连接问题", ex.getMessage());
+        }
+
+
+        try {
+
+
+            //打印相关
+            getPrinter();
+
+            printBill();
+        }
+        catch(Exception  ex){
 
         }
 
 
-        //打印相关
-        printBill();
-
-
     }
 
-    public void startTime() {
-        timer = new Timer();
-        task = new TimerTask() {
 
-            @Override
-            public void run() {
-                if (i > 0) {   //加入判断不能小于0
-                    i--;
-                    Message message = mHandler.obtainMessage();
-                    message.arg1 = i;
-                    mHandler.sendMessage(message);
-                }else {
-                    Intent intent = new Intent(FinishActivity.this, IndexActivity.class);
-                    startActivity(intent);
-                    finish();
-                }
-            }
-        };
-        timer.schedule(task, 1000);
-    }
-
-    private Handler mHandler = new Handler() {
-        public void handleMessage(Message msg) {
-            time.setText(msg.arg1 + "");
-            startTime();
-        };
-    };
-
-
-    @Override
-    public void onDestroy(){
+    //@Override
+    /*public void onDestroy(){
         if (printer != null) {
-            printer.onDestory();
+            //printer.onDestory();
         }
         super.onDestroy();
-    }
+    }*/
 
     //USB打印机连接
     private void getPrinter() {
         printer = UsbPrintManager.getInstance();
         printer.init(this);
     }
+
 
 
     private void printBill() {
@@ -195,8 +175,6 @@ public class FinishActivity  extends AppCompatActivity {
 
 
         String Str="                   欢迎光临                   "+"\n";
-        //Str+="门店名称:"+CommonData.khsname+"\n";
-
         Str+="流水号："+CommonData.orderInfo.prepayId+"     "+"\n";
 
         Str+="日期   "+day+"     "+"\n";
@@ -213,19 +191,14 @@ public class FinishActivity  extends AppCompatActivity {
             if (weight.equals("0")||weight.equals("0.0")||weight.equals("0.00")){
                 //说明重量是 0.  那就取显示数量
                 qty = String.valueOf(entry.getValue().get(0).getPackNum());
-                dj=String.valueOf(entry.getValue().get(0).getRealPrice());
+                dj=entry.getValue().get(0).getMainPrice();
 
             }else {
                 //净重含量存在值 则显示重量
                 qty = entry.getValue().get(0).getNweight();
                 //根据 实际售价/重量  计算  单价
-                /*String a = entry.getValue().get(0).getMainPrice();
-                try{
-                    dj = txfloat(Double.valueOf(a), Double.valueOf(qty));}
-                catch(Exception ex) {
 
-                }*/
-                dj=String.valueOf(entry.getValue().get(0).getRealPrice());
+                dj=entry.getValue().get(0).getMainPrice();
             }
 
             String zj=entry.getValue().get(0).getRealPrice();
@@ -261,38 +234,18 @@ public class FinishActivity  extends AppCompatActivity {
         }
         catch (Exception e) {
             e.printStackTrace();
-
         }
     }
 
-
-
-    /**
-     * TODO 除法运算，保留小数
-     * @author 袁忠明
-     * @date 2018-4-17下午2:24:48
-     * @param num1 被除数
-     * @param num2 除数
-     * @return 商
-     */
-    public static String txfloat(double num1,double num2) {
-        // TODO 自动生成的方法存根
-
-        DecimalFormat df=new DecimalFormat("0.00");//设置保留位数
-
-        return df.format((float)num1/num2);
-
-    /*   BigDecimal  bignum = new  BigDecimal(num1/num2);
-        double myNum3 = bignum.setScale(2, java.math.BigDecimal.ROUND_CEILING).doubleValue();
-
-        return myNum3;*/
-    }
 
 
     //查询打印机状态
     private void getPrintStatus() {
         String msg = "";
         int iRet = PrintUtil.getPrintEndStatus();
+
+
+
         switch (iRet) {
             case 0:
                 msg = "正常";
@@ -331,6 +284,35 @@ public class FinishActivity  extends AppCompatActivity {
         }
     }
 
+
+
+    public void startTime() {
+        timer = new Timer();
+        task = new TimerTask() {
+
+            @Override
+            public void run() {
+                if (i > 0) {   //加入判断不能小于0
+                    i--;
+                    Message message = mHandler.obtainMessage();
+                    message.arg1 = i;
+                    mHandler.sendMessage(message);
+                }else {
+                    Intent intent = new Intent(FinishActivity.this, IndexActivity.class);
+                    startActivity(intent);
+                    finish();
+                }
+            }
+        };
+        timer.schedule(task, 1000);
+    }
+
+    private Handler mHandler = new Handler() {
+        public void handleMessage(Message msg) {
+            time.setText(msg.arg1 + "");
+            startTime();
+        };
+    };
 
 
 }

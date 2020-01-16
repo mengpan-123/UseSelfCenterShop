@@ -125,7 +125,9 @@ public class CarItemsActivity extends AppCompatActivity implements View.OnClickL
 
 
         ToastUtil.showToast(CarItemsActivity.this, "会员信息验证", "未开发");
+        //Intent intent = new Intent(CarItemsActivity.this, FinishActivity.class);
 
+        //startActivity(intent);
     }
 
     /**
@@ -311,7 +313,7 @@ public class CarItemsActivity extends AppCompatActivity implements View.OnClickL
                                     for (int k = 0; k < listmap.size(); k++) {
                                         if (listmap.get(k).get("barcode").equals(barcode)) {
                                             listmap.get(k).put("count", String.valueOf(sub_itemsList.get(sk).getQty()));
-                                            listmap.get(k).put("MainPrice", String.valueOf(nRealPrice));
+                                            listmap.get(k).put("MainPrice",sub_itemsList.get(sk).getPrice());
                                             listmap.get(k).put("realprice", String.valueOf(sub_itemsList.get(sk).getNet()));
                                             listmap.get(k).put("actname", itemsList.get(sm).getDisrule());
                                             listmap.get(k).put("disc", String.valueOf(sub_itemsList.get(sk).getDisc()));
@@ -652,7 +654,7 @@ public class CarItemsActivity extends AppCompatActivity implements View.OnClickL
 
 
         Intent intent = new Intent(CarItemsActivity.this, ChoosepaywayActivity.class);
-        //Intent intent = new Intent(CarItemsActicity.this, FinishActivity.class);
+        //Intent intent = new Intent(CarItemsActivity.this, FinishActivity.class);
 
         startActivity(intent);
 

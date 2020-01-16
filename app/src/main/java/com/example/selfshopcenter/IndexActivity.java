@@ -36,6 +36,7 @@ import com.example.selfshopcenter.commoncls.PrintUtil;
 import com.example.selfshopcenter.commoncls.ToastUtil;
 import com.example.selfshopcenter.commoncls.VideoApplication;
 import com.example.selfshopcenter.net.RetrofitHelper;
+import com.example.selfshopcenter.printer.UsbPrintManager;
 
 import java.io.File;
 
@@ -49,7 +50,10 @@ public class IndexActivity extends AppCompatActivity {
     private  VideoView  video;
     private static final int MY_PERMISSIONS_WRITE_EXTERNAL_STORAGE = 1;
 
+    private UsbPrintManager printer = null;
+
     String url = "http://www.ikengee.com.cn/test1/index.mp4";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,6 +117,9 @@ public class IndexActivity extends AppCompatActivity {
         appmachine.setText("设备编号:"+ CommonData.deviceid);
 
 
+        TextView useposid=findViewById(R.id.useposid);
+        useposid.setText("Version : "+ CommonData.posid);
+
         TextView appversion=findViewById(R.id.appversion);
         appversion.setText("Version : "+ CommonData.app_version);
         if (CommonData.app_version.equals("")){
@@ -169,17 +176,25 @@ public class IndexActivity extends AppCompatActivity {
                 //Toast.makeText(IndexActivity.this,"正在跳转，请等待",Toast.LENGTH_SHORT).show();
                 //跳转到商品录入界面
                 Intent intent = new Intent(IndexActivity.this, CarItemsActivity.class);
+                //Intent intent = new Intent(IndexActivity.this, FinishActivity.class);
                 startActivity(intent);
+
             }
         });
 
 
 
-
+        getPrinter();
         //printBill();
 
     }
 
+
+    //USB打印机连接
+    private void getPrinter() {
+        printer = UsbPrintManager.getInstance();
+        printer.init(this);
+    }
 
 
 

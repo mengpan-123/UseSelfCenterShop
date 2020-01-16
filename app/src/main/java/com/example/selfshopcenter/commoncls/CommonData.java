@@ -21,6 +21,8 @@ public class CommonData {
     //public static String    CommonUrl="http://52.81.85.108:8017";
 
     public static String    CommonUrl="http://122.112.234.28:8017";
+
+
     public  static  String  app_version="";
 
     //订单流水号，命名规则为 销售日期和 一个三位的序号,这里只使用序号

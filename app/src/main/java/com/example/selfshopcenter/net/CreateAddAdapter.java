@@ -193,7 +193,7 @@ public class CreateAddAdapter extends BaseAdapter {
                                                     for (int k = 0; k < list.size(); k++) {
                                                         if (list.get(k).get("barcode").equals(barcode)) {
                                                             list.get(k).put("count", String.valueOf(sub_itemsList.get(sk).getQty()));
-                                                            list.get(k).put("MainPrice", String.valueOf(nRealPrice));
+                                                            list.get(k).put("MainPrice", sub_itemsList.get(sk).getPrice());
                                                             list.get(k).put("realprice", String.valueOf(sub_itemsList.get(sk).getNet()));
                                                             list.get(k).put("actname", itemsList.get(sm).getDisrule());
                                                             list.get(k).put("disc", String.valueOf(sub_itemsList.get(sk).getDisc()));
@@ -281,7 +281,7 @@ public class CreateAddAdapter extends BaseAdapter {
                                                 for (int k = 0; k < list.size(); k++) {
                                                     if (list.get(k).get("barcode").equals(barcode)) {
                                                         list.get(k).put("count", useqty);
-                                                        list.get(k).put("MainPrice", String.valueOf(nRealPrice));
+                                                        list.get(k).put("MainPrice", sub_itemsList.get(sk).getPrice());
                                                         list.get(k).put("realprice", String.valueOf(sub_itemsList.get(sk).getNet()));
                                                         list.get(k).put("actname", itemsList.get(sm).getDisrule());
                                                         list.get(k).put("disc", String.valueOf(sub_itemsList.get(sk).getDisc()));

@@ -9,6 +9,8 @@ import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbManager;
 import android.util.Log;
 
+import java.util.concurrent.TimeUnit;
+
 //import com.printsdk.usbsdk.UsbDriver;
 
 /**
@@ -60,8 +62,12 @@ public class UsbPrintManager {
         if (mUsbReceiver != null) {
             mContext.unregisterReceiver(mUsbReceiver);
         }
+        //关闭设备
+        mUsbDriver.closeUsbDevice(mUsbDevice);
         mUsbDevice = null;
         mUsbDriver = null;
+        PrintUtil.destory();
+        //System.gc();
     }
 
     //USB打印机连接
@@ -112,6 +118,19 @@ public class UsbPrintManager {
         filter.addAction(UsbManager.ACTION_USB_DEVICE_ATTACHED);
         filter.addAction(UsbManager.ACTION_USB_DEVICE_DETACHED);
         context.registerReceiver(mUsbReceiver, filter);
+    }
+
+
+    /**
+     * 用于检查打印机  是否正常
+     */
+    public void checkUsbDevice(){
+        if (mUsbDriver.isUsbPermission()&&mUsbDriver.isConnected()){
+
+        }else {
+            onDestory();
+            UtilsApp.RestartUSB();
+        }
     }
 
     /**
@@ -184,7 +203,21 @@ public class UsbPrintManager {
         }
     };
 
-    
+
+    /**
+     * 用于检查打印机  是否正常 two
+     */
+    public boolean checkUsbDeviceTWO(){
+        if (mUsbDriver.isUsbPermission()&&mUsbDriver.isConnected()){
+            Log.i("usb 打印机权限正常","");
+            return true;
+        }else {
+            Log.i("usb打印机权限 必须权限缺失 usb权限：",mUsbDriver.isUsbPermission()+"  usb打印机是否连接："+mUsbDriver.isConnected());
+            onDestory();
+            UtilsApp.RestartUSB();
+            return false;
+        }
+    }
 
 
 }

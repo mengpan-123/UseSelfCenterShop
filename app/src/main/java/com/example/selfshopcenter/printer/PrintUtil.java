@@ -7,6 +7,7 @@ import com.example.selfshopcenter.commoncls.CommonData;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 
 public class PrintUtil {
@@ -35,13 +36,18 @@ public class PrintUtil {
     //小票打印
     public static void printReceipt(Bitmap logobmp,String  str) {
         String line = "";
-        if (printer == null) {
+
+        if (!isNormal()) {
+            return;
+        }
+
+      /*  if (printer == null) {
             synchronized (PrintUtil.class) {
                 if (printer == null) {
                     printer = new MsUsbPrinter(UsbPrintManager.mUsbDevice, UsbPrintManager.mUsbDriver);
                 }
             }
-        }
+        }*/
 
         int iStatus = printer.getStatus();
         if (iStatus != 0) {
@@ -96,6 +102,9 @@ public class PrintUtil {
         }
     }
 
+
+
+
     //获取打印机状态
     public static int getPrintEndStatus() {
         if (printer == null) {
@@ -115,5 +124,51 @@ public class PrintUtil {
         }
     }
 
+
+    public static void destory(){
+        if (printer!=null){
+            printer = null;
+        }
+    }
+
+
+    /**
+     * @return 用于在最大努力的情况下 确保打印机正常
+     */
+    private static boolean isNormal() {
+        UsbPrintManager.getInstance().checkUsbDevice();
+        if (printer == null)
+        {
+            printer = new MsUsbPrinter(UsbPrintManager.mUsbDevice, UsbPrintManager.mUsbDriver);
+           /* synchronized (PrintUtil.class)
+            {
+                if (printer == null) {
+
+                }
+            }*/
+        }
+      /*  int iStatus = -10;
+        for (int i = 0; i < 10; i++) {
+            iStatus = printer.getStatus();
+            if (iStatus == -1) {
+                //清空
+                printer.setClean();
+                try {
+                    //sleep  释放锁
+                    TimeUnit.MILLISECONDS.sleep(50);
+                } catch (InterruptedException e) {
+                    Log.i("确保打印机异常情况下 出现异常 " , e.toString());
+                }
+            } else if (iStatus == 0) {
+                Log.i("打印机可用","");
+                return true;
+            } else {
+                break;
+            }
+        }*/
+//        Log.i("保证 打印机 状态 " , iStatus+"");
+        // TODO: 2019/4/20 暂时性的 不管打印机是否正常可以打印
+        return true;
+    }
 
 }
