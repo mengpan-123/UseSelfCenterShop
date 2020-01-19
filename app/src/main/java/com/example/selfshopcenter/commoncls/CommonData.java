@@ -18,9 +18,9 @@ public class CommonData {
     public static  boolean   dowloading = false;
 
     //公共的接口访问地址
-    //public static String    CommonUrl="http://52.81.85.108:8017";
+    public static String    CommonUrl="http://52.81.85.108:8017";
 
-    public static String    CommonUrl="http://122.112.234.28:8017";
+    //public static String    CommonUrl="http://122.112.234.28:8017";
 
 
     public  static  String  app_version="";

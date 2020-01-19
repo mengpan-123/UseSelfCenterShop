@@ -39,7 +39,7 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/zylogo"
+        android:icon="@mipmap/aiinbilogo"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"

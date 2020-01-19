@@ -114,25 +114,25 @@
 
 
 
-        <!--Button
-            android:id="@+id/longclick"
+        <Button
+            android:id="@+id/uplevel"
 
             android:layout_width="180dp"
             android:layout_height="wrap_content"
-            android:text=""
+            android:text="自动检测升级"
             android:gravity="left"
             android:background="@null"
-            android:textSize="30dp" />-->
+            android:textSize="30dp" />
 
 
-        <TextView
+       <!-- <TextView
             android:id="@+id/useposid"
             android:layout_weight="2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="款台号"
             android:gravity="left"
-            android:textSize="30dp" />
+            android:textSize="30dp" />-->
 
         <TextView
             android:id="@+id/appmachine"

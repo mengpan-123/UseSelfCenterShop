@@ -56,20 +56,19 @@ public class ShowpayActivity  extends AppCompatActivity {
 
 
         Resources res = getResources();
-
+        CommonData.player.reset();
         if (CommonData.payWay.equals("WXPaymentCodePay")){
             Drawable d=res.getDrawable(R.mipmap.wxforexe);
             findViewById(R.id.wxuseinfo).setBackgroundDrawable(d);
-
+            CommonData.player=MediaPlayer.create(this,R.raw.weixin);
         }
         else
         {
             Drawable d=res.getDrawable(R.mipmap.aliapyexam);
             findViewById(R.id.wxuseinfo).setBackgroundDrawable(d);
+            CommonData.player=MediaPlayer.create(this,R.raw.zhifub);
         }
 
-        CommonData.player.reset();
-        CommonData.player=MediaPlayer.create(this,R.raw.paytype);
         CommonData.player.start();
         CommonData.player.setLooping(false);
 

@@ -7,8 +7,8 @@ android {
         applicationId "com.example.selfshopcenter"
         minSdkVersion 15
         targetSdkVersion 29
-        versionCode 32
-        versionName "3.3.25"
+        versionCode 19
+        versionName "1.5.18"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -16,7 +16,7 @@ android {
         variant ->
             variant.outputs.all {
                 // 此处指定生成的apk文件名
-                outputFileName = "ZCZYUSE.apk"
+                outputFileName = "AIINBI_2.apk"
             }
     }
     //lambda 表达式相关

@@ -75,7 +75,7 @@ public class ChoosepaywayActivity  extends AppCompatActivity {
 
 
         CommonData.player.reset();
-        CommonData.player= MediaPlayer.create(this,R.raw.pay);
+        CommonData.player= MediaPlayer.create(this,R.raw.paytype);
         CommonData.player.start();
         CommonData.player.setLooping(false);
 
@@ -226,8 +226,8 @@ public class ChoosepaywayActivity  extends AppCompatActivity {
 
                             //3.0 然后调用首先获取  facecode。用于人脸支付
                             Map<String, String> m1 = new HashMap<String, String>();
-                            m1.put("appid", "wx2d784531bbb9a017"); // 公众号，必填
-                            m1.put("mch_id", "1334045901"); // 商户号，必填
+                            m1.put("appid", "wxcb3df0aa8b0dd6f6"); // 公众号，必填
+                            m1.put("mch_id", "1559562481"); // 商户号，必填
                             m1.put("sub_appid", CommonData.wxappid); // 商户号，必填
                             m1.put("sub_mch_id", CommonData.wxshid); // 商户号，必填
                             m1.put("store_id", CommonData.khid); // 门店编号，必填

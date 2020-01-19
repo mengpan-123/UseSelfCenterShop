@@ -117,8 +117,8 @@ public class IndexActivity extends AppCompatActivity {
         appmachine.setText("设备编号:"+ CommonData.deviceid);
 
 
-        TextView useposid=findViewById(R.id.useposid);
-        useposid.setText("Version : "+ CommonData.posid);
+        //TextView useposid=findViewById(R.id.useposid);
+        //useposid.setText("Version : "+ CommonData.posid);
 
         TextView appversion=findViewById(R.id.appversion);
         appversion.setText("Version : "+ CommonData.app_version);
@@ -183,6 +183,18 @@ public class IndexActivity extends AppCompatActivity {
         });
 
 
+        //自助升级
+        Button shengji=findViewById(R.id.uplevel);
+        shengji.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public  void  onClick(View view) {
+
+                PrepareUpdateVersion();
+            }
+        });
+
+
 
         getPrinter();
         //printBill();
@@ -198,51 +210,6 @@ public class IndexActivity extends AppCompatActivity {
 
 
 
-//
-//    private void initVideo() {
-//        HttpProxyCacheServer proxy = VideoApplication.getProxy(this);
-//        //1.我们会将原始url注册进去
-//        // proxy.registerCacheListener(, bean.getVideo_url());
-//        //2.我们播放视频的时候会调用以下代码生成proxyUrl
-//        String proxyUrl = proxy.getProxyUrl(url);
-//        if (proxy.isCached(url)) {
-//            Log.i("aaaa", "已缓存");
-//        } else {
-//            Log.i("aaaa", "未缓存");
-//        }
-//        Log.i("aaaapath", proxyUrl);
-//        video.setVideoPath(proxyUrl);
-//        video.start();
-//        video.findFocus();
-//    }
-
-//    @Override
-//    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-//
-//        if (requestCode == MY_PERMISSIONS_WRITE_EXTERNAL_STORAGE) {
-//            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//                initVideo();
-//            } else {
-//                //"权限已拒绝";
-//            }
-//        }
-//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-//    }
-
-
-//    private void printBill() {
-//        String json="{\"amount\":3997.489999999999,\"cashier\":\"5\",\"change_amount\":0.0,\"dsc_amount\":2498.7000000000003,\"flowno\":\"20180826071228\",\"id\":\"20180826071228\",\"itemRepOrder\":{\"deliveryMoney\":\"仅需518元\",\"deliveryMoneyMsg\":\"\",\"deliveryMsg\":\"配送服务由微东顺路提供\",\"id\":\"20180826071228\",\"retcode\":\"1\",\"retmsg\":\"支付成功\",\"sendUrl\":\"http://t.cn/RkrqO6x\",\"totalCount\":127.0,\"totalDiscountsPrice\":2498.7,\"totalFinalPrice\":3997.49,\"totalPrice\":6496.19},\"itempay\":[{\"amount\":3997.49,\"batchno\":\"\",\"cardno\":\"\",\"flowid\":1,\"last_balance\":0.0,\"mchtid\":\"\",\"paycode\":\"02\",\"payname\":\"储值卡\",\"reference\":\"\",\"termid\":\"\",\"trace\":\"\"}],\"itemsale\":[{\"amount\":52.56,\"barcode\":\"6920152414040\",\"count\":1.0,\"discount\":70.0,\"discountPrice\":22.54,\"discountType\":1,\"finalPrice\":52.56,\"id\":\"322\",\"name\":\"康师傅鲜虾鱼板面\",\"price\":75.1,\"type\":0,\"weight\":0.0},{\"amount\":115.66,\"barcode\":\"6920152418710\",\"count\":2.0,\"discount\":0.0,\"discountPrice\":0.0,\"discountType\":0,\"finalPrice\":57.83,\"id\":\"289\",\"name\":\"康师傅红油爆椒牛肉面\",\"price\":57.83,\"type\":0,\"weight\":0.0},{\"amount\":51.58,\"barcode\":\"6920152414217\",\"count\":2.0,\"discount\":69.0,\"discountPrice\":12.05,\"discountType\":1,\"finalPrice\":25.79,\"id\":\"290\",\"name\":\"康师傅酸辣牛肉面\",\"price\":37.84,\"type\":0,\"weight\":0.0},{\"amount\":21.3,\"barcode\":\"6920152455371\",\"count\":2.0,\"discount\":0.0,\"discountPrice\":26.82,\"discountType\":2,\"finalPrice\":10.65,\"id\":\"299\",\"name\":\"康师傅千椒百味剁椒排骨面\",\"price\":37.47,\"type\":0,\"weight\":0.0},{\"amount\":28.28,\"barcode\":\"6920152472569\",\"count\":2.0,\"discount\":15.0,\"discountPrice\":83.84,\"discountType\":1,\"finalPrice\":14.14,\"id\":\"292\",\"name\":\"非国标商品6920152472569\",\"price\":97.98,\"type\":0,\"weight\":1.82},{\"amount\":245.91,\"barcode\":\"6920152419472\",\"count\":3.0,\"discount\":0.0,\"discountPrice\":0.0,\"discountType\":0,\"finalPrice\":81.97,\"id\":\"300\",\"name\":\"康师傅千椒百味野山椒仔鸡面\",\"price\":81.97,\"type\":0,\"weight\":0.0},{\"amount\":99.68,\"barcode\":\"6920152413579\",\"count\":4.0,\"discount\":0.0,\"discountPrice\":13.81,\"discountType\":2,\"finalPrice\":24.92,\"id\":\"317\",\"name\":\"康师傅丰盛经典梅干菜扣肉面\",\"price\":38.73,\"type\":0,\"weight\":0.0},{\"amount\":108.44999999999999,\"barcode\":\"6920152483411\",\"count\":3.0,\"discount\":0.0,\"discountPrice\":10.07,\"discountType\":2,\"finalPrice\":36.15,\"id\":\"294\",\"name\":\"康师傅雪笋肉丝面\",\"price\":46.22,\"type\":0,\"weight\":0.0},{\"amount\":3.4799999999999995,\"barcode\":\"6920152414194\",\"count\":3.0,\"discount\":20.0,\"discountPrice\":4.77,\"discountType\":1,\"finalPrice\":1.16,\"id\":\"295\",\"name\":\"江南美食笋干老鸭煲面\",\"price\":5.93,\"type\":0,\"weight\":0.0},{\"amount\":14.22,\"barcode\":\"6920152414231\",\"count\":3.0,\"discount\":0.0,\"discountPrice\":86.93,\"discountType\":2,\"finalPrice\":4.74,\"id\":\"296\",\"name\":\"非国标商品6920152414231\",\"price\":91.67,\"type\":0,\"weight\":1.88},{\"amount\":155.6,\"barcode\":\"6920152448243\",\"count\":2.0,\"discount\":0.0,\"discountPrice\":0.0,\"discountType\":0,\"finalPrice\":77.8,\"id\":\"293\",\"name\":\"江南美食笋干烧肉面\",\"price\":77.8,\"type\":0,\"weight\":0.0},{\"amount\":174.7,\"barcode\":\"6951831300149\",\"count\":2.0,\"discount\":0.0,\"discountPrice\":0.0,\"discountType\":0,\"finalPrice\":87.35,\"id\":\"265\",\"name\":\"五谷坊鸡蛋挂面\",\"price\":87.35,\"type\":0,\"weight\":0.0},{\"amount\":54.46,\"barcode\":\"6952150012027\",\"count\":2.0,\"discount\":59.0,\"discountPrice\":18.98,\"discountType\":1,\"finalPrice\":27.23,\"id\":\"266\",\"name\":\"非国标商品6952150012027\",\"price\":46.21,\"type\":0,\"weight\":0.91},{\"amount\":75.28,\"barcode\":\"6952150012041\",\"count\":1.0,\"discount\":0.0,\"discountPrice\":0.0,\"discountType\":0,\"finalPrice\":75.28,\"id\":\"270\",\"name\":\"非国标商品6952150012041\",\"price\":75.28,\"type\":0,\"weight\":4.68},{\"amount\":51.0,\"barcode\":\"6930430300132\",\"count\":3.0,\"discount\":0.0,\"discountPrice\":2.45,\"discountType\":2,\"finalPrice\":17.0,\"id\":\"269\",\"name\":\"苏缘手擀面\",\"price\":19.45,\"type\":0,\"weight\":0.0},{\"amount\":26.06,\"barcode\":\"6930430300248\",\"count\":2.0,\"discount\":0.0,\"discountPrice\":60.6,\"discountType\":2,\"finalPrice\":13.03,\"id\":\"267\",\"name\":\"非国标商品6930430300248\",\"price\":73.63,\"type\":0,\"weight\":1.96},{\"amount\":16.76,\"barcode\":\"6930430386860\",\"count\":1.0,\"discount\":0.0,\"discountPrice\":0.0,\"discountType\":0,\"finalPrice\":16.76,\"id\":\"271\",\"name\":\"苏缘蛋清面\",\"price\":16.76,\"type\":0,\"weight\":0.0},{\"amount\":1.62,\"barcode\":\"6930430300095\",\"count\":2.0,\"discount\":9.0,\"discountPrice\":9.09,\"discountType\":1,\"finalPrice\":0.81,\"id\":\"273\",\"name\":\"苏缘京麦香高筋龙须面\",\"price\":9.9,\"type\":0,\"weight\":0.0},{\"amount\":51.75,\"barcode\":\"6930430300088\",\"count\":3.0,\"discount\":19.0,\"discountPrice\":74.67,\"discountType\":1,\"finalPrice\":17.25,\"id\":\"274\",\"name\":\"非国标商品6930430300088\",\"price\":91.92,\"type\":0,\"weight\":9.81},{\"amount\":103.96,\"barcode\":\"6930430300071\",\"count\":2.0,\"discount\":0.0,\"discountPrice\":33.21,\"discountType\":2,\"finalPrice\":51.98,\"id\":\"272\",\"name\":\"苏缘京麦香爽滑面\",\"price\":85.19,\"type\":0,\"weight\":0.0}],\"itemvip\":{\"amount\":0.0,\"id\":\"\",\"name\":\"\",\"scores\":0.0,\"status\":0},\"pay_amount\":3997.49,\"poscode\":\"1\",\"qty\":127.0,\"sdate\":\"2018-08-26 15:12:23\",\"tradetype\":\"B\"}";
-//
-//        try {
-//            Bitmap prnLogoBmp = BitmapFactory.decodeResource(getResources(), R.drawable.code);
-//            PrintUtil.printReceipt(prnLogoBmp, json);
-//            getPrintStatus();
-//
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            ToastUtil.showToast(IndexActivity.this, "打印机连接问题", e.getMessage());
-//        }
-//    }
 
     /**
      *
@@ -255,6 +222,180 @@ public class IndexActivity extends AppCompatActivity {
         ToastUtil.showToast(IndexActivity.this, "会员信息验证", "正在开发中");
 
     }
+
+
+
+    //准备预升级
+    public   void PrepareUpdateVersion(){
+
+        try {
+
+            Call<UpdateVersionEntity>  updateversion = RetrofitHelper.getInstance().UpdateVersion();
+            updateversion.enqueue(new Callback<UpdateVersionEntity>() {
+                @Override
+                public void onResponse(Call<UpdateVersionEntity> call, Response<UpdateVersionEntity> response) {
+                    if (null!=response){
+                        if (response.body().getCode().equals("success")){
+                            if (response.body().getData().getV_VERSION()> Appvercode){
+                                //准备升级
+                                url=response.body().getData().getV_Updatepath();
+
+                                EnsureUPdate();
+                            }
+                            else{
+                                ToastUtil.showToast(IndexActivity.this, "消息内容提示", "暂无可升级的内容");
+                                return;
+                            }
+
+                        }
+                        else
+                        {
+                            ToastUtil.showToast(IndexActivity.this, "消息内容提示", "暂无可升级的内容");
+                            return;
+                        }
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<UpdateVersionEntity> call, Throwable t) {
+                    ToastUtil.showToast(IndexActivity.this, "输入消息通知", t.toString());
+                }
+            });
+        }
+        catch(Exception ex){
+            ToastUtil.showToast(IndexActivity.this, "输入消息通知", ex.toString());
+        }
+    }
+
+
+
+    public   void  EnsureUPdate(){
+
+        try {
+
+            DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
+            //设置在什么网络情况下进行下载
+            //request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI);
+
+            //设置通知栏标题
+            request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE);
+            request.setTitle("任务进行中");
+            request.setDescription("应用程序正在下载中");
+            request.setAllowedOverRoaming(false);
+            //设置文件存放目录（此处如果异常，需要再买呢文件中设置读写权限）
+            request.setDestinationInExternalFilesDir(this, Environment.DIRECTORY_DOWNLOADS, "1.apk");
+
+            DownloadManager downManager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
+            long id = downManager.enqueue(request);
+
+            //确认要下载时 ，先删除 sqlite里面的表数据
+            //SQLiteDatabase db = dbHelper.getWritableDatabase();
+            //db.delete(CommonData.tablename, null, null);
+
+
+            queryDownloadProgress(this, id, downManager);
+        }
+        catch(Exception ex){
+            ToastUtil.showToast(IndexActivity.this, "支付通知", "请输入商品条码进行支付");
+            return;
+
+        }
+    }
+
+
+    private void queryDownloadProgress(Context   context,long requestId, DownloadManager downloadManager) {
+
+
+        DownloadManager.Query query=new DownloadManager.Query();
+        //根据任务编号id查询下载任务信息
+        query.setFilterById(requestId);
+        try {
+            boolean isGoging=true;
+            while (isGoging) {
+                Cursor cursor = downloadManager.query(query);
+                if (cursor != null && cursor.moveToFirst()) {
+
+                    //获得下载状态
+                    int state = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS));
+                    switch (state) {
+                        case DownloadManager.STATUS_SUCCESSFUL://下载成功
+
+                            CommonData.dowloading=false;
+
+                            isGoging=false;
+                            Uri downloadFileUri;
+                            Intent install = new Intent(Intent.ACTION_VIEW);
+                            //调用安装方法,进行自动升级
+                            //Uri downloadFileUri = downloadManager.getUriForDownloadedFile(requestId);
+                            //Uri downloadFileUri = DownloadManager.COLUMN_LOCAL_URI;
+                            boolean haveInstallPermission;
+                            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) { // 6.0以下
+                                downloadFileUri = downloadManager.getUriForDownloadedFile(requestId);
+
+                            }
+                            else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N)
+                            { // 6.0 - 7.0
+                                String uriString = cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_LOCAL_URI));
+                                File apkFile = new File(Uri.parse(uriString).getPath());
+                                downloadFileUri = Uri.fromFile(apkFile);
+
+                            } else { // Android 7.0 以上
+
+                                //haveInstallPermission = getPackageManager().canRequestPackageInstalls();  //需要 level版本支持
+
+
+                                downloadFileUri = FileProvider.getUriForFile(context,
+                                        "com.ceshi.helloworld.fileProvider",
+                                        new File(context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS), "AIINBI.apk"));
+                                install.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                            }
+
+
+                            if (downloadFileUri != null) {
+
+                                install.setDataAndType(downloadFileUri, "application/vnd.android.package-archive");
+                                install.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                context.startActivity(install);
+                            }
+
+                            //handler.obtainMessage(downloadManager.STATUS_SUCCESSFUL).sendToTarget();//发送到主线程，更新ui
+                            break;
+                        case DownloadManager.STATUS_FAILED://下载失败
+                            isGoging=false;
+                            //handler.obtainMessage(downloadManager.STATUS_FAILED).sendToTarget();//发送到主线程，更新ui
+                            break;
+
+                        case DownloadManager.STATUS_RUNNING://下载中
+                            /**
+                             * 计算下载下载率；
+                             */
+                            CommonData.dowloading=true; //说名正在下载中
+
+                            int totalSize = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_TOTAL_SIZE_BYTES));
+                            int currentSize = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR));
+                            int progress = (int) (((float) currentSize) / ((float) totalSize) * 100);
+                            //handler.obtainMessage(downloadManager.STATUS_RUNNING, progress).sendToTarget();//发送到主线程，更新ui
+                            break;
+
+                        case DownloadManager.STATUS_PAUSED://下载停止
+                            //handler.obtainMessage(DownloadManager.STATUS_PAUSED).sendToTarget();
+                            break;
+
+                        case DownloadManager.STATUS_PENDING://准备下载
+                            //handler.obtainMessage(DownloadManager.STATUS_PENDING).sendToTarget();
+                            break;
+                    }
+                }
+                if(cursor!=null){
+                    cursor.close();
+                }
+            }
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
 
 
 

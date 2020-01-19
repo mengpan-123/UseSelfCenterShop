@@ -104,7 +104,7 @@ public class CreateAddAdapter extends BaseAdapter {
             price.setText(list.get(position).get("realprice"));//实际售价
             num.setText(list.get(position).get("count"));//商品数量
             describe.setText(list.get(position).get("actname"));//促销活动
-            barcode.setText(list.get(position).get("id"));
+            barcode.setText(list.get(position).get("barcode"));
 
 
             if ("0.00".equals(list.get(position).get("disc")) || "0".equals(list.get(position).get("disc")) || "0.0".equals(list.get(position).get("disc"))) {
