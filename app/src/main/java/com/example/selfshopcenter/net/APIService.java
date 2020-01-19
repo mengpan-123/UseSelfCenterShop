@@ -59,4 +59,10 @@ public interface APIService {
      */
     @POST("Export/GetUseBleData")
     Call<UpdateVersionEntity> UpdateVersion(@Body RequestBody requestBody);
+
+    /**
+     * 增加或减少产品
+     */
+    @POST("AddspinDetails/Searchpayresult")
+    Call<SearchPayEntity> QueryOrders(@Body RequestBody requestBody);
 }

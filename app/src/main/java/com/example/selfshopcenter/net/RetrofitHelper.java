@@ -321,4 +321,43 @@ public class RetrofitHelper {
     }
 
 
+
+    /**
+     * 查询交易订单情况
+     *
+     */
+    public Call<SearchPayEntity> QueryOrders() {
+
+
+        String Str="";
+        if (CommonData.payWay.equals("WXPaymentCodePay")){
+            Str="        \"appid\": \""+CommonData.wxappid+"\",\n" ;
+        }
+        else
+        {
+            Str="        \"appid\": \""+CommonData.zfbappid+"\",\n" ;
+        }
+
+
+        String  s="{\n" +
+                "    \"apiname\": \"QUERYORDER\",\n" +
+                "    \"appid\": \""+CommonData.kquser+"\",\n" +
+                "    \"data\": {\n" +
+                "        "+Str+"" +
+                "        \"khid\": \""+CommonData.khid+"\",\n" +
+                "        \"khsname\": \""+CommonData.khsname+"\",\n" +
+                "        \"payWay\": \""+CommonData.payWay+"\",\n" +
+                "        \"posid\": \""+CommonData.posid+"\",\n" +
+                "        \"prepayId\": \""+CommonData.orderInfo.prepayId+"\",\n" +
+                "        \"payval\":\""+CommonData.orderInfo.totalPrice+"\",\n" +
+                "        \"wxshid\": \""+CommonData.wxshid+"\"\n" +
+                "    },\n" +
+                "    \"req_operator\": \"zhoupan\"\n" +
+                "}";
+
+
+        RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), s);
+        return mAPIService.QueryOrders(requestBody);
+    }
+
 }

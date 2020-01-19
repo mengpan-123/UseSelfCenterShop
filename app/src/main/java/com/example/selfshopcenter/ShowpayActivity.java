@@ -193,13 +193,17 @@ public class ShowpayActivity  extends AppCompatActivity {
                                 return;
 
                             }
-                            else if(response.body().getData().getPaycode().equals("3"))
+                            else if(response.body().getData().getPaycode().equals("-3"))
                             {
                                 //说明支付在等待，跳转到支付轮询界面
 
                                 Intent intent = new Intent(ShowpayActivity.this, SearchingPayActivity.class);
                                 startActivity(intent);
                                 finish();
+                                return;
+                            }
+                            else{
+                                ToastUtil.showToast(ShowpayActivity.this, "支付失败", response.body().getMsg());
                                 return;
                             }
 

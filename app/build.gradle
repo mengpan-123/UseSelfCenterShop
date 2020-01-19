@@ -7,8 +7,8 @@ android {
         applicationId "com.example.selfshopcenter"
         minSdkVersion 15
         targetSdkVersion 29
-        versionCode 19
-        versionName "1.5.18"
+        versionCode 22
+        versionName "1.7.68"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 

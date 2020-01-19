@@ -63,6 +63,9 @@
         <activity android:name=".ShowpayActivity">
 
         </activity>
+        <activity android:name=".PayFailActivity">
+
+        </activity>
         <activity android:name=".FinishActivity">
 
         </activity>
