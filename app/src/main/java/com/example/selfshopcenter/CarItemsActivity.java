@@ -310,14 +310,21 @@ public class CarItemsActivity extends AppCompatActivity implements View.OnClickL
                                     MapList.get(barcode).get(0).setTotaldisc(sub_itemsList.get(sk).getDisc());
 
                                     //修改列表的数量
-                                    for (int k = 0; k < listmap.size(); k++) {
-                                        if (listmap.get(k).get("barcode").equals(barcode)) {
-                                            listmap.get(k).put("count", String.valueOf(sub_itemsList.get(sk).getQty()));
-                                            listmap.get(k).put("MainPrice",sub_itemsList.get(sk).getPrice());
-                                            listmap.get(k).put("realprice", String.valueOf(sub_itemsList.get(sk).getNet()));
-                                            listmap.get(k).put("actname", itemsList.get(sm).getDisrule());
-                                            listmap.get(k).put("disc", String.valueOf(sub_itemsList.get(sk).getDisc()));
+                                    if(listmap.size()>0) {
+                                        for (int k = 0; k < listmap.size(); k++) {
+                                            if (listmap.get(k).get("barcode").equals(barcode)) {
+                                                listmap.get(k).put("count", String.valueOf(sub_itemsList.get(sk).getQty()));
+                                                listmap.get(k).put("MainPrice", sub_itemsList.get(sk).getPrice());
+                                                listmap.get(k).put("realprice", String.valueOf(sub_itemsList.get(sk).getNet()));
+                                                listmap.get(k).put("actname", itemsList.get(sm).getDisrule());
+                                                listmap.get(k).put("disc", String.valueOf(sub_itemsList.get(sk).getDisc()));
+                                            }
                                         }
+                                    }
+                                    else
+                                    {
+                                        //如果列表里面已经没有了，直接再次添加
+
                                     }
                                 }
                                 else {

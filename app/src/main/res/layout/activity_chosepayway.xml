@@ -188,7 +188,7 @@
 
             />
         <!--android:layout_marginLeft="80dp"-->
-        <!--android:layout_marginLeft="80dp"android:layout_marginRight="80dp"-->
+
         <ImageView
             android:id="@+id/wx"
             android:layout_width="160dp"

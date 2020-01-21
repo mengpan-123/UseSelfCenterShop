@@ -164,9 +164,9 @@ public class CreateAddAdapter extends BaseAdapter {
                                     if (response.body().getCode().equals("success")) {
                                         if (Integer.valueOf(list.get(position).get("count")) <= 1) {
 
-                                            pitchOnMap.remove(list.get(position).get("id"));
+                                            pitchOnMap.remove(list.get(position).get("barcode"));
                                             //从集合里面移除
-                                            CommonData.orderInfo.spList.remove(list.get(position).get("id"));
+                                            CommonData.orderInfo.spList.remove(list.get(position).get("barcode"));
                                             list.remove(position);
                                         }
                                         AddGoodsEntity body = response.body();

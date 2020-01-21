@@ -221,6 +221,7 @@ public class ChoosepaywayActivity  extends AppCompatActivity {
 
                             mAuthInfo=body.getData().getMsg();
 
+
                             double a = Double.valueOf(CommonData.orderInfo.totalPrice)*10*10;
                             int total_fee= new Double(a).intValue();
 
