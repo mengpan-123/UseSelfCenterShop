@@ -203,7 +203,8 @@ public class ShowpayActivity  extends AppCompatActivity {
                                 return;
                             }
                             else{
-                                ToastUtil.showToast(ShowpayActivity.this, "支付失败", response.body().getMsg());
+
+                                ToastUtil.showToast(ShowpayActivity.this, "支付失败", response.body().getData().getErrmsg());
                                 return;
                             }
 
