@@ -93,4 +93,5 @@ dependencies {
 
 
     implementation files('libs/printsdk0815-v2.2.jar')
+    compile 'com.danikula:videocache:2.7.0'
 }

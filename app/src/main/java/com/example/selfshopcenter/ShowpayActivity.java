@@ -59,13 +59,14 @@ public class ShowpayActivity  extends AppCompatActivity {
         CommonData.player.reset();
         if (CommonData.payWay.equals("WXPaymentCodePay")){
             Drawable d=res.getDrawable(R.mipmap.wxforexe);
-            findViewById(R.id.wxuseinfo).setBackgroundDrawable(d);
+            //2020-02-13暂时注释，
+           // findViewById(R.id.wxuseinfo).setBackgroundDrawable(d);
             CommonData.player=MediaPlayer.create(this,R.raw.weixin);
         }
         else
         {
             Drawable d=res.getDrawable(R.mipmap.aliapyexam);
-            findViewById(R.id.wxuseinfo).setBackgroundDrawable(d);
+            //findViewById(R.id.wxuseinfo).setBackgroundDrawable(d);
             CommonData.player=MediaPlayer.create(this,R.raw.zhifub);
         }
 
@@ -92,6 +93,26 @@ public class ShowpayActivity  extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+
+        //确认支付
+        TextView print = findViewById(R.id.SurePrint);
+        print.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                TextView inputqyid = findViewById(R.id.inputqyid);
+
+                String  inputnumber = inputqyid.getText().toString();
+
+                payAuthCode = inputnumber;
+
+                Orderpay();
+
+            }
+        });
+
+
 
     }
 

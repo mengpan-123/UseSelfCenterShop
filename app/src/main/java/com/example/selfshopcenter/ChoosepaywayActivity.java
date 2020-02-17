@@ -114,9 +114,9 @@ public class ChoosepaywayActivity  extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                CommonData.payWay="WXFacePay";
-                wxFacepay();
-
+                //CommonData.payWay="WXFacePay";
+               // wxFacepay();
+                ToastUtil.showToast(ChoosepaywayActivity.this, "温馨提示", "当前测试版本程序上暂不支持刷脸支付，请见谅");
             }
         });
 

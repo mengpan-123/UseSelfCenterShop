@@ -27,10 +27,16 @@ public interface APIService {
 
 
     /**
-     * 增加或减少产品
+     * 清空购物车
      */
     @POST("Export/GetUseBleData")
     Call<ClearCarEntity> ClearCarInfo(@Body RequestBody requestBody);
+
+    /**
+     *查询收银机使用状态
+     */
+    @POST("Export/GetUseBleData")
+    Call<SearchPosEntity> SearchUseStatus(@Body RequestBody requestBody);
 
 
     /**
@@ -61,8 +67,15 @@ public interface APIService {
     Call<UpdateVersionEntity> UpdateVersion(@Body RequestBody requestBody);
 
     /**
-     * 增加或减少产品
+     * 查询订单信息
      */
     @POST("AddspinDetails/Searchpayresult")
     Call<SearchPayEntity> QueryOrders(@Body RequestBody requestBody);
+
+    /**
+     * 重新打印
+     */
+    @POST("AddspinDetails/GetOrderInfoByOrderid")
+    Call<SearchOrderEntity> NewPrintById(@Body RequestBody requestBody);
+
 }

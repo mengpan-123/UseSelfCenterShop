@@ -1,12 +1,18 @@
 package com.example.selfshopcenter;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 
+import android.Manifest;
 import android.app.DownloadManager;
+import android.content.ComponentName;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -15,17 +21,20 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.IBinder;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.selfshopcenter.bean.UpdateVersionEntity;
 import com.example.selfshopcenter.bean.UserLoginEntity;
 import com.example.selfshopcenter.commoncls.CommonData;
 import com.example.selfshopcenter.commoncls.MyDatabaseHelper;
 import com.example.selfshopcenter.commoncls.ToastUtil;
+
 import com.example.selfshopcenter.net.RetrofitHelper;
 
 import java.io.File;
@@ -56,9 +65,7 @@ public class LoginActivity extends AppCompatActivity {
 
 
         } catch (Exception ex) {
-            //如果创建异常
-            //Toast.makeText(PosLoginActivity.this, ex.toString(), Toast.LENGTH_LONG).show();
-            ToastUtil.showToast(LoginActivity.this, "异常通知", "初始化本地Sqlite信息失败");
+            ToastUtil.showToast(LoginActivity.this, "异常通知", "初始化本地数据库信息失败");
             return;
         }
 
@@ -69,7 +76,7 @@ public class LoginActivity extends AppCompatActivity {
         InitData(querydb);
 
 
-        //3.0  比较 app  版本号信息，是否需要升级
+        //3.0  比较 app  版本号信息，检测是否需要升级
         //PrepareUpdateVersion();
 
 
@@ -93,15 +100,13 @@ public class LoginActivity extends AppCompatActivity {
         }
 
 
-
-
-
         //否则的话就需要登录，然后绑定相应的登陆事件
         Button Login = findViewById(R.id.Login);
 
         Login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
 
                  //请求接口，获取最新基础信息
                 TextView inputkhid = findViewById(R.id.inputkhid);
@@ -160,8 +165,6 @@ public class LoginActivity extends AppCompatActivity {
                         return;
                     }
                 });
-
-
             }
         });
 
@@ -233,8 +236,6 @@ public class LoginActivity extends AppCompatActivity {
         Intent intent = new Intent(LoginActivity.this, IndexActivity.class);
         startActivity(intent);
     }
-
-
 
 
 }

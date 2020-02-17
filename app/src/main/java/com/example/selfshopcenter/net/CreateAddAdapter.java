@@ -117,13 +117,33 @@ public class CreateAddAdapter extends BaseAdapter {
                 y_title.setVisibility(View.VISIBLE);
             }
 
+            //关于重量的显示
 
-            /**
-             * Created by zhoupan on 2019/11/18.
-             * 删减购物车数量，因为数据显示原因，重新写
-             * Created by zhoupan on 2019/11/21.
-             * 因为觉得 移除商品的时候 ，为了重新限时促销信息  会导致列表重新刷新了，影响视觉效果，所以改为不显示 促销规则了
-             */
+            if ("0.00".equals(list.get(position).get("weight")) || "0".equals(list.get(position).get("weight")) || "0.0".equals(list.get(position).get("weight"))) {
+                reduce.setVisibility(View.VISIBLE);
+                add.setVisibility(View.VISIBLE);
+            }
+            else
+            {
+                reduce.setVisibility(View.INVISIBLE);
+                add.setVisibility(View.INVISIBLE);
+                //数量 显示为 重量
+                //单位需要从基础数据里面获取
+                //num.setText(list.get(position).get("weight")+list.get(position).get("unit"));
+
+                //2020-02-14确定单位协定为kg
+                num.setText(list.get(position).get("weight")+"kg");
+
+
+            }
+
+
+                /**
+                 * Created by zhoupan on 2019/11/18.
+                 * 删减购物车数量，因为数据显示原因，重新写
+                 * Created by zhoupan on 2019/11/21.
+                 * 因为觉得 移除商品的时候 ，为了重新限时促销信息  会导致列表重新刷新了，影响视觉效果，所以改为不显示 促销规则了
+                 */
 
             reduce.setOnClickListener(new View.OnClickListener() {
                 @Override

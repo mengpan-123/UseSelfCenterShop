@@ -134,7 +134,7 @@ public class RetrofitHelper {
 
 
     /**
-     * 查询产品基础信息并添加
+     * 清空购物车产品信息
      *
      * @param khid   门店信息
      * @param posid  款台编号
@@ -154,6 +154,28 @@ public class RetrofitHelper {
 
         RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), s);
         return mAPIService.ClearCarInfo(requestBody);
+    }
+
+
+    /**
+     * 查询自助收银机使用状态
+     */
+    public Call<SearchPosEntity> SearchUseStatus() {
+
+        String  s="{\n" +
+                "    \"appid\": \"keengee\",\n" +
+                "    \"apiname\": \"DEVICECONTROL\",\n" +
+                "    \"req_operator\": \"zp\",\n" +
+                "    \"data\": {\n" +
+                "    \t\"qyid\":\""+CommonData.QYID+"\",\n" +
+                "        \"khid\": \""+CommonData.khid+"\",\n" +
+                "        \"pc_id\":\""+CommonData.deviceid+"\"\n" +
+                "    }\n" +
+                "}\n";
+
+
+        RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), s);
+        return mAPIService.SearchUseStatus(requestBody);
     }
 
     /***
@@ -285,7 +307,8 @@ public class RetrofitHelper {
                 "    \"req_operator\": \"zp\",\n" +
                 "    \"data\": {\n" +
                 "        \"khid\": \""+CommonData.khid+"\",\n" +
-                "        \"posid\": \""+CommonData.posid+"\"\n" +
+                "        \"posid\": \""+CommonData.posid+"\",\n" +
+                "        \"qyid\": \""+CommonData.QYID+"\"\n" +
                 "    }\n" +
                 "}\n";
 
@@ -360,4 +383,23 @@ public class RetrofitHelper {
         return mAPIService.QueryOrders(requestBody);
     }
 
+
+
+    public Call<SearchOrderEntity>  NewPrintById(String  trans_id){
+        String s="{\n" +
+                "    \"appid\": \""+CommonData.kquser+"\",\n" +
+                "    \"apiname\": \"NEWPRINT\",\n" +
+                "    \"req_operator\": \"zp\",\n" +
+                "    \"data\": {\n" +
+                "        \"khid\": \""+CommonData.khid+"\",\n" +
+                "        \"qyid\": \""+CommonData.QYID+"\",\n" +
+                "        \"trans_id\":\""+trans_id+"\"\n" +
+                "       \n" +
+                "    }\n" +
+                "}\n";
+
+        RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), s);
+        return mAPIService.NewPrintById(requestBody);
+
+    }
 }

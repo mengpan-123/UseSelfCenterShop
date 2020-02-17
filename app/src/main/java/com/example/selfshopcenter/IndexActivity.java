@@ -1,6 +1,7 @@
 package com.example.selfshopcenter;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.DownloadManager;
 import android.content.Context;
 import android.content.Intent;
@@ -14,12 +15,18 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Message;
 import android.text.method.Touch;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.MediaController;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
@@ -32,13 +39,21 @@ import androidx.core.content.FileProvider;
 import com.danikula.videocache.HttpProxyCacheServer;
 import com.example.selfshopcenter.bean.*;
 import com.example.selfshopcenter.commoncls.CommonData;
+import com.example.selfshopcenter.commoncls.DownLoadRunnable;
 import com.example.selfshopcenter.commoncls.PrintUtil;
 import com.example.selfshopcenter.commoncls.ToastUtil;
 import com.example.selfshopcenter.commoncls.VideoApplication;
 import com.example.selfshopcenter.net.RetrofitHelper;
+import com.example.selfshopcenter.net.UpdateDialog;
 import com.example.selfshopcenter.printer.UsbPrintManager;
+import com.example.selfshopcenter.vediocache.App;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URL;
+import java.net.URLConnection;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -50,9 +65,45 @@ public class IndexActivity extends AppCompatActivity {
     private  VideoView  video;
     private static final int MY_PERMISSIONS_WRITE_EXTERNAL_STORAGE = 1;
 
+    private UpdateDialog downloadDialog;
+
+    private String  posUse="0";
+
+
     private UsbPrintManager printer = null;
 
-    String url = "http://www.ikengee.com.cn/test1/index.mp4";
+    String  updateurl = "http://52.81.85.108:8080/uploadapk/AIINBI_2.apk";
+    VideoView  videoView;
+
+    String VIDEO_URL = "http://52.81.85.108:8080/uploadapk/index.mp4";  //视频播放的文件
+
+    //下载的后台
+    Handler handler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what){
+                case DownloadManager.STATUS_SUCCESSFUL:
+                    downloadDialog.setProgress(100);
+                    canceledDialog();
+                    Toast.makeText(IndexActivity.this, "下载任务已经完成！", Toast.LENGTH_SHORT).show();
+                    break;
+
+                case DownloadManager.STATUS_RUNNING:
+                    //int progress = (int) msg.obj;
+                    downloadDialog.setProgress((int) msg.obj);
+                    //canceledDialog();
+                    break;
+
+                case DownloadManager.STATUS_FAILED:
+                    canceledDialog();
+                    break;
+
+                case DownloadManager.STATUS_PENDING:
+                    showDialog();
+                    break;
+            }
+        }
+    };
 
 
     @Override
@@ -61,50 +112,33 @@ public class IndexActivity extends AppCompatActivity {
         setContentView(R.layout.activity_index);
 
         Appvercode=CommonData.getAppVersioncode(this);
-        video = (VideoView) findViewById(R.id.video);
-        video.setVideoURI(Uri.parse("android.resource://com.example.selfshopcenter/"+R.raw.index));
-        video.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+
+
+        videoView=findViewById(R.id.video);
+
+        HttpProxyCacheServer proxy = getProxy();
+        String proxyUrl = proxy.getProxyUrl(VIDEO_URL);
+        try {
+            videoView.setVideoPath(proxyUrl);
+
+
+        } catch (Exception e) {
+            Toast.makeText(this,"播放失败",Toast.LENGTH_SHORT);
+            e.printStackTrace();
+        }
+        //以下是视频成功播放并且缓存的首要条件
+        //1:主要下面这一段是解决视频播放黑屏的重难点，让mp.start();
+        //2:需要在mainfest中添加android:name="com.example.thesameproc.App"属性
+
+        videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
             @Override
             public void onPrepared(MediaPlayer mp) {
-                //视频加载完成,准备好播放视频的回调
+
                 mp.start();
                 mp.setLooping(true);
+
             }
         });
-
-       /* Uri uri = Uri.parse("http://www.ikengee.com.cn/test1/index.mp4");//将路径转换成uri
-        video.setVideoURI(uri);//为视频播放器设置视频路径
-        video.setMediaController(new MediaController(IndexActivity.this));//显示控制栏
-
-
-        MediaController mc = new MediaController(this);
-        mc.setVisibility(View.INVISIBLE);
-        video.setMediaController(mc);
-
-        video.start();
-
-
-        video.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-            @Override
-            public void onPrepared(MediaPlayer mp) {
-                mp.start();
-                mp.setLooping(true);
-            }
-        });*/
-
-
-
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//            if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-//                    != PackageManager.PERMISSION_GRANTED) {
-//                ActivityCompat.requestPermissions(this,
-//                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-//                        MY_PERMISSIONS_WRITE_EXTERNAL_STORAGE);
-//            } else {
-//                Log.i("aaa", "权限已申请");
-//                initVideo();
-//            }
-//        }
 
 
 
@@ -125,7 +159,6 @@ public class IndexActivity extends AppCompatActivity {
         if (CommonData.app_version.equals("")){
             appversion.setText(CommonData.getAppVersion(this));//因为出现过版本号未获取到的的问题，所以这么写
         }
-
 
         //清空会员基础信息，清空购物车信息
         Call<ClearCarEntity>  ClearCar= RetrofitHelper.getInstance().ClearCarInfo(CommonData.khid, CommonData.posid);
@@ -154,6 +187,7 @@ public class IndexActivity extends AppCompatActivity {
         });
 
 
+
         //避免万一断网情况下，数据未正常清空。清空失败 这种情况呢？
         CommonData.hyMessage=null;
         CommonData.orderInfo=null;
@@ -173,17 +207,51 @@ public class IndexActivity extends AppCompatActivity {
             @Override
             public  void  onClick(View view) {
 
-                //Toast.makeText(IndexActivity.this,"正在跳转，请等待",Toast.LENGTH_SHORT).show();
-                //跳转到商品录入界面
-                Intent intent = new Intent(IndexActivity.this, CarItemsActivity.class);
-                //Intent intent = new Intent(IndexActivity.this, FinishActivity.class);
-                startActivity(intent);
+                //查询收音机使用状态
+                Call<SearchPosEntity>  search= RetrofitHelper.getInstance().SearchUseStatus();
+                search.enqueue(new Callback<SearchPosEntity>() {
+                    @Override
+                    public void onResponse(Call<SearchPosEntity> call, Response<SearchPosEntity> response) {
+
+                        if (response.body() != null) {
+
+                            if (response.body().getCode().equals("success")) {
+                                posUse=response.body().getData().getPosstatus();//等于1 启动，等于0禁用
+
+                                if (posUse.equals("1")) {
+                                    //跳转到商品录入界面
+                                    Intent intent = new Intent(IndexActivity.this, CarItemsActivity.class);
+                                    //Intent intent = new Intent(IndexActivity.this, FinishActivity.class);
+                                    startActivity(intent);
+                                }
+                                else
+                                {
+                                    ToastUtil.showToast(IndexActivity.this, "温馨提示", "当前收银机已被禁止使用，请联系管理员在后台启用");
+                                }
+
+                            }
+                            else
+                            {
+                                ToastUtil.showToast(IndexActivity.this, "购物车清除通知", response.body().getMsg());
+
+                            }
+
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<SearchPosEntity> call, Throwable t) {
+
+                    }
+                });
+
+
 
             }
         });
 
 
-        //自助升级
+        //手动点击自助升级
         Button shengji=findViewById(R.id.uplevel);
         shengji.setOnClickListener(new View.OnClickListener() {
 
@@ -195,10 +263,27 @@ public class IndexActivity extends AppCompatActivity {
         });
 
 
+        //重新打印小票
+        Button newprint=findViewById(R.id.clickprint);
+        newprint.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public  void  onClick(View view) {
+
+                Intent intent = new Intent(IndexActivity.this, NewPrintActivity.class);
+                startActivity(intent);
+            }
+        });
+
+
 
         getPrinter();
         //printBill();
 
+    }
+
+
+    private HttpProxyCacheServer getProxy() {
+        return App.getProxy(getApplicationContext());
     }
 
 
@@ -209,8 +294,6 @@ public class IndexActivity extends AppCompatActivity {
     }
 
 
-
-
     /**
      *
      * MembersLogin 会员登录
@@ -218,11 +301,8 @@ public class IndexActivity extends AppCompatActivity {
 
     public  void  MembersLogin(View view){
 
-
         ToastUtil.showToast(IndexActivity.this, "会员信息验证", "正在开发中");
-
     }
-
 
 
     //准备预升级
@@ -238,9 +318,10 @@ public class IndexActivity extends AppCompatActivity {
                         if (response.body().getCode().equals("success")){
                             if (response.body().getData().getV_VERSION()> Appvercode){
                                 //准备升级
-                                url=response.body().getData().getV_Updatepath();
-
-                                EnsureUPdate();
+                                updateurl=response.body().getData().getV_Updatepath();
+                                showDialog();
+                                //最好是用单线程池，或者intentService取代
+                                new Thread(new DownLoadRunnable(IndexActivity.this,updateurl, handler)).start();
                             }
                             else{
                                 ToastUtil.showToast(IndexActivity.this, "消息内容提示", "暂无可升级的内容");
@@ -269,134 +350,23 @@ public class IndexActivity extends AppCompatActivity {
 
 
 
-    public   void  EnsureUPdate(){
-
-        try {
-
-            DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
-            //设置在什么网络情况下进行下载
-            //request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI);
-
-            //设置通知栏标题
-            request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE);
-            request.setTitle("任务进行中");
-            request.setDescription("应用程序正在下载中");
-            request.setAllowedOverRoaming(false);
-            //设置文件存放目录（此处如果异常，需要再买呢文件中设置读写权限）
-            request.setDestinationInExternalFilesDir(this, Environment.DIRECTORY_DOWNLOADS, "1.apk");
-
-            DownloadManager downManager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
-            long id = downManager.enqueue(request);
-
-            //确认要下载时 ，先删除 sqlite里面的表数据
-            //SQLiteDatabase db = dbHelper.getWritableDatabase();
-            //db.delete(CommonData.tablename, null, null);
 
 
-            queryDownloadProgress(this, id, downManager);
+    private void showDialog() {
+        if(downloadDialog==null){
+            downloadDialog = new UpdateDialog(this);
         }
-        catch(Exception ex){
-            ToastUtil.showToast(IndexActivity.this, "支付通知", "请输入商品条码进行支付");
-            return;
 
+        if(!downloadDialog.isShowing()){
+            downloadDialog.show();
         }
     }
 
-
-    private void queryDownloadProgress(Context   context,long requestId, DownloadManager downloadManager) {
-
-
-        DownloadManager.Query query=new DownloadManager.Query();
-        //根据任务编号id查询下载任务信息
-        query.setFilterById(requestId);
-        try {
-            boolean isGoging=true;
-            while (isGoging) {
-                Cursor cursor = downloadManager.query(query);
-                if (cursor != null && cursor.moveToFirst()) {
-
-                    //获得下载状态
-                    int state = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS));
-                    switch (state) {
-                        case DownloadManager.STATUS_SUCCESSFUL://下载成功
-
-                            CommonData.dowloading=false;
-
-                            isGoging=false;
-                            Uri downloadFileUri;
-                            Intent install = new Intent(Intent.ACTION_VIEW);
-                            //调用安装方法,进行自动升级
-                            //Uri downloadFileUri = downloadManager.getUriForDownloadedFile(requestId);
-                            //Uri downloadFileUri = DownloadManager.COLUMN_LOCAL_URI;
-                            boolean haveInstallPermission;
-                            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) { // 6.0以下
-                                downloadFileUri = downloadManager.getUriForDownloadedFile(requestId);
-
-                            }
-                            else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N)
-                            { // 6.0 - 7.0
-                                String uriString = cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_LOCAL_URI));
-                                File apkFile = new File(Uri.parse(uriString).getPath());
-                                downloadFileUri = Uri.fromFile(apkFile);
-
-                            } else { // Android 7.0 以上
-
-                                //haveInstallPermission = getPackageManager().canRequestPackageInstalls();  //需要 level版本支持
-
-
-                                downloadFileUri = FileProvider.getUriForFile(context,
-                                        "com.ceshi.helloworld.fileProvider",
-                                        new File(context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS), "AIINBI.apk"));
-                                install.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-                            }
-
-
-                            if (downloadFileUri != null) {
-
-                                install.setDataAndType(downloadFileUri, "application/vnd.android.package-archive");
-                                install.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                context.startActivity(install);
-                            }
-
-                            //handler.obtainMessage(downloadManager.STATUS_SUCCESSFUL).sendToTarget();//发送到主线程，更新ui
-                            break;
-                        case DownloadManager.STATUS_FAILED://下载失败
-                            isGoging=false;
-                            //handler.obtainMessage(downloadManager.STATUS_FAILED).sendToTarget();//发送到主线程，更新ui
-                            break;
-
-                        case DownloadManager.STATUS_RUNNING://下载中
-                            /**
-                             * 计算下载下载率；
-                             */
-                            CommonData.dowloading=true; //说名正在下载中
-
-                            int totalSize = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_TOTAL_SIZE_BYTES));
-                            int currentSize = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR));
-                            int progress = (int) (((float) currentSize) / ((float) totalSize) * 100);
-                            //handler.obtainMessage(downloadManager.STATUS_RUNNING, progress).sendToTarget();//发送到主线程，更新ui
-                            break;
-
-                        case DownloadManager.STATUS_PAUSED://下载停止
-                            //handler.obtainMessage(DownloadManager.STATUS_PAUSED).sendToTarget();
-                            break;
-
-                        case DownloadManager.STATUS_PENDING://准备下载
-                            //handler.obtainMessage(DownloadManager.STATUS_PENDING).sendToTarget();
-                            break;
-                    }
-                }
-                if(cursor!=null){
-                    cursor.close();
-                }
-            }
-
-        }catch (Exception e){
-            e.printStackTrace();
+    private void canceledDialog() {
+        if(downloadDialog!=null&&downloadDialog.isShowing()){
+            downloadDialog.dismiss();
         }
     }
-
-
 
 
 

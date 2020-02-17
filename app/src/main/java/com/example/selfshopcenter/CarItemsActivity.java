@@ -349,6 +349,7 @@ public class CarItemsActivity extends AppCompatActivity implements View.OnClickL
                                     //下面是只取几个字段去改变 界面显示的
                                     map.put("barcode", sub_itemsList.get(sk).getBarcode());
                                     map.put("id", barcode);
+                                    map.put("unit", sub_itemsList.get(sk).getUnit());
                                     map.put("name", sub_itemsList.get(sk).getSname());
                                     map.put("MainPrice", String.valueOf(nRealPrice));  //原价
                                     map.put("disc", String.valueOf(sub_itemsList.get(sk).getDisc()));  //折扣
@@ -569,16 +570,16 @@ public class CarItemsActivity extends AppCompatActivity implements View.OnClickL
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
-
-                /*EditText editText1 = layout.findViewById(R.id.username);
-                String inputbarcode = editText1.getText().toString();
-
-                if (inputbarcode.length()==0){
-                    ToastUtil.showToast(CarItemsActivity.this, "支付通知", "请输入商品条码进行支付");
-                    return;
-                }
-                AddnewSpid(inputbarcode);
-                dialog.dismiss();*/
+//
+//                EditText editText1 = layout.findViewById(R.id.username);
+//                String inputbarcode = editText1.getText().toString();
+//
+//                if (inputbarcode.length()==0){
+//                    ToastUtil.showToast(CarItemsActivity.this, "支付通知", "请输入商品条码进行支付");
+//                    return;
+//                }
+//                AddnewSpid(inputbarcode);
+//                dialog.dismiss();
 
             }
         });
