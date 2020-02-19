@@ -193,7 +193,7 @@ public class CarItemsActivity extends AppCompatActivity implements View.OnClickL
                 if (barcode.contains("\n")) {
                     barcode = barcode.substring(0, barcode.length() - 1);
                 }
-                AddnewSpid(barcode);
+                AddnewSpid(barcode,CommonData.AddCar);
                 barcode = "";
             }
 
@@ -268,7 +268,7 @@ public class CarItemsActivity extends AppCompatActivity implements View.OnClickL
      *          2：使用购物车列表接口，获取到当前产品的实际售价，折扣价，促销内容等
      */
 
-    public void AddnewSpid(String inputbarcode) {
+    public void AddnewSpid(String inputbarcode,String type) {
 
         if (CommonData.orderInfo != null) {
             if (CommonData.orderInfo.spList != null) {
@@ -276,7 +276,7 @@ public class CarItemsActivity extends AppCompatActivity implements View.OnClickL
             }
         }
         HashMap<String, String> map = new HashMap<>();
-        Call<AddGoodsEntity> AddGoods= RetrofitHelper.getInstance().AddGoodInfo(inputbarcode, CommonData.AddCar);
+        Call<AddGoodsEntity> AddGoods= RetrofitHelper.getInstance().AddGoodInfo(inputbarcode, type);
         AddGoods.enqueue(new Callback<AddGoodsEntity>() {
             @Override
             public void onResponse(Call<AddGoodsEntity> call, Response<AddGoodsEntity> response) {
@@ -318,6 +318,7 @@ public class CarItemsActivity extends AppCompatActivity implements View.OnClickL
                                                 listmap.get(k).put("realprice", String.valueOf(sub_itemsList.get(sk).getNet()));
                                                 listmap.get(k).put("actname", itemsList.get(sm).getDisrule());
                                                 listmap.get(k).put("disc", String.valueOf(sub_itemsList.get(sk).getDisc()));
+                                                listmap.get(k).put("weight", String.valueOf(sub_itemsList.get(sk).getWeight()));
                                             }
                                         }
                                     }
@@ -503,7 +504,7 @@ public class CarItemsActivity extends AppCompatActivity implements View.OnClickL
                                 String bagpic = map.get("tv_bagpic");
                                 String bagsid = map.get("tv_goodsid");
 
-                                AddnewSpid(bagsid);
+                                AddnewSpid(bagsid,CommonData.AddCar);
                                 dialog.dismiss();
                             }
                         });
@@ -559,7 +560,7 @@ public class CarItemsActivity extends AppCompatActivity implements View.OnClickL
                     return;
                 }
 
-                AddnewSpid(inputbarcode);
+                AddnewSpid(inputbarcode,CommonData.AddCar);
                 dialog.dismiss();
 
             }
@@ -578,7 +579,7 @@ public class CarItemsActivity extends AppCompatActivity implements View.OnClickL
 //                    ToastUtil.showToast(CarItemsActivity.this, "支付通知", "请输入商品条码进行支付");
 //                    return;
 //                }
-//                AddnewSpid(inputbarcode);
+//                AddnewSpid(inputbarcode,CommonData.AddCar);
 //                dialog.dismiss();
 
             }

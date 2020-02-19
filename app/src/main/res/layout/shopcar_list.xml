@@ -15,6 +15,7 @@
             android:layout_marginTop="5dp"
             android:layout_marginLeft="13dp"
             android:orientation="vertical">
+
             <TextView
                 android:layout_width="match_parent"
                 android:id="@+id/describe"
@@ -22,16 +23,36 @@
                 android:layout_marginLeft="20dp"
                 android:textColor="#F06E48"
                 android:text=""/>
-            <TextView
-                android:id="@+id/tv_goods_name"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:layout_marginLeft="13dp"
+                android:orientation="horizontal">
+            <TextView
+                android:id="@+id/tv_goods_name"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
+                android:layout_marginRight="40dp"
                 android:textColor="#413F3F"
                 android:ellipsize="end"
                 android:maxLines="2"
                 android:text="商品商品商品"
                 android:textSize="35dp" />
+
+                <TextView
+                    android:id="@+id/tv_delete"
+                    android:layout_width="80dp"
+                    android:layout_height="wrap_content"
+                    android:textColor="#D81B60"
+                    android:ellipsize="end"
+                    android:text="删除"
+                    android:textSize="25dp" />
+            </LinearLayout>
+
+
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -120,14 +141,12 @@
                     </LinearLayout>
 
                     <LinearLayout
-                        android:layout_width="200dp"
+                        android:layout_width="240dp"
                         android:layout_height="65dp"
                         android:layout_alignParentLeft="true"
                         android:layout_marginRight="15dp"
                         android:layout_marginBottom="8dp"
                         android:orientation="horizontal"
-
-                        android:gravity="right"
                         >
 
                         <TextView
@@ -139,9 +158,9 @@
 
                         <TextView
                             android:id="@+id/tv_num"
-                            android:layout_width="120dp"
+                            android:layout_width="125dp"
                             android:layout_height="50dp"
-                            android:layout_marginTop="8dp"
+                            android:layout_marginTop="3dp"
                             android:gravity="center"
                             android:singleLine="true"
                             android:text="1"
@@ -152,7 +171,6 @@
                             android:layout_width="50dp"
                             android:layout_height="50dp"
                             android:layout_marginRight="20dp"
-
                             android:background="@drawable/add"
                             android:gravity="center" />
                     </LinearLayout>

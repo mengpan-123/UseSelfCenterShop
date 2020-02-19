@@ -134,6 +134,36 @@ public class RetrofitHelper {
 
 
     /**
+     * 查询产品基础信息并添加
+     *
+     * @param barcode 商品条码
+     * @param stype  操作类型  SEARCH  查询   ADD添加    REDUCE  移除一个产品
+     */
+    public Call<DeleteSpinfoEntity> DeleteSpinfo(String barcode, String  stype) {
+
+
+
+        String  s="{\n" +
+                "    \"appid\": \""+CommonData.kquser+"\",\n" +
+                "    \"apiname\": \"DELETESP\",\n" +
+                "    \"req_operator\": \"zp\",\n" +
+                "    \"data\": {\n" +
+                "        \"barcode\": \""+barcode+"\",\n" +
+                "        \"qyid\": \""+CommonData.QYID+"\",\n" +
+                "        \"posid\":\""+CommonData.posid+"\",\n" +
+                "        \"khid\": \""+CommonData.khid+"\",\n" +
+                "        \"stype\": \""+stype+"\"\n" +
+                "    }\n" +
+                "}\n";
+
+
+        RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), s);
+        return mAPIService.DeleteSpinfo(requestBody);
+    }
+
+
+
+    /**
      * 清空购物车产品信息
      *
      * @param khid   门店信息
@@ -402,4 +432,25 @@ public class RetrofitHelper {
         return mAPIService.NewPrintById(requestBody);
 
     }
+
+    //日结
+    public Call<DialyCloseEntity>  DialyClose(String  saledate){
+        String s="{\n" +
+                "    \"appid\": \""+CommonData.kquser+"\",\n" +
+                "    \"apiname\": \"DIALYCLOSE\",\n" +
+                "    \"req_operator\": \"zp\",\n" +
+                "    \"data\": {\n" +
+                "        \"khid\": \""+CommonData.khid+"\",\n" +
+                "        \"qyid\": \""+CommonData.QYID+"\",\n" +
+                "        \"posid\":\""+CommonData.posid+"\",\n" +
+                "        \"saledate\":\""+saledate+"\",\n" +
+                "       \n" +
+                "    }\n" +
+                "}\n";
+
+        RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), s);
+        return mAPIService.DialyClose(requestBody);
+
+    }
+
 }

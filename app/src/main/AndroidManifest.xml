@@ -75,7 +75,9 @@
 
         </activity>
 
+        <activity android:name=".DialyCloseActivity">
 
+        </activity>
 
         <!--// 指向v4包里的FileProvider类-->
         <provider

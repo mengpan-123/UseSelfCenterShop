@@ -10,8 +10,10 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.example.selfshopcenter.CarItemsActivity;
 import com.example.selfshopcenter.R;
 import com.example.selfshopcenter.bean.AddGoodsEntity;
+import com.example.selfshopcenter.bean.DeleteSpinfoEntity;
 import com.example.selfshopcenter.commoncls.CommonData;
 import com.example.selfshopcenter.commoncls.SplnfoList;
 import com.example.selfshopcenter.commoncls.ToastUtil;
@@ -83,7 +85,7 @@ public class CreateAddAdapter extends BaseAdapter {
             convertView = View.inflate(context, R.layout.shopcar_list, null);
             final CheckBox checkBox;
             ImageView icon;
-            final TextView name, price, num, type, reduce, add, describe, y_price, y_title,barcode;
+            final TextView name, price, num, type, reduce, add, delete, describe, y_price, y_title,barcode;
 
             name = convertView.findViewById(R.id.tv_goods_name);//商品名称
             price = convertView.findViewById(R.id.tv_goods_price);//商品价格
@@ -95,6 +97,8 @@ public class CreateAddAdapter extends BaseAdapter {
             y_title = convertView.findViewById(R.id.tv_yuan_title);
 
             add = convertView.findViewById(R.id.tv_add);
+
+            delete = convertView.findViewById(R.id.tv_delete);
 
             barcode=convertView.findViewById(R.id.barcode);
 
@@ -333,6 +337,146 @@ public class CreateAddAdapter extends BaseAdapter {
 
                 }
 
+            });
+
+
+            //删除产品
+            delete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String inputbarcode = list.get(position).get("barcode");
+                     Call<DeleteSpinfoEntity>  delete=    RetrofitHelper.getInstance().DeleteSpinfo(inputbarcode,"DELETE");
+                     delete.enqueue(new Callback<DeleteSpinfoEntity>() {
+                         @Override
+                         public void onResponse(Call<DeleteSpinfoEntity> call, Response<DeleteSpinfoEntity> response) {
+
+
+                             if (response.body() != null) {
+                                 if (response.body().getCode().equals("success")) {
+
+                                     pitchOnMap.remove(list.get(position).get("barcode"));
+                                     //从集合里面移除
+                                     CommonData.orderInfo.spList.remove(list.get(position).get("barcode"));
+                                     list.remove(position);
+                                     //先删除其中一个产品，再去刷新价格，折扣啥的
+
+
+                                     Call<AddGoodsEntity> substratGoods= RetrofitHelper.getInstance().AddGoodInfo(inputbarcode, CommonData.searchCar);
+                                     substratGoods.enqueue(new Callback<AddGoodsEntity>() {
+                                         @Override
+                                         public void onResponse(Call<AddGoodsEntity> call, Response<AddGoodsEntity> response) {
+                                             if (response != null) {
+                                                 if (null == response.body()) {
+                                                     ToastUtil.showToast(context, "商品移除通知", "请误操作太快");
+                                                     return;
+                                                 }
+                                                 if (response.body().getCode().equals("success")) {
+                                                    /* if (Integer.valueOf(list.get(position).get("count")) <= 1) {
+
+                                                         pitchOnMap.remove(list.get(position).get("barcode"));
+                                                         //从集合里面移除
+                                                         CommonData.orderInfo.spList.remove(list.get(position).get("barcode"));
+                                                         list.remove(position);
+                                                     }*/
+                                                     AddGoodsEntity body = response.body();
+                                                     CommonData.orderInfo.totalCount = body.getData().getTotalQty();
+                                                     CommonData.orderInfo.totalPrice = body.getData().getTotAmount();
+                                                     CommonData.orderInfo.totalDisc = body.getData().getDisAmount();
+
+                                                     List<AddGoodsEntity.DataBean.ItemsListBean> itemsList = body.getData().getItemsList();
+                                                     for (int sm = 0; sm < itemsList.size(); sm++) {
+                                                         List<AddGoodsEntity.DataBean.ItemsListBean.ItemsBean> sub_itemsList = itemsList.get(sm).getItems();
+                                                         for (int sk = 0; sk < sub_itemsList.size(); sk++) {
+                                                             //拿到产品编码
+                                                             String barcode = sub_itemsList.get(sk).getBarcode();
+                                                             String nRealPrice = sub_itemsList.get(sk).getDprice();
+
+                                                             if (CommonData.orderInfo.spList.containsKey(barcode)) {
+
+                                                                 //如果存在，拿到集合，增加数量，总价，折扣
+                                                                 CommonData.orderInfo.spList.get(barcode).get(0).setPackNum(sub_itemsList.get(sk).getQty());
+                                                                 CommonData.orderInfo.spList.get(barcode).get(0).setMainPrice(sub_itemsList.get(sk).getPrice());
+                                                                 CommonData.orderInfo.spList.get(barcode).get(0).setRealPrice(String.valueOf(sub_itemsList.get(sk).getNet()));  //实际总售价
+                                                                 CommonData.orderInfo.spList.get(barcode).get(0).setTotaldisc(sub_itemsList.get(sk).getDisc());
+                                                                 //修改列表的数量
+                                                                 for (int k = 0; k < list.size(); k++) {
+                                                                     if (list.get(k).get("barcode").equals(barcode)) {
+                                                                         list.get(k).put("count", String.valueOf(sub_itemsList.get(sk).getQty()));
+                                                                         list.get(k).put("MainPrice", sub_itemsList.get(sk).getPrice());
+                                                                         list.get(k).put("realprice", String.valueOf(sub_itemsList.get(sk).getNet()));
+                                                                         list.get(k).put("actname", itemsList.get(sm).getDisrule());
+                                                                         list.get(k).put("disc", String.valueOf(sub_itemsList.get(sk).getDisc()));
+                                                                     }
+                                                                 }
+                                                             }
+                                                         }
+                                                     }
+
+                                                     CommonData.list_adaptor = new CreateAddAdapter(CreateAddAdapter.this.context, list);
+                                                     listView1.setAdapter(CommonData.list_adaptor);
+                                                     listView1.setSelection(listView1.getBottom());
+                                                     try {
+                                                         listView1.setSelection(CommonData.list_adaptor.getCount() - 1);
+                                                     } catch (Exception ex) {
+
+                                                     }
+                                                     notifyDataSetChanged();
+                                                     mrefreshPriceInterface.refreshPrice(pitchOnMap);
+
+                                                     is_click = true;
+
+                                                 }
+
+                                             }
+                                         }
+
+                                         @Override
+                                         public void onFailure(Call<AddGoodsEntity> call, Throwable t) {
+                                             ToastUtil.showToast(context, "商品移除通知", "网络异常，请稍后重试 ");
+                                         }
+                                     });
+
+
+                                     //移除界面上的产品信息，减去产品的价格
+                                     /*String count = list.get(position).get("count");
+                                     String realprice = list.get(position).get("realprice");
+                                     String disc = list.get(position).get("disc");
+
+                                     CommonData.orderInfo.totalCount = CommonData.orderInfo.totalCount-Integer.valueOf(count);
+                                     CommonData.orderInfo.totalPrice = String.valueOf(Double.valueOf(CommonData.orderInfo.totalPrice)-Double.valueOf(realprice));
+                                     CommonData.orderInfo.totalDisc = String.valueOf(Double.valueOf(CommonData.orderInfo.totalDisc)-Double.valueOf(disc));
+
+
+
+                                     pitchOnMap.remove(list.get(position).get("barcode"));
+                                     //从集合里面移除
+                                     CommonData.orderInfo.spList.remove(list.get(position).get("barcode"));
+                                     list.remove(position);
+
+                                     CommonData.list_adaptor = new CreateAddAdapter(CreateAddAdapter.this.context, list);
+                                     listView1.setAdapter(CommonData.list_adaptor);
+                                     listView1.setSelection(listView1.getBottom());
+                                     try {
+                                         listView1.setSelection(CommonData.list_adaptor.getCount() - 1);
+                                     } catch (Exception ex) {
+
+                                     }
+                                     notifyDataSetChanged();
+                                     mrefreshPriceInterface.refreshPrice(pitchOnMap);*/
+
+
+
+                                 }
+                             }
+
+                         }
+
+                         @Override
+                         public void onFailure(Call<DeleteSpinfoEntity> call, Throwable t) {
+
+                         }
+                     });
+                }
             });
 
         } catch (Exception e) {

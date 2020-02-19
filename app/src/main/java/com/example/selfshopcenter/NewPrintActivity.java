@@ -37,6 +37,7 @@ public class NewPrintActivity extends Activity {
             public void onClick(View v) {
                 Intent intent = new Intent(NewPrintActivity.this, IndexActivity.class);
                 startActivity(intent);
+                finish();
             }
         });
 

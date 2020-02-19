@@ -215,7 +215,7 @@ public class IndexActivity extends AppCompatActivity {
 
                         if (response.body() != null) {
 
-                            if (response.body().getCode().equals("success")) {
+                            if (response.body().getCode().equals("success")||response.body().getMsg().equals("没有符合条件的数据")) {
                                 posUse=response.body().getData().getPosstatus();//等于1 启动，等于0禁用
 
                                 if (posUse.equals("1")) {
@@ -261,6 +261,19 @@ public class IndexActivity extends AppCompatActivity {
                 PrepareUpdateVersion();
             }
         });
+
+
+        //日结,暂时先跳转到一个界面 核对
+        Button DailyClose=findViewById(R.id.Dailyclosing);
+        DailyClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public  void  onClick(View view) {
+                Intent intent = new Intent(IndexActivity.this, DialyCloseActivity.class);
+                //Intent intent = new Intent(IndexActivity.this, FinishActivity.class);
+                startActivity(intent);
+            }
+        });
+
 
 
         //重新打印小票

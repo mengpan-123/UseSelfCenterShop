@@ -86,6 +86,8 @@ public class FinishActivity  extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
+                timer.cancel();//手动点击之后取消定时器
+
                 Intent intent = new Intent(FinishActivity.this, IndexActivity.class);
                 startActivity(intent);
                 finish();

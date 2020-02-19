@@ -27,6 +27,13 @@ public interface APIService {
 
 
     /**
+     * 增加或减少产品
+     */
+    @POST("AddspinDetails/DeleteSpinfo")
+    Call<DeleteSpinfoEntity> DeleteSpinfo(@Body RequestBody requestBody);
+
+
+    /**
      * 清空购物车
      */
     @POST("Export/GetUseBleData")
@@ -78,4 +85,10 @@ public interface APIService {
     @POST("AddspinDetails/GetOrderInfoByOrderid")
     Call<SearchOrderEntity> NewPrintById(@Body RequestBody requestBody);
 
+
+    /**
+     * 重新打印
+     */
+    @POST("AddspinDetails/SearchDialyOrder")
+    Call<DialyCloseEntity> DialyClose(@Body RequestBody requestBody);
 }
