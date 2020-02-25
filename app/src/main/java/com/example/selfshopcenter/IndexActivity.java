@@ -2,6 +2,7 @@ package com.example.selfshopcenter;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.app.DownloadManager;
 import android.content.Context;
 import android.content.Intent;
@@ -19,14 +20,22 @@ import android.os.Handler;
 import android.os.Message;
 import android.text.method.Touch;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.MediaController;
+import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
+import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
@@ -54,6 +63,12 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLConnection;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -251,46 +266,74 @@ public class IndexActivity extends AppCompatActivity {
         });
 
 
-        //手动点击自助升级
-        Button shengji=findViewById(R.id.uplevel);
-        shengji.setOnClickListener(new View.OnClickListener() {
+        getPrinter();
+        //printBill();
 
+
+
+
+        // 创建PopupWindow对象
+        LayoutInflater inflater = LayoutInflater.from(this);
+
+        // 引入窗口配置文件
+        View view = inflater.inflate(R.layout.activity_settings, null);
+        // 创建PopupWindow对象
+        final PopupWindow pop = new PopupWindow(view, WindowManager.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, false);
+
+
+
+        Button btn = findViewById(R.id.basesettings);
+        btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public  void  onClick(View view) {
 
+                int[]  location=new int[2];
+                btn.getLocationInWindow(location);
+                int x=location[0]-40;
+                int y=location[1]-250;
+
+                if (pop.isShowing()) {
+                    // 隐藏窗口，如果设置了点击窗口外小时即不需要此方式隐藏
+                    pop.dismiss();
+                } else {
+                    // 显示窗口
+                    pop.showAtLocation(view, Gravity.TOP | Gravity.START, 20, y);
+                    //pop.showAsDropDown(v);
+
+                }
+            }
+        });
+
+        //手动点击检测 自动升级
+        TextView text1=  view.findViewById(R.id.txt1);
+        text1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
                 PrepareUpdateVersion();
             }
         });
 
 
-        //日结,暂时先跳转到一个界面 核对
-        Button DailyClose=findViewById(R.id.Dailyclosing);
-        DailyClose.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public  void  onClick(View view) {
-                Intent intent = new Intent(IndexActivity.this, DialyCloseActivity.class);
-                //Intent intent = new Intent(IndexActivity.this, FinishActivity.class);
-                startActivity(intent);
-            }
-        });
-
-
-
         //重新打印小票
-        Button newprint=findViewById(R.id.clickprint);
-        newprint.setOnClickListener(new View.OnClickListener() {
+        TextView text2=  view.findViewById(R.id.txt2);
+        text2.setOnClickListener(new View.OnClickListener() {
             @Override
-            public  void  onClick(View view) {
-
+            public void onClick(View v) {
                 Intent intent = new Intent(IndexActivity.this, NewPrintActivity.class);
                 startActivity(intent);
             }
         });
 
+        //日结,暂时先跳转到一个界面 核对
+        TextView text3=  view.findViewById(R.id.txt3);
+        text3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(IndexActivity.this, DialyCloseActivity.class);
+                startActivity(intent);
+            }
+        });
 
-
-        getPrinter();
-        //printBill();
 
     }
 

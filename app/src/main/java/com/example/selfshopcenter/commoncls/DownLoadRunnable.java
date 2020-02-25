@@ -43,6 +43,7 @@ public class DownLoadRunnable  implements Runnable {
         //查询下载信息方法
         queryDownloadProgress(requestId,downloadManager);
         return  requestId;
+
     }
 
     private void queryDownloadProgress(long requestId, DownloadManager downloadManager) {

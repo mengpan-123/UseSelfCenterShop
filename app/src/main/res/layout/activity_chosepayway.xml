@@ -159,13 +159,18 @@
             />
     </LinearLayout>
 
-    <!--//并摆放三个支付方式的图标-->
+    <!--//并摆放三个支付方式的图标
+    android:layout_marginLeft="128dp"
+        android:layout_marginRight="128dp"-->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="100dp"
         android:layout_marginLeft="128dp"
-        android:layout_marginRight="128dp">
+        android:layout_marginRight="128dp"
+        >
+
+        <!--android:layout_marginRight="80dp"-->
 
         <ImageView
             android:layout_width="160dp"
@@ -179,12 +184,13 @@
 
         <ImageView
             android:id="@+id/wx_face"
+            android:layout_marginLeft="80dp"
+            android:layout_marginRight="80dp"
             android:layout_width="160dp"
             android:layout_height="160dp"
             android:background="@mipmap/facepay"
             android:gravity="center"
-            android:layout_marginLeft="80dp"
-            android:layout_marginRight="80dp"
+
 
             />
         <!--android:layout_marginLeft="80dp"-->

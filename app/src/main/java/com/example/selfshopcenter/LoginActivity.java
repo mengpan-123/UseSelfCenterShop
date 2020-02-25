@@ -21,7 +21,9 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Message;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -32,10 +34,12 @@ import android.widget.Toast;
 import com.example.selfshopcenter.bean.UpdateVersionEntity;
 import com.example.selfshopcenter.bean.UserLoginEntity;
 import com.example.selfshopcenter.commoncls.CommonData;
+import com.example.selfshopcenter.commoncls.DownLoadRunnable;
 import com.example.selfshopcenter.commoncls.MyDatabaseHelper;
 import com.example.selfshopcenter.commoncls.ToastUtil;
 
 import com.example.selfshopcenter.net.RetrofitHelper;
+import com.example.selfshopcenter.net.UpdateDialog;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -49,10 +53,41 @@ public class LoginActivity extends AppCompatActivity {
 
     private MyDatabaseHelper dbHelper;
     private SQLiteDatabase querydb;
+    String  updateurl = "http://52.81.85.108:8080/uploadapk/AIINBI_2.apk";
+    private UpdateDialog downloadDialog;
 
     private String url = "http://192.168.0.108/222/MyApp1.apk";
 
     private int  Appvercode=0;
+
+    //下载的后台
+    Handler handler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what){
+                case DownloadManager.STATUS_SUCCESSFUL:
+                    downloadDialog.setProgress(100);
+                    canceledDialog();
+                    Toast.makeText(LoginActivity.this, "下载任务已经完成！", Toast.LENGTH_SHORT).show();
+                    break;
+
+                case DownloadManager.STATUS_RUNNING:
+                    //int progress = (int) msg.obj;
+                    downloadDialog.setProgress((int) msg.obj);
+                    //canceledDialog();
+                    break;
+
+                case DownloadManager.STATUS_FAILED:
+                    canceledDialog();
+                    break;
+
+                case DownloadManager.STATUS_PENDING:
+                    showDialog();
+                    break;
+            }
+        }
+    };
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,9 +111,6 @@ public class LoginActivity extends AppCompatActivity {
         InitData(querydb);
 
 
-        //3.0  比较 app  版本号信息，检测是否需要升级
-        //PrepareUpdateVersion();
-
 
         if (!CommonData.khid.equals("") && !CommonData.posid.equals("")) {
 
@@ -98,6 +130,9 @@ public class LoginActivity extends AppCompatActivity {
             edt.setFocusableInTouchMode(false);
 
         }
+
+        //3.0  比较 app  版本号信息，检测是否需要升级
+        PrepareUpdateVersion();
 
 
         //否则的话就需要登录，然后绑定相应的登陆事件
@@ -237,5 +272,69 @@ public class LoginActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+
+
+    //准备预升级
+    public   void PrepareUpdateVersion(){
+
+        try {
+
+            Call<UpdateVersionEntity>  updateversion = RetrofitHelper.getInstance().UpdateVersion();
+            updateversion.enqueue(new Callback<UpdateVersionEntity>() {
+                @Override
+                public void onResponse(Call<UpdateVersionEntity> call, Response<UpdateVersionEntity> response) {
+                    if (null!=response){
+                        if (response.body().getCode().equals("success")){
+                            if (response.body().getData().getV_VERSION()> Appvercode){
+                                //准备升级
+                                updateurl=response.body().getData().getV_Updatepath();
+                                showDialog();
+                                //最好是用单线程池，或者intentService取代
+                                new Thread(new DownLoadRunnable(LoginActivity.this,updateurl, handler)).start();
+                            }
+                            else{
+                                //ToastUtil.showToast(LoginActivity.this, "消息内容提示", "暂无可升级的内容");
+                                return;
+                            }
+
+                        }
+                        else
+                        {
+                            //ToastUtil.showToast(LoginActivity.this, "消息内容提示", "暂无可升级的内容");
+                            return;
+                        }
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<UpdateVersionEntity> call, Throwable t) {
+                    ToastUtil.showToast(LoginActivity.this, "输入消息通知", t.toString());
+                }
+            });
+        }
+        catch(Exception ex){
+            ToastUtil.showToast(LoginActivity.this, "输入消息通知", ex.toString());
+        }
+    }
+
+
+
+
+
+    private void showDialog() {
+        if(downloadDialog==null){
+            downloadDialog = new UpdateDialog(this);
+        }
+
+        if(!downloadDialog.isShowing()){
+            downloadDialog.show();
+        }
+    }
+
+    private void canceledDialog() {
+        if(downloadDialog!=null&&downloadDialog.isShowing()){
+            downloadDialog.dismiss();
+        }
+    }
 
 }

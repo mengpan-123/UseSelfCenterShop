@@ -43,7 +43,7 @@ public class ShowpayActivity  extends AppCompatActivity {
 
         setContentView(R.layout.activity_showpay);  //设置页面
 
-            //设置底部的显示信息
+           //设置底部的显示信息
             TextView totaldisc=findViewById(R.id.totalcount);
             totaldisc.setText("数量合计 ："+CommonData.orderInfo.totalCount);
 
@@ -60,13 +60,13 @@ public class ShowpayActivity  extends AppCompatActivity {
         if (CommonData.payWay.equals("WXPaymentCodePay")){
             Drawable d=res.getDrawable(R.mipmap.wxforexe);
             //2020-02-13暂时注释，
-           // findViewById(R.id.wxuseinfo).setBackgroundDrawable(d);
+            findViewById(R.id.wxuseinfo).setBackgroundDrawable(d);
             CommonData.player=MediaPlayer.create(this,R.raw.weixin);
         }
         else
         {
             Drawable d=res.getDrawable(R.mipmap.aliapyexam);
-            //findViewById(R.id.wxuseinfo).setBackgroundDrawable(d);
+            findViewById(R.id.wxuseinfo).setBackgroundDrawable(d);
             CommonData.player=MediaPlayer.create(this,R.raw.zhifub);
         }
 
@@ -96,7 +96,7 @@ public class ShowpayActivity  extends AppCompatActivity {
 
 
         //确认支付
-        TextView print = findViewById(R.id.SurePrint);
+        /*TextView print = findViewById(R.id.SurePrint);
         print.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -110,7 +110,7 @@ public class ShowpayActivity  extends AppCompatActivity {
                 Orderpay();
 
             }
-        });
+        });*/
 
 
 

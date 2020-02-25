@@ -1,9 +1,14 @@
 package com.example.selfshopcenter;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -12,6 +17,7 @@ import com.example.selfshopcenter.bean.SearchOrderEntity;
 import com.example.selfshopcenter.commoncls.CommonData;
 import com.example.selfshopcenter.commoncls.ToastUtil;
 import com.example.selfshopcenter.net.RetrofitHelper;
+import com.example.selfshopcenter.printer.PrintUtil;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -27,7 +33,7 @@ public class DialyCloseActivity  extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dailyclose);
-
+        TextView password = findViewById(R.id.inputqyid);
 
         //确认打印
         TextView SureClose = findViewById(R.id.SureClose);
@@ -36,6 +42,7 @@ public class DialyCloseActivity  extends AppCompatActivity {
             public void onClick(View v) {
 
                 TextView password = findViewById(R.id.inputqyid);
+
                 String  inputpassword=password.getText().toString();
                 if (inputpassword.equals("admin")) {
 
@@ -48,6 +55,7 @@ public class DialyCloseActivity  extends AppCompatActivity {
 
             }
         });
+
 
 
         //返回上一页
@@ -120,9 +128,63 @@ public class DialyCloseActivity  extends AppCompatActivity {
     public  void  usePrint(String  printstr){
 
 
-        TextView showtext = findViewById(R.id.showtext);
+//        TextView showtext = findViewById(R.id.showtext);
+//
+//        showtext.setText(printstr);
+//        showtext.setSingleLine(false);
 
-        showtext.setText(printstr);
-        showtext.setSingleLine(false);
+        try {
+
+            PrintUtil.printReceipt(null,printstr);
+            getPrintStatus();
+
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    //查询打印机状态
+    private void getPrintStatus() {
+        String msg = "";
+        int iRet = PrintUtil.getPrintEndStatus();
+
+        switch (iRet) {
+            case 0:
+                msg = "正常";
+                break;
+            case 1:
+                msg = "打印机未连接或未上电";
+                break;
+            case 2:
+                msg = "打印机和调用库不匹配";
+                break;
+            case 3:
+                msg = "打印头打开";
+                break;
+            case 4:
+                msg = "切刀未复位";
+                break;
+            case 5:
+                msg = "打印头过热";
+                break;
+            case 6:
+                msg = "黑标错误";
+                break;
+            case 7:
+                msg = "纸尽";
+                break;
+            case 8:
+                msg = "纸将尽";
+                break;
+            case -1:
+                msg = "异常";
+                break;
+        }
+        if (iRet != 0) {
+
+            Toast.makeText(DialyCloseActivity.this, msg, Toast.LENGTH_SHORT).show();
+        }
     }
 }

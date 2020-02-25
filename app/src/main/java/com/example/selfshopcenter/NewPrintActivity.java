@@ -7,11 +7,13 @@ import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.selfshopcenter.bean.SearchOrderEntity;
 import com.example.selfshopcenter.commoncls.CommonData;
 import com.example.selfshopcenter.commoncls.ToastUtil;
 import com.example.selfshopcenter.net.RetrofitHelper;
+import com.example.selfshopcenter.printer.PrintUtil;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -189,10 +191,65 @@ public class NewPrintActivity extends Activity {
     public  void  usePrint(String  printstr){
 
 
-        TextView showtext = findViewById(R.id.showtext);
+//        TextView showtext = findViewById(R.id.showtext);
+//
+//        showtext.setText(printstr);
+//        showtext.setSingleLine(false);
 
-        showtext.setText(printstr);
-        showtext.setSingleLine(false);
+
+        try {
+
+            PrintUtil.printReceipt(null,printstr);
+            getPrintStatus();
+
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    //查询打印机状态
+    private void getPrintStatus() {
+        String msg = "";
+        int iRet = PrintUtil.getPrintEndStatus();
+
+        switch (iRet) {
+            case 0:
+                msg = "正常";
+                break;
+            case 1:
+                msg = "打印机未连接或未上电";
+                break;
+            case 2:
+                msg = "打印机和调用库不匹配";
+                break;
+            case 3:
+                msg = "打印头打开";
+                break;
+            case 4:
+                msg = "切刀未复位";
+                break;
+            case 5:
+                msg = "打印头过热";
+                break;
+            case 6:
+                msg = "黑标错误";
+                break;
+            case 7:
+                msg = "纸尽";
+                break;
+            case 8:
+                msg = "纸将尽";
+                break;
+            case -1:
+                msg = "异常";
+                break;
+        }
+        if (iRet != 0) {
+
+            Toast.makeText(NewPrintActivity.this, msg, Toast.LENGTH_SHORT).show();
+        }
     }
 
 }

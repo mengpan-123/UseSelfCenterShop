@@ -246,8 +246,6 @@ public class FinishActivity  extends AppCompatActivity {
         String msg = "";
         int iRet = PrintUtil.getPrintEndStatus();
 
-
-
         switch (iRet) {
             case 0:
                 msg = "正常";
