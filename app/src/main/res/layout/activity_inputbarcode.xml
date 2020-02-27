@@ -55,7 +55,7 @@
             android:layout_marginRight="20dp"
             android:layout_marginLeft="20dp"
             android:text=""
-            android:textSize="42dp" />
+            android:textSize="35dp" />
 
     </LinearLayout>
 

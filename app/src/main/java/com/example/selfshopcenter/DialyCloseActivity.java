@@ -18,6 +18,7 @@ import com.example.selfshopcenter.commoncls.CommonData;
 import com.example.selfshopcenter.commoncls.ToastUtil;
 import com.example.selfshopcenter.net.RetrofitHelper;
 import com.example.selfshopcenter.printer.PrintUtil;
+import com.example.selfshopcenter.printer.UsbPrintManager;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -29,13 +30,15 @@ import retrofit2.Response;
 public class DialyCloseActivity  extends AppCompatActivity {
 
 
+    private UsbPrintManager printer = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dailyclose);
         TextView password = findViewById(R.id.inputqyid);
 
-        //确认打印
+        //确认日结
         TextView SureClose = findViewById(R.id.SureClose);
         SureClose.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -46,6 +49,7 @@ public class DialyCloseActivity  extends AppCompatActivity {
                 String  inputpassword=password.getText().toString();
                 if (inputpassword.equals("admin")) {
 
+                    getPrinter();
                     //打印当日流水
                     GetDialyInfo();
 
@@ -124,6 +128,13 @@ public class DialyCloseActivity  extends AppCompatActivity {
     }
 
 
+    //USB打印机连接
+    private void getPrinter() {
+        printer = UsbPrintManager.getInstance();
+        printer.init(this);
+    }
+
+
 
     public  void  usePrint(String  printstr){
 
@@ -140,6 +151,9 @@ public class DialyCloseActivity  extends AppCompatActivity {
 
         }
         catch (Exception e) {
+            //Toast.makeText(DialyCloseActivity.this, "打印机信息异常", Toast.LENGTH_LONG).show();
+            ToastUtil.showToast(DialyCloseActivity.this, "异常通知", "打印机信息异常");
+
             e.printStackTrace();
         }
 
@@ -184,7 +198,7 @@ public class DialyCloseActivity  extends AppCompatActivity {
         }
         if (iRet != 0) {
 
-            Toast.makeText(DialyCloseActivity.this, msg, Toast.LENGTH_SHORT).show();
+            Toast.makeText(DialyCloseActivity.this, msg, Toast.LENGTH_LONG).show();
         }
     }
 }

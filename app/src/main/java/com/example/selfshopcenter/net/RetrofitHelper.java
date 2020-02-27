@@ -453,4 +453,26 @@ public class RetrofitHelper {
 
     }
 
+
+    //日结
+    public Call<DeleteSpinfoEntity>  UPDATEVERSION(){
+        String s="{\n" +
+                "    \"appid\": \""+CommonData.kquser+"\",\n" +
+                "    \"apiname\": \"SETAPKTIME\",\n" +
+                "    \"req_operator\": \"zp\",\n" +
+                "    \"data\": {\n" +
+                "        \"khid\": \""+CommonData.khid+"\",\n" +
+                "        \"qyid\": \""+CommonData.QYID+"\",\n" +
+                "        \"version\": \""+CommonData.app_version+"\",\n" +
+                "        \"posid\":\""+CommonData.posid+"\"\n" +
+                "       \n" +
+                "    }\n" +
+                "}\n";
+
+        RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), s);
+        return mAPIService.UPDATEVERSION(requestBody);
+
+    }
+
+
 }

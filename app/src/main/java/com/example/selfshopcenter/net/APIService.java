@@ -87,8 +87,15 @@ public interface APIService {
 
 
     /**
-     * 重新打印
+     * 日结
      */
     @POST("AddspinDetails/SearchDialyOrder")
     Call<DialyCloseEntity> DialyClose(@Body RequestBody requestBody);
+
+
+    /**
+     * 重新打印
+     */
+    @POST("AddspinDetails/Update_Version")
+    Call<DeleteSpinfoEntity> UPDATEVERSION(@Body RequestBody requestBody);
 }

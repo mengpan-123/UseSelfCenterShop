@@ -124,7 +124,7 @@
                             android:singleLine="true"
                             android:text="价格"
                             android:textColor="#6F6D6D"
-                            android:textSize="32dp"
+                            android:textSize="34dp"
                             android:textStyle="bold" />
 
                         <TextView
@@ -135,7 +135,7 @@
                             android:singleLine="true"
                             android:text="价格"
                             android:textColor="#DF1F11"
-                            android:textSize="32dp"
+                            android:textSize="34dp"
                             android:textStyle="bold" />
 
                     </LinearLayout>
@@ -158,7 +158,7 @@
 
                         <TextView
                             android:id="@+id/tv_num"
-                            android:layout_width="125dp"
+                            android:layout_width="140dp"
                             android:layout_height="50dp"
                             android:layout_marginTop="3dp"
                             android:gravity="center"

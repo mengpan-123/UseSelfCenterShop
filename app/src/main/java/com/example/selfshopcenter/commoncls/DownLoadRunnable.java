@@ -11,7 +11,14 @@ import android.os.Handler;
 
 import androidx.core.content.FileProvider;
 
+import com.example.selfshopcenter.bean.DeleteSpinfoEntity;
+import com.example.selfshopcenter.net.RetrofitHelper;
+
 import java.io.File;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
 public class DownLoadRunnable  implements Runnable {
@@ -69,10 +76,7 @@ public class DownLoadRunnable  implements Runnable {
 
                             Uri downloadFileUri;
                             Intent install = new Intent(Intent.ACTION_VIEW);
-                            //调用安装方法,进行自动升级
-                            //Uri downloadFileUri = downloadManager.getUriForDownloadedFile(requestId);
-                            //Uri downloadFileUri = DownloadManager.COLUMN_LOCAL_URI;
-                            boolean haveInstallPermission;
+
                             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) { // 6.0以下
                                 downloadFileUri = downloadManager.getUriForDownloadedFile(requestId);
 
@@ -102,6 +106,23 @@ public class DownLoadRunnable  implements Runnable {
                                 mContext.startActivity(install);
                             }
 
+
+                            //调用接口，进行字数收银机器的版本号和状态更新
+                            if (!CommonData.khid.equals("")&&!CommonData.QYID.equals("")) {
+                                Call<DeleteSpinfoEntity> up_apk = RetrofitHelper.getInstance().UPDATEVERSION();
+                                up_apk.enqueue(new Callback<DeleteSpinfoEntity>() {
+                                    @Override
+                                    public void onResponse(Call<DeleteSpinfoEntity> call, Response<DeleteSpinfoEntity> response) {
+
+
+                                    }
+
+                                    @Override
+                                    public void onFailure(Call<DeleteSpinfoEntity> call, Throwable t) {
+
+                                    }
+                                });
+                            }
 
                             break;
                         case DownloadManager.STATUS_FAILED://下载失败

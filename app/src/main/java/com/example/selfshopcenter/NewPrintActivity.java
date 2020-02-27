@@ -14,6 +14,7 @@ import com.example.selfshopcenter.commoncls.CommonData;
 import com.example.selfshopcenter.commoncls.ToastUtil;
 import com.example.selfshopcenter.net.RetrofitHelper;
 import com.example.selfshopcenter.printer.PrintUtil;
+import com.example.selfshopcenter.printer.UsbPrintManager;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -26,6 +27,9 @@ import java.util.List;
 
 
 public class NewPrintActivity extends Activity {
+
+
+    private UsbPrintManager printer = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -204,6 +208,9 @@ public class NewPrintActivity extends Activity {
 
         }
         catch (Exception e) {
+
+            ToastUtil.showToast(NewPrintActivity.this, "异常通知", "打印机信息异常");
+
             e.printStackTrace();
         }
 
@@ -250,6 +257,13 @@ public class NewPrintActivity extends Activity {
 
             Toast.makeText(NewPrintActivity.this, msg, Toast.LENGTH_SHORT).show();
         }
+    }
+
+
+    //USB打印机连接
+    private void getPrinter() {
+        printer = UsbPrintManager.getInstance();
+        printer.init(this);
     }
 
 }

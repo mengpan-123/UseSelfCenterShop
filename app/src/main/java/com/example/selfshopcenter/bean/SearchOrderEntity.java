@@ -271,7 +271,7 @@ public class SearchOrderEntity {
             private double pluAmount;
             private double RealAmount;
             private int pluDis;
-            private int nWeight;
+            private double nWeight;
 
             public int getItemId() {
                 return itemId;
@@ -345,11 +345,11 @@ public class SearchOrderEntity {
                 this.pluDis = pluDis;
             }
 
-            public int getNWeight() {
+            public double getNWeight() {
                 return nWeight;
             }
 
-            public void setNWeight(int nWeight) {
+            public void setNWeight(double nWeight) {
                 this.nWeight = nWeight;
             }
         }
