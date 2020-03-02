@@ -45,16 +45,21 @@ public class CarItemsActivity extends AppCompatActivity implements View.OnClickL
     private CreateAddAdapter adapter; //用于显示列表的容器，传输数据
     private ListView listview;  //用于画列表的
     View layout = null;
-
+    View loading_gif = null;
     //用于界面上UI显示 的列表
     private TextView phone_view;  //显示会员名称的控件
     private TextView price;
     public TextView shopcar_num;
     private ImageView text_tip;
+
+
     private TextView yhmoney;
     private  TextView storename;
     private TextView tv_go_to_pay;  //去付款按钮的显示作用
     private LinearLayout listtop;
+
+
+    private Dialog gif_dialog=null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,6 +102,8 @@ public class CarItemsActivity extends AppCompatActivity implements View.OnClickL
         listview = (ListView) findViewById(R.id.listview);
         text_tip = (ImageView) findViewById(R.id.text_tip);
 
+
+
         price = (TextView) findViewById(R.id.tv_total_price);
         phone_view = (TextView) findViewById(R.id.IamHy);
         shopcar_num = findViewById(R.id.shopcar_num);
@@ -113,6 +120,25 @@ public class CarItemsActivity extends AppCompatActivity implements View.OnClickL
         adapter.setRefreshPriceInterface(this);
         priceControl(adapter.getPitchOnMap());
         CommonData.list_adaptor = adapter;
+    }
+
+
+
+    private   void  Open_gif(){
+        gif_dialog = new Dialog(this,
+                R.style.myNewsDialogStyle);
+
+        // 自定义对话框布局
+        loading_gif = View.inflate(this, R.layout.activity_gif,
+                null);
+
+        gif_dialog.setContentView(loading_gif);
+        gif_dialog.show();
+    }
+
+    private   void  CLose_gif(){
+
+        gif_dialog.dismiss();
     }
 
 
@@ -270,6 +296,8 @@ public class CarItemsActivity extends AppCompatActivity implements View.OnClickL
 
     public void AddnewSpid(String inputbarcode,String type) {
 
+        Open_gif();
+
         if (CommonData.orderInfo != null) {
             if (CommonData.orderInfo.spList != null) {
                 MapList = CommonData.orderInfo.spList;
@@ -364,6 +392,9 @@ public class CarItemsActivity extends AppCompatActivity implements View.OnClickL
                                 }
                             }
                         }
+
+
+
                         CommonData.orderInfo.spList = MapList;
 
                         //界面上实现  增加一个元素
@@ -374,6 +405,8 @@ public class CarItemsActivity extends AppCompatActivity implements View.OnClickL
                         listview.setSelection(adapter.getCount() - 1);
                         adapter.setRefreshPriceInterface(CarItemsActivity.this);
                         priceControl(adapter.getPitchOnMap());
+
+                       CLose_gif();
 
                     }
                     else

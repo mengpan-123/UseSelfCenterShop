@@ -475,4 +475,24 @@ public class RetrofitHelper {
     }
 
 
+    //获取广告位
+    public Call<AdvertiseGetEntity>  GETADVERTISE(){
+        String s="{\n" +
+                "    \"appid\": \""+CommonData.kquser+"\",\n" +
+                "    \"apiname\": \"GETADVERTISE\",\n" +
+                "    \"req_operator\": \"zp\",\n" +
+                "    \"data\": {\n" +
+                "        \"khid\": \""+CommonData.khid+"\",\n" +
+                "        \"qyid\": \""+CommonData.QYID+"\",\n" +
+                "        \"posid\":\""+CommonData.posid+"\"\n" +
+                "       \n" +
+                "    }\n" +
+                "}\n";
+
+        RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), s);
+        return mAPIService.GETADVERTISE(requestBody);
+
+    }
+
+
 }

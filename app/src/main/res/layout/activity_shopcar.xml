@@ -162,31 +162,6 @@
             android:textColor="@color/colorAccent"
             android:background="@mipmap/qrscan"/>
 
-
-
-        <!--<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:tools="http://schemas.android.com/tools"
-            android:layout_width="300dp"
-            android:layout_height="300dp"
-            android:layout_above="@id/buttomInfos"
-
-            >
-
-            <LinearLayout
-
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
-                android:layout_marginEnd="0dp"
-                android:layout_marginRight="0dp"
-                android:gravity="center">
-
-            </LinearLayout>
-
-        </RelativeLayout>-->
-
-
     </LinearLayout>
 
     <ListView
@@ -303,7 +278,7 @@
                     android:id="@+id/tv_total_price"
                     android:textSize="40dp"
                     android:textColor="#EC1D1D"
-                    android:text="1"
+                    android:text="0"
                     android:gravity="center"/>
             </LinearLayout>
 

@@ -7,7 +7,7 @@ android {
         applicationId "com.example.selfshopcenter"
         minSdkVersion 15
         targetSdkVersion 29
-        versionCode 205
+        versionCode 207
         versionName "3.1.15"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -16,21 +16,59 @@ android {
         variant ->
             variant.outputs.all {
                 // 此处指定生成的apk文件名
-                outputFileName = "AIINBI_2.apk"
+                //outputFileName = "AIINBI_2.apk"
+                outputFileName = "CenterShop-${defaultConfig.versionName}-${defaultConfig.versionCode}-${releaseTime()}-${buildType.name}.apk"
             }
     }
+
+
     //lambda 表达式相关
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
-    buildTypes {
+    /*buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
+    }*/
+
+    signingConfigs {
+        release {
+            keyAlias 'centershop'
+            keyPassword 'centershop'
+            storeFile file('../centershop.jks')
+            storePassword 'centershop'
+        }
     }
+
+
+    //打包类型,进行签名文件打包
+    buildTypes {
+
+        debug {
+            minifyEnabled false
+            zipAlignEnabled false
+            shrinkResources false
+            debuggable true
+            signingConfig signingConfigs.release
+        }
+
+        release {
+            minifyEnabled false
+            zipAlignEnabled false
+            shrinkResources false
+            jniDebuggable false
+            renderscriptDebuggable false
+            pseudoLocalesEnabled false
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+        }
+    }
+
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -92,6 +130,14 @@ dependencies {
     implementation 'com.danikula:videocache:2.7.1'
 
 
+    //签名和升级使用的
+    implementation 'io.reactivex:rxandroid:1.2.1'
+
+
     implementation files('libs/printsdk0815-v2.2.jar')
-    compile 'com.danikula:videocache:2.7.0'
+    implementation 'com.danikula:videocache:2.7.0'
+}
+
+def releaseTime() {
+    return new Date().format("yyyy.MM.dd", TimeZone.getTimeZone("UTC"))
 }

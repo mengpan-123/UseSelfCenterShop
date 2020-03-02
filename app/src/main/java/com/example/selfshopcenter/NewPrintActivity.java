@@ -52,7 +52,7 @@ public class NewPrintActivity extends Activity {
 
 
         //确认打印
-        TextView print = findViewById(R.id.SurePrint);
+        /*TextView print = findViewById(R.id.SurePrint);
         print.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -64,7 +64,7 @@ public class NewPrintActivity extends Activity {
                 GetPrintStr(inputnumber);
 
             }
-        });
+        });*/
 
 
     }

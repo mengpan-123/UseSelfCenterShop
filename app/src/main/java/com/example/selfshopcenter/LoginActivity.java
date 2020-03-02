@@ -7,7 +7,9 @@ import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.app.DownloadManager;
+import android.app.ProgressDialog;
 import android.content.ComponentName;
 import android.content.ContentValues;
 import android.content.Context;
@@ -38,6 +40,8 @@ import com.example.selfshopcenter.commoncls.DownLoadRunnable;
 import com.example.selfshopcenter.commoncls.MyDatabaseHelper;
 import com.example.selfshopcenter.commoncls.ToastUtil;
 
+import com.example.selfshopcenter.download.DownloadUtils;
+import com.example.selfshopcenter.download.JsDownloadListener;
 import com.example.selfshopcenter.net.RetrofitHelper;
 import com.example.selfshopcenter.net.UpdateDialog;
 
@@ -48,45 +52,20 @@ import java.util.Date;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import rx.Subscriber;
 
 public class LoginActivity extends AppCompatActivity {
 
     private MyDatabaseHelper dbHelper;
     private SQLiteDatabase querydb;
     String  updateurl = "http://52.81.85.108:8080/uploadapk/AIINBI_2.apk";
-    private UpdateDialog downloadDialog;
 
     private String url = "http://192.168.0.108/222/MyApp1.apk";
 
     private int  Appvercode=0;
 
-    //下载的后台
-    Handler handler = new Handler(){
-        @Override
-        public void handleMessage(Message msg) {
-            switch (msg.what){
-                case DownloadManager.STATUS_SUCCESSFUL:
-                    downloadDialog.setProgress(100);
-                    canceledDialog();
-                    Toast.makeText(LoginActivity.this, "下载任务已经完成！", Toast.LENGTH_SHORT).show();
-                    break;
+    private ProgressDialog progressDialog;
 
-                case DownloadManager.STATUS_RUNNING:
-                    //int progress = (int) msg.obj;
-                    downloadDialog.setProgress((int) msg.obj);
-                    //canceledDialog();
-                    break;
-
-                case DownloadManager.STATUS_FAILED:
-                    canceledDialog();
-                    break;
-
-                case DownloadManager.STATUS_PENDING:
-                    showDialog();
-                    break;
-            }
-        }
-    };
 
 
     @Override
@@ -288,9 +267,9 @@ public class LoginActivity extends AppCompatActivity {
                             if (response.body().getData().getV_VERSION()> Appvercode){
                                 //准备升级
                                 updateurl=response.body().getData().getV_Updatepath();
-                                showDialog();
-                                //最好是用单线程池，或者intentService取代
-                                new Thread(new DownLoadRunnable(LoginActivity.this,updateurl, handler)).start();
+
+                                downFile(updateurl);
+
                             }
                             else{
                                 //ToastUtil.showToast(LoginActivity.this, "消息内容提示", "暂无可升级的内容");
@@ -308,32 +287,119 @@ public class LoginActivity extends AppCompatActivity {
 
                 @Override
                 public void onFailure(Call<UpdateVersionEntity> call, Throwable t) {
-                    ToastUtil.showToast(LoginActivity.this, "输入消息通知", t.toString());
+                    //ToastUtil.showToast(LoginActivity.this, "输入消息通知", t.toString());
                 }
             });
         }
         catch(Exception ex){
-            ToastUtil.showToast(LoginActivity.this, "输入消息通知", ex.toString());
+           // ToastUtil.showToast(LoginActivity.this, "输入消息通知", ex.toString());
         }
     }
 
 
 
 
+    public void downFile(final String url) {
+        progressDialog = new ProgressDialog(LoginActivity.this);
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        progressDialog.setTitle("正在下载");
+        progressDialog.setMessage("请稍候...");
+        progressDialog.setProgress(0);
+        progressDialog.show();
 
-    private void showDialog() {
-        if(downloadDialog==null){
-            downloadDialog = new UpdateDialog(this);
+        DownloadUtils downloadUtils = new DownloadUtils(new JsDownloadListener() {
+            @Override
+            public void onStartDownload(long length) {
+                setMax(length);
+            }
+
+            @Override
+            public void onProgress(int progress) {
+                downLoading(progress);
+            }
+
+            @Override
+            public void onFinishDownload() {
+                //downSuccess();
+            }
+
+            @Override
+            public void onFail(String errorInfo) {
+                ToastUtil.showToast(LoginActivity.this, "输入消息通知", errorInfo);
+            }
+        });
+
+        downloadUtils.download(url, new File(getApkPath(), "index.apk"), new Subscriber() {
+            @Override
+            public void onCompleted() {
+                downSuccess();
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                ToastUtil.showToast(LoginActivity.this, "输入消息通知", e.getMessage());
+            }
+
+            @Override
+            public void onNext(Object o) {
+            }
+        });
+    }
+
+
+    public void downSuccess() {
+        if (progressDialog != null && progressDialog.isShowing()) {
+            progressDialog.dismiss();
         }
+        AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
+        builder.setIcon(android.R.drawable.ic_dialog_info);
+        builder.setTitle("下载完成");
+        builder.setMessage("是否安装");
+        builder.setCancelable(false);
+        builder.setPositiveButton("确定", (dialog, which) -> {
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                Uri contentUri = FileProvider.getUriForFile(LoginActivity.this, "com.example.selfshopcenter.fileProvider", new File(getApkPath(), "index.apk"));
+                intent.setDataAndType(contentUri, "application/vnd.android.package-archive");
+            } else {
+                intent.setDataAndType(Uri.fromFile(new File(getApkPath(), "index.apk")), "application/vnd.android.package-archive");
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            }
+            startActivity(intent);
+        });
+        builder.setNegativeButton("取消", (dialog, which) -> {
 
-        if(!downloadDialog.isShowing()){
-            downloadDialog.show();
+        });
+        builder.create().show();
+    }
+
+
+
+
+    public String getApkPath() {
+        String directoryPath;
+        if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
+            directoryPath = getExternalFilesDir("apk").getAbsolutePath();
+        } else {
+            directoryPath = getFilesDir() + File.separator + "apk";
+        }
+        File file = new File(directoryPath);
+        if (!file.exists()) {
+            file.mkdirs();
+        }
+        return directoryPath;
+    }
+
+    public void setMax(final long total) {
+        if (progressDialog != null) {
+            progressDialog.setMax((int) total);
         }
     }
 
-    private void canceledDialog() {
-        if(downloadDialog!=null&&downloadDialog.isShowing()){
-            downloadDialog.dismiss();
+    public void downLoading(final int i) {
+        if (progressDialog != null) {
+            progressDialog.setProgress(i);
         }
     }
 
