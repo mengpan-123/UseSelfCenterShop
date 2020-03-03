@@ -296,7 +296,7 @@ public class CarItemsActivity extends AppCompatActivity implements View.OnClickL
 
     public void AddnewSpid(String inputbarcode,String type) {
 
-        Open_gif();
+        CommonData.Open_gif(CarItemsActivity.this);
 
         if (CommonData.orderInfo != null) {
             if (CommonData.orderInfo.spList != null) {
@@ -406,7 +406,7 @@ public class CarItemsActivity extends AppCompatActivity implements View.OnClickL
                         adapter.setRefreshPriceInterface(CarItemsActivity.this);
                         priceControl(adapter.getPitchOnMap());
 
-                       CLose_gif();
+                        CommonData.CLose_gif();
 
                     }
                     else

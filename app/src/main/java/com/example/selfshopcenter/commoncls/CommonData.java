@@ -1,11 +1,14 @@
 package com.example.selfshopcenter.commoncls;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.media.MediaPlayer;
 import android.os.Build;
+import android.view.View;
 
+import com.example.selfshopcenter.R;
 import com.example.selfshopcenter.net.CreateAddAdapter;
 
 public class CommonData {
@@ -83,6 +86,9 @@ public class CommonData {
 
   //====================以下是公共方法=================================
 
+    private static Dialog gif_dialog=null;
+
+    private static View loading_gif = null;
 
     //获取程序的版本号
     public static int getAppVersioncode(Context context) {
@@ -109,6 +115,26 @@ public class CommonData {
             e.printStackTrace();
         }
         return code;
+    }
+
+
+
+
+    public static  void  Open_gif(Context m_context){
+        gif_dialog = new Dialog(m_context,
+                R.style.myNewsDialogStyle);
+
+        // 自定义对话框布局
+        loading_gif = View.inflate(m_context, R.layout.activity_gif,
+                null);
+
+        gif_dialog.setContentView(loading_gif);
+        gif_dialog.show();
+    }
+
+    public static  void  CLose_gif(){
+
+        gif_dialog.dismiss();
     }
 
 }

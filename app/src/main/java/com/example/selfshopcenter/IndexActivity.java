@@ -28,6 +28,7 @@ import androidx.core.content.FileProvider;
 import com.danikula.videocache.HttpProxyCacheServer;
 import com.example.selfshopcenter.bean.AdvertiseGetEntity;
 import com.example.selfshopcenter.bean.ClearCarEntity;
+import com.example.selfshopcenter.bean.DeleteSpinfoEntity;
 import com.example.selfshopcenter.bean.SearchPosEntity;
 import com.example.selfshopcenter.bean.UpdateVersionEntity;
 import com.example.selfshopcenter.commoncls.CommonData;
@@ -278,7 +279,7 @@ public class IndexActivity extends AppCompatActivity {
     }
 
 
-    //准备预升级
+    //获取首页播放的广告内容
     public   void   GetAdvertisement(){
 
         try {
@@ -439,6 +440,7 @@ public class IndexActivity extends AppCompatActivity {
         builder.setCancelable(false);
         builder.setPositiveButton("确定", (dialog, which) -> {
             Intent intent = new Intent(Intent.ACTION_VIEW);
+
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                 Uri contentUri = FileProvider.getUriForFile(IndexActivity.this, "com.example.selfshopcenter.fileProvider", new File(getApkPath(), "index.apk"));
@@ -447,7 +449,28 @@ public class IndexActivity extends AppCompatActivity {
                 intent.setDataAndType(Uri.fromFile(new File(getApkPath(), "index.apk")), "application/vnd.android.package-archive");
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             }
+
+
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
+            //更新 版本
+            Call<DeleteSpinfoEntity>  update=  RetrofitHelper.getInstance().UPDATEVERSION();
+            update.enqueue(new Callback<DeleteSpinfoEntity>() {
+                @Override
+                public void onResponse(Call<DeleteSpinfoEntity> call, Response<DeleteSpinfoEntity> response) {
+                    if (null !=response){
+                        if (response.body().getCode().equals("success")){
+
+                        }
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<DeleteSpinfoEntity> call, Throwable t) {
+
+                }
+            });
+
         });
         builder.setNegativeButton("取消", (dialog, which) -> {
 

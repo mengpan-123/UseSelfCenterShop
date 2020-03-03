@@ -33,6 +33,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.selfshopcenter.bean.DeleteSpinfoEntity;
 import com.example.selfshopcenter.bean.UpdateVersionEntity;
 import com.example.selfshopcenter.bean.UserLoginEntity;
 import com.example.selfshopcenter.commoncls.CommonData;
@@ -367,6 +368,28 @@ public class LoginActivity extends AppCompatActivity {
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             }
             startActivity(intent);
+
+            //确认安装之后，更新收音机的状态
+            //更新 版本
+            Call<DeleteSpinfoEntity>  update=  RetrofitHelper.getInstance().UPDATEVERSION();
+            update.enqueue(new Callback<DeleteSpinfoEntity>() {
+                @Override
+                public void onResponse(Call<DeleteSpinfoEntity> call, Response<DeleteSpinfoEntity> response) {
+                    if (null !=response){
+                        if (response.body().getCode().equals("success")){
+
+                        }
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<DeleteSpinfoEntity> call, Throwable t) {
+
+                }
+            });
+
+
+
         });
         builder.setNegativeButton("取消", (dialog, which) -> {
 

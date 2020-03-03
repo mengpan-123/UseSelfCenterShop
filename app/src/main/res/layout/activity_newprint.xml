@@ -13,7 +13,6 @@
         android:layout_marginStart="0dp"
         android:layout_marginLeft="0dp"
         android:orientation="horizontal"
-        android:gravity="center"
         android:background="#0fB6A4">
 
         <LinearLayout
@@ -82,7 +81,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="200dp"
+        android:layout_marginTop="250dp"
         >
 
 
@@ -97,10 +96,71 @@
             android:textSize="28sp" />
 
 
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="410dp"
+        android:layout_marginLeft="100dp"
+        android:layout_marginRight="100dp"
+        >
+
+
+
+        <TextView
+            android:id="@+id/alertinfo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="若无法扫码，请在下方输入商户订单号确认打印"
+            android:textColor="#666"
+
+            android:textSize="28sp" />
+
 
     </LinearLayout>
 
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:layout_marginLeft="100dp"
+        android:layout_marginRight="100dp"
+        >
+
+        <EditText
+            android:id="@+id/inputqyid"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:lines="1"
+            android:padding="20dp"
+            android:singleLine="true"
+            android:text=""
+            android:hint="请输入支付账单中的商户订单号"
+            android:textColorHint="#95A1AA"
+            android:textSize="24sp" />
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_marginTop="120dp">
+        <Button
+            android:id="@+id/surePrint"
+            android:background="@drawable/button_shape"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:layout_marginRight="60dp"
+            android:layout_marginLeft="60dp"
+            android:text="确认打印"
+            android:textColor="#F0F0F0"
+            android:textSize="30dp"/>
+    </LinearLayout>
 
 
    <!-- <LinearLayout

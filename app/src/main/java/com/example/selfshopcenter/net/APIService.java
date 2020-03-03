@@ -47,7 +47,7 @@ public interface APIService {
     /**
      *查询收银机使用状态
      */
-    @POST("Export/GetUseBleData")
+    @POST("AddspinDetails/Device_Control")
     Call<SearchPosEntity> SearchUseStatus(@Body RequestBody requestBody);
 
 
@@ -107,7 +107,7 @@ public interface APIService {
 
 
     /**
-     * 重新打印
+     * 获取广告
      */
     @POST("AddspinDetails/GetSelfCenterGw")
     Call<AdvertiseGetEntity> GETADVERTISE(@Body RequestBody requestBody);

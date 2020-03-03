@@ -8,9 +8,10 @@
    <VideoView
         android:id="@+id/video"
         android:layout_width="match_parent"
-        android:layout_height="1024dp"
+        android:layout_height="1180dp"
         android:clickable="false"
         android:focusable="false"
+       android:layout_gravity="center"
         android:focusableInTouchMode="false"
         />
 

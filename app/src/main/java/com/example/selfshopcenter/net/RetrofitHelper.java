@@ -197,9 +197,9 @@ public class RetrofitHelper {
                 "    \"apiname\": \"DEVICECONTROL\",\n" +
                 "    \"req_operator\": \"zp\",\n" +
                 "    \"data\": {\n" +
-                "    \t\"qyid\":\""+CommonData.QYID+"\",\n" +
+                "        \"qyid\":\""+CommonData.QYID+"\",\n" +
                 "        \"khid\": \""+CommonData.khid+"\",\n" +
-                "        \"pc_id\":\""+CommonData.deviceid+"\"\n" +
+                "        \"posid\":\""+CommonData.posid+"\"\n" +
                 "    }\n" +
                 "}\n";
 
@@ -350,7 +350,7 @@ public class RetrofitHelper {
 
 
     /**
-     * 获取刷脸支付使用的 authinfo 信息
+     * 获取当前需要下载的版本信息与下载地址
      *
      */
     public Call<UpdateVersionEntity> UpdateVersion() {
@@ -454,7 +454,7 @@ public class RetrofitHelper {
     }
 
 
-    //日结
+    //更新自助收银的版本内容
     public Call<DeleteSpinfoEntity>  UPDATEVERSION(){
         String s="{\n" +
                 "    \"appid\": \""+CommonData.kquser+"\",\n" +

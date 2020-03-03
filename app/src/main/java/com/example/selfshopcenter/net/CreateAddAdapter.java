@@ -153,6 +153,8 @@ public class CreateAddAdapter extends BaseAdapter {
                 @Override
                 public void onClick(View v) {
 
+                    CommonData.Open_gif(context);
+
                     if (!is_click) {
                         return;
                     }
@@ -240,6 +242,8 @@ public class CreateAddAdapter extends BaseAdapter {
 
                                         is_click = true;
 
+                                        CommonData.CLose_gif();
+
                                     }
 
                                 }
@@ -264,6 +268,9 @@ public class CreateAddAdapter extends BaseAdapter {
             add.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+
+                    CommonData.Open_gif(context);
+
                     String inputbarcode = list.get(position).get("barcode");
                     String weight = list.get(position).get("weight");
                     if ( !weight.equals("0")&&!weight.equals("")){
@@ -321,6 +328,9 @@ public class CreateAddAdapter extends BaseAdapter {
                                     notifyDataSetChanged();
                                     mrefreshPriceInterface.refreshPrice(pitchOnMap);
 
+
+                                    CommonData.CLose_gif();
+
                                 }
                                 else {
                                     ToastUtil.showToast(context, "商品移除通知", response.body().getMsg());
@@ -344,6 +354,8 @@ public class CreateAddAdapter extends BaseAdapter {
             delete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    CommonData.Open_gif(context);
+
                     String inputbarcode = list.get(position).get("barcode");
                      Call<DeleteSpinfoEntity>  delete=    RetrofitHelper.getInstance().DeleteSpinfo(inputbarcode,"DELETE");
                      delete.enqueue(new Callback<DeleteSpinfoEntity>() {
@@ -425,7 +437,9 @@ public class CreateAddAdapter extends BaseAdapter {
 
                                                      is_click = true;
 
-                                                 }
+                                                     CommonData.CLose_gif();
+
+                                                  }
 
                                              }
                                          }
