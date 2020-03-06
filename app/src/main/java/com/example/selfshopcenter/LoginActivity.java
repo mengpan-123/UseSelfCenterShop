@@ -33,6 +33,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.selfshopcenter.bean.ClearCarEntity;
 import com.example.selfshopcenter.bean.DeleteSpinfoEntity;
 import com.example.selfshopcenter.bean.UpdateVersionEntity;
 import com.example.selfshopcenter.bean.UserLoginEntity;
@@ -89,7 +90,6 @@ public class LoginActivity extends AppCompatActivity {
 
         //2.0  先从本地选取初始化数据，如果拿到了，说明初始化过，则直接跳转，跳过登录
         InitData(querydb);
-
 
 
         if (!CommonData.khid.equals("") && !CommonData.posid.equals("")) {

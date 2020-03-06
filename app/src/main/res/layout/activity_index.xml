@@ -5,7 +5,7 @@
     android:background="#f9ffff">
 
 
-   <!--<VideoView
+   <VideoView
         android:id="@+id/video"
         android:layout_width="match_parent"
         android:layout_height="1180dp"
@@ -14,7 +14,7 @@
        android:layout_gravity="center"
         android:focusableInTouchMode="false"
         />
--->
+
     <!--开始购物-->
     <LinearLayout
         android:layout_width="match_parent"
