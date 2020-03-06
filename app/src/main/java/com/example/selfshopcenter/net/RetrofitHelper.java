@@ -57,11 +57,11 @@ public class RetrofitHelper {
 
         Interceptor controlInterceptor = chain -> {
             Request request = chain.request();
-            RequestBody oldBody = request.body();
-            Buffer buffer = new Buffer();
-            assert oldBody != null;
-            oldBody.writeTo(buffer);
-            String data = buffer.readUtf8();
+//            RequestBody oldBody = request.body();
+//            Buffer buffer = new Buffer();
+//            assert oldBody != null;
+//            oldBody.writeTo(buffer);
+//            String data = buffer.readUtf8();
             return chain.proceed(request);
         };
 

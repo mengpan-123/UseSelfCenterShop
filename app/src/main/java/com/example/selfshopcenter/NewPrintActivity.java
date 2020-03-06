@@ -76,11 +76,16 @@ public class NewPrintActivity extends Activity {
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
 
-
         if (event.getAction() == KeyEvent.ACTION_DOWN) {
             char pressedKey = (char) event.getUnicodeChar();
             barcode += pressedKey;
         }
+        if (event.getKeyCode() == KeyEvent.KEYCODE_BACK &&
+                event.getAction() == KeyEvent.ACTION_DOWN) {
+            return true;
+        }
+
+
         if (event.getAction() == KeyEvent.ACTION_DOWN && event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
             // ToastUtil.showToast(InputGoodsActivity.this, "商品录入通知", barcode);
             if (!TextUtils.isEmpty(barcode)) {
@@ -95,7 +100,7 @@ public class NewPrintActivity extends Activity {
             }
 
         }
-        return true;
+        return super.dispatchKeyEvent(event);
 
     }
 

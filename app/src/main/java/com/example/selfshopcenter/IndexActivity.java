@@ -72,7 +72,7 @@ public class IndexActivity extends AppCompatActivity {
         Appvercode=CommonData.getAppVersioncode(this);
 
         //视频的查询与播放
-        GetAdvertisement();
+        //GetAdvertisement();
 
 
         //设置底部的显示信息
@@ -94,31 +94,35 @@ public class IndexActivity extends AppCompatActivity {
         }
 
         //清空会员基础信息，清空购物车信息
-        Call<ClearCarEntity>  ClearCar= RetrofitHelper.getInstance().ClearCarInfo(CommonData.khid, CommonData.posid);
-        ClearCar.enqueue(new Callback<ClearCarEntity>() {
-            @Override
-            public void onResponse(Call<ClearCarEntity> call, Response<ClearCarEntity> response) {
+        try {
+            Call<ClearCarEntity> ClearCar = RetrofitHelper.getInstance().ClearCarInfo(CommonData.khid, CommonData.posid);
+            ClearCar.enqueue(new Callback<ClearCarEntity>() {
+                @Override
+                public void onResponse(Call<ClearCarEntity> call, Response<ClearCarEntity> response) {
 
-                if (response.body() != null) {
+                    if (response.body() != null) {
 
-                    if (response.body().getCode().equals("success")||response.body().getMsg().equals("没有符合条件的数据")) {
+                        if (response.body().getCode().equals("success") || response.body().getMsg().equals("没有符合条件的数据")) {
+
+                        } else {
+                            ToastUtil.showToast(IndexActivity.this, "购物车清除通知", response.body().getMsg());
+
+                        }
 
                     }
-                    else
-                    {
-                        ToastUtil.showToast(IndexActivity.this, "购物车清除通知", response.body().getMsg());
+                }
 
-                    }
+                @Override
+                public void onFailure(Call<ClearCarEntity> call, Throwable t) {
 
                 }
-            }
+            });
+        }
+        catch(Exception ex)
+        {
+            ToastUtil.showToast(IndexActivity.this, "购物车清除通知", ex.toString());
 
-            @Override
-            public void onFailure(Call<ClearCarEntity> call, Throwable t) {
-
-            }
-        });
-
+        }
 
 
         //避免万一断网情况下，数据未正常清空。清空失败 这种情况呢？
@@ -280,61 +284,61 @@ public class IndexActivity extends AppCompatActivity {
 
 
     //获取首页播放的广告内容
-    public   void   GetAdvertisement(){
-
-        try {
-
-            Call<AdvertiseGetEntity>  updateversion = RetrofitHelper.getInstance().GETADVERTISE();
-            updateversion.enqueue(new Callback<AdvertiseGetEntity>() {
-                @Override
-                public void onResponse(Call<AdvertiseGetEntity> call, Response<AdvertiseGetEntity> response) {
-                    if (null!=response){
-                        if (response.body().getCode().equals("success")){
-
-                            VIDEO_URL=response.body().getData().getPath();
-                        }
-                        else
-                        {
-                            VIDEO_URL = "http://52.81.85.108:8080/uploadapk/index.mp4";
-                        }
-
-                        videoView=findViewById(R.id.video);
-
-                        HttpProxyCacheServer proxy = getProxy();
-                        String proxyUrl = proxy.getProxyUrl(VIDEO_URL);
-                        try {
-                            videoView.setVideoPath(proxyUrl);
-
-
-                        } catch (Exception e) {
-                            Toast.makeText(IndexActivity.this,"播放失败",Toast.LENGTH_SHORT);
-                            e.printStackTrace();
-                        }
-                        //以下是视频成功播放并且缓存的首要条件
-                        //1:主要下面这一段是解决视频播放黑屏的重难点，让mp.start();
-                        //2:需要在mainfest中添加android:name="com.example.thesameproc.App"属性
-                        videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-                            @Override
-                            public void onPrepared(MediaPlayer mp) {
-
-                                mp.start();
-                                mp.setLooping(true);
-
-                            }
-                        });
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<AdvertiseGetEntity> call, Throwable t) {
-                    ToastUtil.showToast(IndexActivity.this, "消息提示", "暂未找寻到视频，请等待");
-                }
-            });
-        }
-        catch(Exception ex){
-            ToastUtil.showToast(IndexActivity.this, "输入消息通知", ex.toString());
-        }
-    }
+//    public   void   GetAdvertisement(){
+//
+//        try {
+//
+//            Call<AdvertiseGetEntity>  updateversion = RetrofitHelper.getInstance().GETADVERTISE();
+//            updateversion.enqueue(new Callback<AdvertiseGetEntity>() {
+//                @Override
+//                public void onResponse(Call<AdvertiseGetEntity> call, Response<AdvertiseGetEntity> response) {
+//                    if (null!=response){
+//                        if (response.body().getCode().equals("success")){
+//
+//                            VIDEO_URL=response.body().getData().getPath();
+//                        }
+//                        else
+//                        {
+//                            VIDEO_URL = "http://52.81.85.108:8080/uploadapk/index.mp4";
+//                        }
+//
+//                        videoView=findViewById(R.id.video);
+//
+//                        HttpProxyCacheServer proxy = getProxy();
+//                        String proxyUrl = proxy.getProxyUrl(VIDEO_URL);
+//                        try {
+//                            videoView.setVideoPath(proxyUrl);
+//
+//
+//                        } catch (Exception e) {
+//                            Toast.makeText(IndexActivity.this,"播放失败",Toast.LENGTH_SHORT);
+//                            e.printStackTrace();
+//                        }
+//                        //以下是视频成功播放并且缓存的首要条件
+//                        //1:主要下面这一段是解决视频播放黑屏的重难点，让mp.start();
+//                        //2:需要在mainfest中添加android:name="com.example.thesameproc.App"属性
+//                        videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+//                            @Override
+//                            public void onPrepared(MediaPlayer mp) {
+//
+//                                mp.start();
+//                                mp.setLooping(true);
+//
+//                            }
+//                        });
+//                    }
+//                }
+//
+//                @Override
+//                public void onFailure(Call<AdvertiseGetEntity> call, Throwable t) {
+//                    ToastUtil.showToast(IndexActivity.this, "消息提示", "暂未找寻到视频，请等待");
+//                }
+//            });
+//        }
+//        catch(Exception ex){
+//            ToastUtil.showToast(IndexActivity.this, "输入消息通知", ex.toString());
+//        }
+//    }
 
 
     public   void PrepareUpdateVersion(){
