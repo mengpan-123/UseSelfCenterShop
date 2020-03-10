@@ -31,10 +31,13 @@ public class NewPrintActivity extends Activity {
 
     private UsbPrintManager printer = null;
 
+    public TextView  txt;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_newprint);
+
+        txt=findViewById(R.id.alertinfo);
 
         //返回上一页
         TextView returnback = findViewById(R.id.returnback);
@@ -80,19 +83,19 @@ public class NewPrintActivity extends Activity {
             char pressedKey = (char) event.getUnicodeChar();
             barcode += pressedKey;
         }
-        if (event.getKeyCode() == KeyEvent.KEYCODE_BACK &&
-                event.getAction() == KeyEvent.ACTION_DOWN) {
-            return true;
+        if (event.getKeyCode() == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN) {
+            txt.setText(barcode);//设置 文本
+            return super.dispatchKeyEvent(event);
         }
 
 
         if (event.getAction() == KeyEvent.ACTION_DOWN && event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
-            // ToastUtil.showToast(InputGoodsActivity.this, "商品录入通知", barcode);
             if (!TextUtils.isEmpty(barcode)) {
                 if (barcode.contains("\n")) {
                     barcode = barcode.substring(0, barcode.length() - 1);
                 }
                 //开始打印
+                //txt.setText(barcode);//设置 文本
 
                 GetPrintStr(barcode);
 

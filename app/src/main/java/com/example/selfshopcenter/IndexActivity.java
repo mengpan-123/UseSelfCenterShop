@@ -75,6 +75,10 @@ public class IndexActivity extends AppCompatActivity {
         GetAdvertisement();
 
 
+        //检查门店使用状态，是否可以使用
+        GetStoreStatus(true);
+
+
         //设置底部的显示信息
         TextView storename=findViewById(R.id.storename);
         storename.setText("门店编号:"+ CommonData.khid);
@@ -130,10 +134,7 @@ public class IndexActivity extends AppCompatActivity {
         CommonData.orderInfo=null;
 
 
-        CommonData.player.reset();
-        CommonData.player= MediaPlayer.create(this,R.raw.main);
-        CommonData.player.start();
-        CommonData.player.setLooping(false);
+
 
 
 
@@ -156,21 +157,22 @@ public class IndexActivity extends AppCompatActivity {
                                 posUse=response.body().getData().getPosstatus();//等于1 启动，等于0禁用
 
                                 if (posUse.equals("1")) {
-                                    //跳转到商品录入界面
                                     Intent intent = new Intent(IndexActivity.this, CarItemsActivity.class);
-                                    //Intent intent = new Intent(IndexActivity.this, FinishActivity.class);
                                     startActivity(intent);
                                 }
                                 else
                                 {
-                                    ToastUtil.showToast(IndexActivity.this, "温馨提示", "当前收银机已被禁止使用，请联系管理员在后台启用");
+                                    //设备禁用
+                                    Intent intent = new Intent(IndexActivity.this, NoUseActivity.class);
+                                    startActivity(intent);
                                 }
 
                             }
                             else
                             {
-                                ToastUtil.showToast(IndexActivity.this, "购物车清除通知", response.body().getMsg());
-
+                                //门店禁用
+                                Intent intent = new Intent(IndexActivity.this, NoUseActivity.class);
+                                startActivity(intent);
                             }
 
                         }
@@ -182,16 +184,12 @@ public class IndexActivity extends AppCompatActivity {
                     }
                 });
 
-
-
             }
         });
 
 
         getPrinter();
         //printBill();
-
-
 
 
         // 创建PopupWindow对象
@@ -208,6 +206,9 @@ public class IndexActivity extends AppCompatActivity {
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public  void  onClick(View view) {
+
+
+                GetStoreStatus(false);
 
                 int[]  location=new int[2];
                 btn.getLocationInWindow(location);
@@ -341,6 +342,58 @@ public class IndexActivity extends AppCompatActivity {
     }
 
 
+
+    public  void  GetStoreStatus(boolean  voice){
+
+        //查询收音机使用状态
+        Call<SearchPosEntity>  search= RetrofitHelper.getInstance().SearchUseStatus();
+        search.enqueue(new Callback<SearchPosEntity>() {
+            @Override
+            public void onResponse(Call<SearchPosEntity> call, Response<SearchPosEntity> response) {
+
+                if (response.body() != null) {
+
+                    if (response.body().getCode().equals("success")||response.body().getMsg().equals("没有符合条件的数据")) {
+                        posUse=response.body().getData().getPosstatus();//等于1 启动，等于0禁用
+
+                        if (posUse.equals("1")) {
+
+                            //声音播放先放在这里，避免到时候 没到这个界面，声音先播了
+                            if(voice) {
+                                CommonData.player.reset();
+                                CommonData.player = MediaPlayer.create(IndexActivity.this, R.raw.main);
+                                CommonData.player.start();
+                                CommonData.player.setLooping(false);
+                            }
+
+                        }
+                        else
+                        {
+                            //设备禁用
+                            Intent intent = new Intent(IndexActivity.this, NoUseActivity.class);
+                            startActivity(intent);
+                        }
+
+                    }
+                    else
+                    {
+                        //门店禁用
+                        Intent intent = new Intent(IndexActivity.this, NoUseActivity.class);
+                        startActivity(intent);
+                    }
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<SearchPosEntity> call, Throwable t) {
+
+            }
+        });
+
+    }
+
+
     public   void PrepareUpdateVersion(){
 
         try {
@@ -458,6 +511,9 @@ public class IndexActivity extends AppCompatActivity {
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
             //更新 版本
+            //首先更新下来 这个最新的 版本号，不确定能否得到
+            CommonData.app_version=CommonData.getAppVersion(this);
+
             Call<DeleteSpinfoEntity>  update=  RetrofitHelper.getInstance().UPDATEVERSION();
             update.enqueue(new Callback<DeleteSpinfoEntity>() {
                 @Override

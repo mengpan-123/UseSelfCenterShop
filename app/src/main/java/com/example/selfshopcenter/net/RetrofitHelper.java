@@ -455,7 +455,10 @@ public class RetrofitHelper {
 
 
     //更新自助收银的版本内容
-    public Call<DeleteSpinfoEntity>  UPDATEVERSION(){
+    public Call<DeleteSpinfoEntity>  UPDATEVERSION( ){
+
+
+
         String s="{\n" +
                 "    \"appid\": \""+CommonData.kquser+"\",\n" +
                 "    \"apiname\": \"SETAPKTIME\",\n" +

@@ -80,6 +80,9 @@
         <activity android:name=".DialyCloseActivity">
 
         </activity>
+        <activity android:name=".NoUseActivity">
+
+        </activity>
 
         <!--// 指向v4包里的FileProvider类-->
         <provider
