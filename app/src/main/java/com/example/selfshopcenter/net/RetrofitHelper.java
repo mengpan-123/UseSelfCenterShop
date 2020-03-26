@@ -433,6 +433,26 @@ public class RetrofitHelper {
 
     }
 
+
+    public Call<TenOrderEntity>  TENXSPRINT(){
+        String s="{\n" +
+                "    \"appid\": \""+CommonData.kquser+"\",\n" +
+                "    \"apiname\": \"NEWPRINT\",\n" +
+                "    \"req_operator\": \"zp\",\n" +
+                "    \"data\": {\n" +
+                "        \"khid\": \""+CommonData.khid+"\",\n" +
+                "        \"qyid\": \""+CommonData.QYID+"\",\n" +
+                "        \"posid\":\""+CommonData.posid+"\"\n" +
+                "       \n" +
+                "    }\n" +
+                "}\n";
+
+        RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), s);
+        return mAPIService.TENXSPRINT(requestBody);
+
+    }
+
+
     //日结
     public Call<DialyCloseEntity>  DialyClose(String  saledate){
         String s="{\n" +
@@ -455,7 +475,7 @@ public class RetrofitHelper {
 
 
     //更新自助收银的版本内容
-    public Call<DeleteSpinfoEntity>  UPDATEVERSION( ){
+    public Call<DeleteSpinfoEntity>  UPDATEVERSION( String Version){
 
 
 
@@ -466,7 +486,7 @@ public class RetrofitHelper {
                 "    \"data\": {\n" +
                 "        \"khid\": \""+CommonData.khid+"\",\n" +
                 "        \"qyid\": \""+CommonData.QYID+"\",\n" +
-                "        \"version\": \""+CommonData.app_version+"\",\n" +
+                "        \"version\": \""+Version+"\",\n" +
                 "        \"posid\":\""+CommonData.posid+"\"\n" +
                 "       \n" +
                 "    }\n" +

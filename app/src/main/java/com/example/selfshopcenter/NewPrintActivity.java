@@ -10,20 +10,18 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.selfshopcenter.bean.SearchOrderEntity;
-import com.example.selfshopcenter.commoncls.CommonData;
 import com.example.selfshopcenter.commoncls.ToastUtil;
 import com.example.selfshopcenter.net.RetrofitHelper;
 import com.example.selfshopcenter.printer.PrintUtil;
 import com.example.selfshopcenter.printer.UsbPrintManager;
 
-import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import java.util.List;
 
 
 public class NewPrintActivity extends Activity {

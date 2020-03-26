@@ -7,8 +7,8 @@ android {
         applicationId "com.example.selfshopcenter"
         minSdkVersion 15
         targetSdkVersion 29
-        versionCode 246
-        versionName "3.8.889"
+        versionCode 250
+        versionName "3.1.118"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -93,13 +93,21 @@ android {
     }
     sourceSets { main { jni.srcDirs = ['src/main/jni', 'src/main/jni/'] } }
 
-    allprojects {
+   /* allprojects {
         gradle.projectsEvaluated {
             tasks.withType(JavaCompile) {
                 options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
             }
         }
+    }*/
+    allprojects {
+        repositories {
+            jcenter()
+            mavenCentral()
+            google()
+        }
     }
+
     lintOptions {
         checkReleaseBuilds false
         abortOnError false

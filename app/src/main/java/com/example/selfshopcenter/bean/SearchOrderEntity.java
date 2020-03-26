@@ -104,7 +104,7 @@ public class SearchOrderEntity {
          */
 
         private double totAmount;
-        private int disAmount;
+        private double disAmount;
         private double realAmount;
         private double payVal;
         private String khid;
@@ -124,11 +124,11 @@ public class SearchOrderEntity {
             this.totAmount = totAmount;
         }
 
-        public int getDisAmount() {
+        public double getDisAmount() {
             return disAmount;
         }
 
-        public void setDisAmount(int disAmount) {
+        public void setDisAmount(double disAmount) {
             this.disAmount = disAmount;
         }
 
@@ -270,7 +270,7 @@ public class SearchOrderEntity {
             private int pluQty;
             private double pluAmount;
             private double RealAmount;
-            private int pluDis;
+            private double pluDis;
             private double nWeight;
 
             public int getItemId() {
@@ -337,11 +337,11 @@ public class SearchOrderEntity {
                 this.RealAmount = RealAmount;
             }
 
-            public int getPluDis() {
+            public double getPluDis() {
                 return pluDis;
             }
 
-            public void setPluDis(int pluDis) {
+            public void setPluDis(double pluDis) {
                 this.pluDis = pluDis;
             }
 

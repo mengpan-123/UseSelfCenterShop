@@ -90,6 +90,11 @@ public interface APIService {
     @POST("AddspinDetails/GetOrderInfoByOrderid")
     Call<SearchOrderEntity> NewPrintById(@Body RequestBody requestBody);
 
+    /**
+     * 重新打印
+     */
+    @POST("AddspinDetails/GetXsData")
+    Call<TenOrderEntity> TENXSPRINT(@Body RequestBody requestBody);
 
     /**
      * 日结

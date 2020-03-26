@@ -296,14 +296,15 @@ public class CarItemsActivity extends AppCompatActivity implements View.OnClickL
 
     public void AddnewSpid(String inputbarcode,String type) {
 
-        CommonData.Open_gif(CarItemsActivity.this);
-
         if (CommonData.orderInfo != null) {
             if (CommonData.orderInfo.spList != null) {
                 MapList = CommonData.orderInfo.spList;
             }
         }
         HashMap<String, String> map = new HashMap<>();
+        CommonData.Open_gif(CarItemsActivity.this);
+
+
         Call<AddGoodsEntity> AddGoods= RetrofitHelper.getInstance().AddGoodInfo(inputbarcode, type);
         AddGoods.enqueue(new Callback<AddGoodsEntity>() {
             @Override
@@ -411,6 +412,7 @@ public class CarItemsActivity extends AppCompatActivity implements View.OnClickL
                     }
                     else
                     {
+                        CommonData.CLose_gif();
                         ToastUtil.showToast(CarItemsActivity.this, "商品查询通知", response.body().getMsg());
                         return;
                     }
@@ -419,7 +421,8 @@ public class CarItemsActivity extends AppCompatActivity implements View.OnClickL
 
             @Override
             public void onFailure(Call<AddGoodsEntity> call, Throwable t) {
-                ToastUtil.showToast(CarItemsActivity.this, "商品查询通知", t.toString());
+                ToastUtil.showToast(CarItemsActivity.this, "商品查询通知", "请检查网络是否异常或联系管理员");
+                CommonData.CLose_gif();
                 return;
             }
         });

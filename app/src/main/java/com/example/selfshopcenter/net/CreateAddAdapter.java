@@ -78,14 +78,13 @@ public class CreateAddAdapter extends BaseAdapter {
         try {
 
 
-
             convertView = View.inflate(context, R.layout.activity_shopcar, null);
             final ListView listView1;
             listView1 = convertView.findViewById(R.id.listview);
             convertView = View.inflate(context, R.layout.shopcar_list, null);
             final CheckBox checkBox;
             ImageView icon;
-            final TextView name, price, num, type, reduce, add, delete, describe, y_price, y_title,barcode;
+            final TextView name, price, num, type, reduce, add, delete, describe, y_price, y_title, barcode;
 
             name = convertView.findViewById(R.id.tv_goods_name);//商品名称
             price = convertView.findViewById(R.id.tv_goods_price);//商品价格
@@ -100,7 +99,7 @@ public class CreateAddAdapter extends BaseAdapter {
 
             delete = convertView.findViewById(R.id.tv_delete);
 
-            barcode=convertView.findViewById(R.id.barcode);
+            barcode = convertView.findViewById(R.id.barcode);
 
 
             name.setText(list.get(position).get("name"));//产品名称
@@ -126,9 +125,7 @@ public class CreateAddAdapter extends BaseAdapter {
             if ("0.00".equals(list.get(position).get("weight")) || "0".equals(list.get(position).get("weight")) || "0.0".equals(list.get(position).get("weight"))) {
                 reduce.setVisibility(View.VISIBLE);
                 add.setVisibility(View.VISIBLE);
-            }
-            else
-            {
+            } else {
                 reduce.setVisibility(View.INVISIBLE);
                 add.setVisibility(View.INVISIBLE);
                 //数量 显示为 重量
@@ -136,24 +133,22 @@ public class CreateAddAdapter extends BaseAdapter {
                 //num.setText(list.get(position).get("weight")+list.get(position).get("unit"));
 
                 //2020-02-14确定单位协定为kg
-                num.setText(list.get(position).get("weight")+"kg");
+                num.setText(list.get(position).get("weight") + "kg");
 
 
             }
 
 
-                /**
-                 * Created by zhoupan on 2019/11/18.
-                 * 删减购物车数量，因为数据显示原因，重新写
-                 * Created by zhoupan on 2019/11/21.
-                 * 因为觉得 移除商品的时候 ，为了重新限时促销信息  会导致列表重新刷新了，影响视觉效果，所以改为不显示 促销规则了
-                 */
+            /**
+             * Created by zhoupan on 2019/11/18.
+             * 删减购物车数量，因为数据显示原因，重新写
+             * Created by zhoupan on 2019/11/21.
+             * 因为觉得 移除商品的时候 ，为了重新限时促销信息  会导致列表重新刷新了，影响视觉效果，所以改为不显示 促销规则了
+             */
 
             reduce.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
-                    CommonData.Open_gif(context);
 
                     if (!is_click) {
                         return;
@@ -169,21 +164,24 @@ public class CreateAddAdapter extends BaseAdapter {
 
                     //初始化报文信息
                     try {
-                        String getClickbarcode=list.get(position).get("id");
+                        String getClickbarcode = list.get(position).get("id");
                         String weight = list.get(position).get("weight");
-                        if ( !weight.equals("0")&&!weight.equals("")) {
+                        if (!weight.equals("0") && !weight.equals("")) {
                             ToastUtil.showToast(context, "商品增加通知", "很抱歉，当前称重产品暂不支持移除，您可以选择清空重录");
                             is_click = true;
                             return;
                         }
 
 
-                        Call<AddGoodsEntity> substratGoods= RetrofitHelper.getInstance().AddGoodInfo(getClickbarcode, CommonData.Reduce);
+                        CommonData.Open_gif(context);
+
+                        Call<AddGoodsEntity> substratGoods = RetrofitHelper.getInstance().AddGoodInfo(getClickbarcode, CommonData.Reduce);
                         substratGoods.enqueue(new Callback<AddGoodsEntity>() {
                             @Override
                             public void onResponse(Call<AddGoodsEntity> call, Response<AddGoodsEntity> response) {
                                 if (response != null) {
                                     if (null == response.body()) {
+                                        CommonData.Open_gif(context);
                                         ToastUtil.showToast(context, "商品移除通知", "请误操作太快");
                                         return;
                                     }
@@ -251,6 +249,7 @@ public class CreateAddAdapter extends BaseAdapter {
 
                             @Override
                             public void onFailure(Call<AddGoodsEntity> call, Throwable t) {
+                                CommonData.Open_gif(context);
                                 ToastUtil.showToast(context, "商品移除通知", "网络异常，请稍后重试 ");
                             }
                         });
@@ -269,16 +268,14 @@ public class CreateAddAdapter extends BaseAdapter {
                 @Override
                 public void onClick(View v) {
 
-                    CommonData.Open_gif(context);
-
                     String inputbarcode = list.get(position).get("barcode");
                     String weight = list.get(position).get("weight");
-                    if ( !weight.equals("0")&&!weight.equals("")){
+                    if (!weight.equals("0") && !weight.equals("")) {
                         ToastUtil.showToast(context, "商品增加通知", "当前称重产品暂不支持手动增加，请扫描商品条形码");
                         return;
                     }
-
-                    Call<AddGoodsEntity> substratGoods= RetrofitHelper.getInstance().AddGoodInfo(inputbarcode, CommonData.AddCar);
+                    CommonData.Open_gif(context);
+                    Call<AddGoodsEntity> substratGoods = RetrofitHelper.getInstance().AddGoodInfo(inputbarcode, CommonData.AddCar);
                     substratGoods.enqueue(new Callback<AddGoodsEntity>() {
                         @Override
                         public void onResponse(Call<AddGoodsEntity> call, Response<AddGoodsEntity> response) {
@@ -328,20 +325,20 @@ public class CreateAddAdapter extends BaseAdapter {
                                     notifyDataSetChanged();
                                     mrefreshPriceInterface.refreshPrice(pitchOnMap);
 
-
-                                    CommonData.CLose_gif();
-
-                                }
-                                else {
+                                } else {
                                     ToastUtil.showToast(context, "商品移除通知", response.body().getMsg());
                                     return;
                                 }
+
+                                CommonData.CLose_gif();
                             }
                         }
 
                         @Override
                         public void onFailure(Call<AddGoodsEntity> call, Throwable t) {
 
+                            CommonData.Open_gif(context);
+                            ToastUtil.showToast(context, "商品添加失败", "网络异常，请稍后重试 ");
                         }
                     });
 
@@ -357,32 +354,32 @@ public class CreateAddAdapter extends BaseAdapter {
                     CommonData.Open_gif(context);
 
                     String inputbarcode = list.get(position).get("barcode");
-                     Call<DeleteSpinfoEntity>  delete=    RetrofitHelper.getInstance().DeleteSpinfo(inputbarcode,"DELETE");
-                     delete.enqueue(new Callback<DeleteSpinfoEntity>() {
-                         @Override
-                         public void onResponse(Call<DeleteSpinfoEntity> call, Response<DeleteSpinfoEntity> response) {
+                    Call<DeleteSpinfoEntity> delete = RetrofitHelper.getInstance().DeleteSpinfo(inputbarcode, "DELETE");
+                    delete.enqueue(new Callback<DeleteSpinfoEntity>() {
+                        @Override
+                        public void onResponse(Call<DeleteSpinfoEntity> call, Response<DeleteSpinfoEntity> response) {
 
 
-                             if (response.body() != null) {
-                                 if (response.body().getCode().equals("success")) {
+                            if (response.body() != null) {
+                                if (response.body().getCode().equals("success")) {
 
-                                     pitchOnMap.remove(list.get(position).get("barcode"));
-                                     //从集合里面移除
-                                     CommonData.orderInfo.spList.remove(list.get(position).get("barcode"));
-                                     list.remove(position);
-                                     //先删除其中一个产品，再去刷新价格，折扣啥的
+                                    pitchOnMap.remove(list.get(position).get("barcode"));
+                                    //从集合里面移除
+                                    CommonData.orderInfo.spList.remove(list.get(position).get("barcode"));
+                                    list.remove(position);
+                                    //先删除其中一个产品，再去刷新价格，折扣啥的
 
 
-                                     Call<AddGoodsEntity> substratGoods= RetrofitHelper.getInstance().AddGoodInfo(inputbarcode, CommonData.searchCar);
-                                     substratGoods.enqueue(new Callback<AddGoodsEntity>() {
-                                         @Override
-                                         public void onResponse(Call<AddGoodsEntity> call, Response<AddGoodsEntity> response) {
-                                             if (response != null) {
-                                                 if (null == response.body()) {
-                                                     ToastUtil.showToast(context, "商品移除通知", "请误操作太快");
-                                                     return;
-                                                 }
-                                                 if (response.body().getCode().equals("success")) {
+                                    Call<AddGoodsEntity> substratGoods = RetrofitHelper.getInstance().AddGoodInfo(inputbarcode, CommonData.searchCar);
+                                    substratGoods.enqueue(new Callback<AddGoodsEntity>() {
+                                        @Override
+                                        public void onResponse(Call<AddGoodsEntity> call, Response<AddGoodsEntity> response) {
+                                            if (response != null) {
+                                                if (null == response.body()) {
+                                                    ToastUtil.showToast(context, "商品移除通知", "请误操作太快");
+                                                    return;
+                                                }
+                                                if (response.body().getCode().equals("success")) {
                                                     /* if (Integer.valueOf(list.get(position).get("count")) <= 1) {
 
                                                          pitchOnMap.remove(list.get(position).get("barcode"));
@@ -390,68 +387,70 @@ public class CreateAddAdapter extends BaseAdapter {
                                                          CommonData.orderInfo.spList.remove(list.get(position).get("barcode"));
                                                          list.remove(position);
                                                      }*/
-                                                     AddGoodsEntity body = response.body();
-                                                     CommonData.orderInfo.totalCount = body.getData().getTotalQty();
-                                                     CommonData.orderInfo.totalPrice = body.getData().getTotAmount();
-                                                     CommonData.orderInfo.totalDisc = body.getData().getDisAmount();
+                                                    AddGoodsEntity body = response.body();
+                                                    CommonData.orderInfo.totalCount = body.getData().getTotalQty();
+                                                    CommonData.orderInfo.totalPrice = body.getData().getTotAmount();
+                                                    CommonData.orderInfo.totalDisc = body.getData().getDisAmount();
 
-                                                     List<AddGoodsEntity.DataBean.ItemsListBean> itemsList = body.getData().getItemsList();
-                                                     for (int sm = 0; sm < itemsList.size(); sm++) {
-                                                         List<AddGoodsEntity.DataBean.ItemsListBean.ItemsBean> sub_itemsList = itemsList.get(sm).getItems();
-                                                         for (int sk = 0; sk < sub_itemsList.size(); sk++) {
-                                                             //拿到产品编码
-                                                             String barcode = sub_itemsList.get(sk).getBarcode();
-                                                             String nRealPrice = sub_itemsList.get(sk).getDprice();
+                                                    List<AddGoodsEntity.DataBean.ItemsListBean> itemsList = body.getData().getItemsList();
+                                                    for (int sm = 0; sm < itemsList.size(); sm++) {
+                                                        List<AddGoodsEntity.DataBean.ItemsListBean.ItemsBean> sub_itemsList = itemsList.get(sm).getItems();
+                                                        for (int sk = 0; sk < sub_itemsList.size(); sk++) {
+                                                            //拿到产品编码
+                                                            String barcode = sub_itemsList.get(sk).getBarcode();
+                                                            String nRealPrice = sub_itemsList.get(sk).getDprice();
 
-                                                             if (CommonData.orderInfo.spList.containsKey(barcode)) {
+                                                            if (CommonData.orderInfo.spList.containsKey(barcode)) {
 
-                                                                 //如果存在，拿到集合，增加数量，总价，折扣
-                                                                 CommonData.orderInfo.spList.get(barcode).get(0).setPackNum(sub_itemsList.get(sk).getQty());
-                                                                 CommonData.orderInfo.spList.get(barcode).get(0).setMainPrice(sub_itemsList.get(sk).getPrice());
-                                                                 CommonData.orderInfo.spList.get(barcode).get(0).setRealPrice(String.valueOf(sub_itemsList.get(sk).getNet()));  //实际总售价
-                                                                 CommonData.orderInfo.spList.get(barcode).get(0).setTotaldisc(sub_itemsList.get(sk).getDisc());
-                                                                 //修改列表的数量
-                                                                 for (int k = 0; k < list.size(); k++) {
-                                                                     if (list.get(k).get("barcode").equals(barcode)) {
-                                                                         list.get(k).put("count", String.valueOf(sub_itemsList.get(sk).getQty()));
-                                                                         list.get(k).put("MainPrice", sub_itemsList.get(sk).getPrice());
-                                                                         list.get(k).put("realprice", String.valueOf(sub_itemsList.get(sk).getNet()));
-                                                                         list.get(k).put("actname", itemsList.get(sm).getDisrule());
-                                                                         list.get(k).put("disc", String.valueOf(sub_itemsList.get(sk).getDisc()));
-                                                                     }
-                                                                 }
-                                                             }
-                                                         }
-                                                     }
+                                                                //如果存在，拿到集合，增加数量，总价，折扣
+                                                                CommonData.orderInfo.spList.get(barcode).get(0).setPackNum(sub_itemsList.get(sk).getQty());
+                                                                CommonData.orderInfo.spList.get(barcode).get(0).setMainPrice(sub_itemsList.get(sk).getPrice());
+                                                                CommonData.orderInfo.spList.get(barcode).get(0).setRealPrice(String.valueOf(sub_itemsList.get(sk).getNet()));  //实际总售价
+                                                                CommonData.orderInfo.spList.get(barcode).get(0).setTotaldisc(sub_itemsList.get(sk).getDisc());
+                                                                //修改列表的数量
+                                                                for (int k = 0; k < list.size(); k++) {
+                                                                    if (list.get(k).get("barcode").equals(barcode)) {
+                                                                        list.get(k).put("count", String.valueOf(sub_itemsList.get(sk).getQty()));
+                                                                        list.get(k).put("MainPrice", sub_itemsList.get(sk).getPrice());
+                                                                        list.get(k).put("realprice", String.valueOf(sub_itemsList.get(sk).getNet()));
+                                                                        list.get(k).put("actname", itemsList.get(sm).getDisrule());
+                                                                        list.get(k).put("disc", String.valueOf(sub_itemsList.get(sk).getDisc()));
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    }
 
-                                                     CommonData.list_adaptor = new CreateAddAdapter(CreateAddAdapter.this.context, list);
-                                                     listView1.setAdapter(CommonData.list_adaptor);
-                                                     listView1.setSelection(listView1.getBottom());
-                                                     try {
-                                                         listView1.setSelection(CommonData.list_adaptor.getCount() - 1);
-                                                     } catch (Exception ex) {
+                                                    CommonData.list_adaptor = new CreateAddAdapter(CreateAddAdapter.this.context, list);
+                                                    listView1.setAdapter(CommonData.list_adaptor);
+                                                    listView1.setSelection(listView1.getBottom());
+                                                    try {
+                                                        listView1.setSelection(CommonData.list_adaptor.getCount() - 1);
+                                                    } catch (Exception ex) {
 
-                                                     }
-                                                     notifyDataSetChanged();
-                                                     mrefreshPriceInterface.refreshPrice(pitchOnMap);
+                                                    }
+                                                    notifyDataSetChanged();
+                                                    mrefreshPriceInterface.refreshPrice(pitchOnMap);
 
-                                                     is_click = true;
+                                                    is_click = true;
+                                                }
 
-                                                     CommonData.CLose_gif();
-
-                                                  }
-
-                                             }
-                                         }
-
-                                         @Override
-                                         public void onFailure(Call<AddGoodsEntity> call, Throwable t) {
-                                             ToastUtil.showToast(context, "商品移除通知", "网络异常，请稍后重试 ");
-                                         }
-                                     });
+                                            }
 
 
-                                     //移除界面上的产品信息，减去产品的价格
+                                            CommonData.CLose_gif();
+
+                                        }
+
+                                        @Override
+                                        public void onFailure(Call<AddGoodsEntity> call, Throwable t) {
+                                            CommonData.CLose_gif();
+                                            ToastUtil.showToast(context, "商品移除通知", "网络异常，请稍后重试 ");
+                                        }
+                                    });
+
+
+                                    //移除界面上的产品信息，减去产品的价格
                                      /*String count = list.get(position).get("count");
                                      String realprice = list.get(position).get("realprice");
                                      String disc = list.get(position).get("disc");
@@ -479,25 +478,27 @@ public class CreateAddAdapter extends BaseAdapter {
                                      mrefreshPriceInterface.refreshPrice(pitchOnMap);*/
 
 
+                                }
+                            }
 
-                                 }
-                             }
+                        }
 
-                         }
-
-                         @Override
-                         public void onFailure(Call<DeleteSpinfoEntity> call, Throwable t) {
-
-                         }
-                     });
+                        @Override
+                        public void onFailure(Call<DeleteSpinfoEntity> call, Throwable t) {
+                            CommonData.Open_gif(context);
+                            ToastUtil.showToast(context, "商品删除失败", "网络异常，请稍后重试 ");
+                        }
+                    });
                 }
             });
 
         } catch (Exception e) {
 
+            CommonData.CLose_gif();
+
             is_click = true;
             ToastUtil.showToast(context, "商品移除通知", "请误操作太过频繁");
-            return  null;
+            return null;
         }
 
         return convertView;

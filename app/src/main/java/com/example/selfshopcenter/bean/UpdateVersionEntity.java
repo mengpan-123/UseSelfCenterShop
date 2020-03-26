@@ -92,12 +92,16 @@ public class UpdateVersionEntity {
          * UpdateTime : 2020-01-13 00:00:00
          * V_Updatepath : http://www.ikengee.com.cn/testexample/ZCZYUSE.apk
          * V_VERSION : 1
+         * VersionName : 3.000101
          */
 
         private String KHid;
         private String UpdateTime;
         private String V_Updatepath;
         private int V_VERSION;
+        private String VersionName;
+
+
 
         public String getKHid() {
             return KHid;
@@ -129,6 +133,14 @@ public class UpdateVersionEntity {
 
         public void setV_VERSION(int V_VERSION) {
             this.V_VERSION = V_VERSION;
+        }
+
+        public String getVersionName() {
+            return VersionName;
+        }
+
+        public void setVersionName(String VersionName) {
+            this.VersionName = VersionName;
         }
     }
 }

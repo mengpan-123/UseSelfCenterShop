@@ -1,6 +1,7 @@
 package com.example.selfshopcenter;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.DownloadManager;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -15,9 +16,13 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.PopupWindow;
+import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
@@ -29,7 +34,9 @@ import com.danikula.videocache.HttpProxyCacheServer;
 import com.example.selfshopcenter.bean.AdvertiseGetEntity;
 import com.example.selfshopcenter.bean.ClearCarEntity;
 import com.example.selfshopcenter.bean.DeleteSpinfoEntity;
+import com.example.selfshopcenter.bean.SearchOrderEntity;
 import com.example.selfshopcenter.bean.SearchPosEntity;
+import com.example.selfshopcenter.bean.TenOrderEntity;
 import com.example.selfshopcenter.bean.UpdateVersionEntity;
 import com.example.selfshopcenter.commoncls.CommonData;
 import com.example.selfshopcenter.commoncls.ToastUtil;
@@ -37,10 +44,17 @@ import com.example.selfshopcenter.download.DownloadUtils;
 import com.example.selfshopcenter.download.JsDownloadListener;
 import com.example.selfshopcenter.net.RetrofitHelper;
 import com.example.selfshopcenter.net.UpdateDialog;
+import com.example.selfshopcenter.printer.PrintUtil;
 import com.example.selfshopcenter.printer.UsbPrintManager;
 import com.example.selfshopcenter.vediocache.App;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -51,14 +65,16 @@ public class IndexActivity extends AppCompatActivity {
 
     private int  Appvercode=0;
 
+    private UsbPrintManager printer = null;
+
     private String  posUse="0";
 
     private ProgressDialog progressDialog;
 
-    private UsbPrintManager printer = null;
+
 
     String  updateurl = "";
-
+    String  Update_v_name="";
     VideoView  videoView;
 
     String VIDEO_URL = "http://52.81.85.108:8080/uploadapk/index.mp4";  //视频播放的文件
@@ -213,7 +229,7 @@ public class IndexActivity extends AppCompatActivity {
                 int[]  location=new int[2];
                 btn.getLocationInWindow(location);
                 int x=location[0]-40;
-                int y=location[1]-250;
+                int y=location[1]-330;
 
                 if (pop.isShowing()) {
                     // 隐藏窗口，如果设置了点击窗口外小时即不需要此方式隐藏
@@ -247,6 +263,195 @@ public class IndexActivity extends AppCompatActivity {
             }
         });
 
+        //显示最近十笔单据记录
+        TextView text4=  view.findViewById(R.id.txt4);
+        text4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final Dialog dialog = new Dialog(IndexActivity.this, R.style.myNewsDialogStyle);
+
+                // 自定义对话框布局
+                View layout = View.inflate(IndexActivity.this, R.layout.activity_previewtemprint,
+                        null);
+                dialog.setContentView(layout);
+                ComsetDialogSize(layout);
+
+
+                ListView listView = (ListView) layout.findViewById(R.id.ten_xsprint);
+
+                listView.setDividerHeight(20);
+                List<Map<String, Object>> listitem = new ArrayList<Map<String, Object>>();
+
+                Call<TenOrderEntity>  tenxs = RetrofitHelper.getInstance().TENXSPRINT();
+                tenxs.enqueue(new Callback<TenOrderEntity>() {
+                    @Override
+                    public void onResponse(Call<TenOrderEntity> call, Response<TenOrderEntity> response) {
+                        if (null!=response){
+                            if (response.body().getCode().equals("success")){
+                                //然后显示出 列表
+
+                                List<TenOrderEntity.DataBean.OrderListBean>  useList=response.body().getData().getOrderList();
+                                if (useList.size()==0){
+                                    ToastUtil.showToast(IndexActivity.this, "查询结果", "当前门店暂未获取到有效订单");
+                                    return;
+                                }
+
+                                for (int sm = 0; sm < useList.size(); sm++) {
+
+                                    String bill = useList.get(sm).getBill();
+                                    String xs_bill = useList.get(sm).getOut_transid();
+                                    String disc = useList.get(sm).getTotaldisc();
+                                    String net=useList.get(sm).getTotalAmount();
+                                    String saledate =useList.get(sm).getSaledate();
+
+                                    Call<SearchOrderEntity> OrderDetailEntityCall = RetrofitHelper.getInstance().NewPrintById(bill);
+                                    OrderDetailEntityCall.enqueue(new Callback<SearchOrderEntity>() {
+                                        @Override
+                                        public void onResponse(Call<SearchOrderEntity> call, Response<SearchOrderEntity> response) {
+
+                                            if (response!=null) {
+                                                SearchOrderEntity body = response.body();
+                                                if (null != body) {
+                                                    if (body.getCode().equals("success")) {
+                                                        SimpleDateFormat form = new SimpleDateFormat("yyyy-MM-dd");
+                                                        Date date = new Date();
+                                                        String day = form.format(date);
+
+                                                        String storename = body.getData().getKhsname();
+
+
+                                                        String Str = "                   欢迎光临                   " + "\n";
+                                                        Str += "门店名称:" + storename + "\n";
+                                                        Str += "流水号：" + body.getData().getTransId() + "     " + "\n";
+                                                        //Str+="商户订单号："+CommonData.outTransId+"     "+"\n";
+                                                        Str += "打印日期   " + day + "     " + "\n";
+                                                        Str += "===============================================" + "\n";
+                                                        Str += "条码     名称     数量        单价     金额" + "\n";
+
+                                                        List<SearchOrderEntity.DataBean.PluMapBean> plumap = body.getData().getPluMap();
+
+                                                        for (int sk = 0; sk < plumap.size(); sk++) {
+
+                                                            String barcode = plumap.get(sk).getBarcode();
+                                                            String sname = plumap.get(sk).getPluName();
+                                                            double qty = 0;
+                                                            double weight = plumap.get(sk).getNWeight();
+                                                            double dj = 0;
+                                                            dj = plumap.get(sk).getPluPrice();
+                                                            if (weight == 0.00) {
+                                                                //说明重量是 0.  那就取显示数量
+                                                                qty = plumap.get(sk).getPluQty();
+
+                                                            } else {
+                                                                //净重含量存在值 则显示重量
+                                                                qty = weight;
+                                                            }
+
+                                                            double zj = plumap.get(sk).getRealAmount();
+                                                            Str += barcode + "\n";
+                                                            Str += sname + "     " + qty + "     " + dj + "    " + zj + "  " + "\n";
+                                                        }
+
+                                                        //付款方式
+                                                        String paytype = body.getData().getPayMap().getPayTypeName();
+                                                        String paynet = body.getData().getPayMap().getPayVal();
+                                                        int paycount = body.getData().getTotQty();
+                                                        Str += "===============================================" + "\n";
+                                                        Str += "付款方式             金额          总折扣" + "\n";
+
+                                                        Str += paytype + "             " + paynet + "          " + body.getData().getDisAmount() + "\n";
+
+                                                        Str += "总数量         应收        找零" + "\n";
+                                                        Str += "" + paycount + "             " + paynet + "          0.00     " + "\n";
+
+                                                        Str += "===============" + body.getData().getTrans_xsTime() + "=============" + "\n";
+                                                        Str += "            谢谢惠顾，请妥善保管小票         " + "\n";
+                                                        Str += "               开正式发票，当月有效              " + "\n";
+
+                                                        Map<String, Object> map = new HashMap<String, Object>();
+                                                        map.put("xs_bill", bill);
+                                                        map.put("xsnet", net);
+                                                        map.put("xsdisc", disc);
+                                                        map.put("xs_date","销售日期:"+saledate );
+                                                        map.put("printstr",Str);
+                                                        listitem.add(map);
+
+
+                                                        SimpleAdapter adapter = new SimpleAdapter(IndexActivity.this, listitem,
+                                                                R.layout.acticity_tenprint, new String[]{"xs_bill", "xsnet", "xsdisc", "xs_date","printstr"},
+                                                                new int[]{R.id.xsbill, R.id.tv_yuan_price, R.id.tv_disc, R.id.tv_goods_name,R.id.printstr});
+                                                        listView.setAdapter(adapter);
+                                                        dialog.show();
+                                                    }
+                                                    else
+                                                    {
+                                                        ToastUtil.showToast(IndexActivity.this, "查询失败",body.getMsg());
+                                                    }
+                                                }
+                                                else{
+                                                    ToastUtil.showToast(IndexActivity.this, "接口访问失败","请检查接口异常");
+
+                                                }
+
+
+                                            }
+
+                                        }
+
+                                        @Override
+                                        public void onFailure(Call<SearchOrderEntity> call, Throwable t) {
+                                            ToastUtil.showToast(IndexActivity.this, "接口请求失败","请检查网络异常或接口请求异常");
+                                        }
+                                    });
+
+
+                                }
+
+                            }
+                            else
+                            {
+                                //ToastUtil.showToast(LoginActivity.this, "消息内容提示", "暂无可升级的内容");
+                                ToastUtil.showToast(IndexActivity.this, "查询结果", "当前设备近期没有销售数据");
+                                return;
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<TenOrderEntity> call, Throwable t) {
+
+                    }
+                });
+
+
+
+                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        HashMap<String, String> map = (HashMap<String, String>) listView.getItemAtPosition(position);
+                        String pr_Str = map.get("printstr");
+
+                        usePrint(pr_Str);
+
+                        dialog.dismiss();
+                    }
+                });
+
+
+                TextView closemem=layout.findViewById(R.id.closewindow);
+                //设置关闭按钮的事件
+                closemem.setOnClickListener(new View.OnClickListener() {
+
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                    }
+                });
+
+            }
+        });
+
+
         //日结,暂时先跳转到一个界面 核对
         TextView text3=  view.findViewById(R.id.txt3);
         text3.setOnClickListener(new View.OnClickListener() {
@@ -260,6 +465,108 @@ public class IndexActivity extends AppCompatActivity {
 
     }
 
+
+
+    public  void  usePrint(String  printstr){
+
+
+//        TextView showtext = findViewById(R.id.showtext);
+//
+//        showtext.setText(printstr);
+//        showtext.setSingleLine(false);
+
+        ToastUtil.showToast(IndexActivity.this, "异常通知", printstr);
+
+//        try {
+//
+//            PrintUtil.printReceipt(null,printstr);
+//            getPrintStatus();
+//
+//        }
+//        catch (Exception e) {
+//
+//            ToastUtil.showToast(IndexActivity.this, "异常通知", "打印机信息异常");
+//
+//            e.printStackTrace();
+//        }
+
+    }
+
+
+    //查询打印机状态
+    private void getPrintStatus() {
+        String msg = "";
+        int iRet = PrintUtil.getPrintEndStatus();
+
+        switch (iRet) {
+            case 0:
+                msg = "正常";
+                break;
+            case 1:
+                msg = "打印机未连接或未上电";
+                break;
+            case 2:
+                msg = "打印机和调用库不匹配";
+                break;
+            case 3:
+                msg = "打印头打开";
+                break;
+            case 4:
+                msg = "切刀未复位";
+                break;
+            case 5:
+                msg = "打印头过热";
+                break;
+            case 6:
+                msg = "黑标错误";
+                break;
+            case 7:
+                msg = "纸尽";
+                break;
+            case 8:
+                msg = "纸将尽";
+                break;
+            case -1:
+                msg = "异常";
+                break;
+        }
+        if (iRet != 0) {
+
+            Toast.makeText(IndexActivity.this, msg, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    /**
+     * 动态控制弹出框的大小
+     */
+    private void ComsetDialogSize(final View mView) {
+        mView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+            @Override
+            public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop,
+                                       int oldRight, int oldBottom) {
+               /* int heightNow = v.getHeight();//dialog当前的高度
+                int widthNow = v.getWidth();//dialog当前的宽度
+                int needWidth = (int) (getWindowManager().getDefaultDisplay().getWidth() * 0.8);//最小宽度为屏幕的0.7倍
+                int needHeight = (int) (getWindowManager().getDefaultDisplay().getHeight() * 1);//最大高度为屏幕的0.6倍
+                if (widthNow < needWidth || heightNow > needHeight) {
+                    if (widthNow > needWidth) {
+                        needWidth = FrameLayout.LayoutParams.WRAP_CONTENT;
+                    }
+                    if (heightNow < needHeight) {
+                        needHeight = FrameLayout.LayoutParams.WRAP_CONTENT;
+                    }
+                    mView.setLayoutParams(new FrameLayout.LayoutParams(needWidth,
+                            needHeight));
+                }*/
+
+                mView.setLayoutParams(new FrameLayout.LayoutParams(980,
+                        1300));
+
+
+
+            }
+        });
+    }
 
     private HttpProxyCacheServer getProxy() {
         return App.getProxy(getApplicationContext());
@@ -408,6 +715,9 @@ public class IndexActivity extends AppCompatActivity {
                                 //准备升级
                                 updateurl=response.body().getData().getV_Updatepath();
 
+                                Update_v_name=response.body().getData().getVersionName();
+
+
                                 downFile(updateurl);
 
                             }
@@ -510,11 +820,9 @@ public class IndexActivity extends AppCompatActivity {
 
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
-            //更新 版本
-            //首先更新下来 这个最新的 版本号，不确定能否得到
-            CommonData.app_version=CommonData.getAppVersion(this);
 
-            Call<DeleteSpinfoEntity>  update=  RetrofitHelper.getInstance().UPDATEVERSION();
+            //更新 版本号
+            Call<DeleteSpinfoEntity>  update=  RetrofitHelper.getInstance().UPDATEVERSION(Update_v_name);
             update.enqueue(new Callback<DeleteSpinfoEntity>() {
                 @Override
                 public void onResponse(Call<DeleteSpinfoEntity> call, Response<DeleteSpinfoEntity> response) {
@@ -567,48 +875,4 @@ public class IndexActivity extends AppCompatActivity {
         }
     }
 
-
-
-
-
-    //查询打印机状态
-//    private void getPrintStatus() {
-//        String msg = "";
-//        int iRet = PrintUtil.getPrintEndStatus();
-//        switch (iRet) {
-//            case 0:
-//                msg = "正常";
-//                break;
-//            case 1:
-//                msg = "打印机未连接或未上电";
-//                break;
-//            case 2:
-//                msg = "打印机和调用库不匹配";
-//                break;
-//            case 3:
-//                msg = "打印头打开";
-//                break;
-//            case 4:
-//                msg = "切刀未复位";
-//                break;
-//            case 5:
-//                msg = "打印头过热";
-//                break;
-//            case 6:
-//                msg = "黑标错误";
-//                break;
-//            case 7:
-//                msg = "纸尽";
-//                break;
-//            case 8:
-//                msg = "纸将尽";
-//                break;
-//            case -1:
-//                msg = "异常";
-//                break;
-//        }
-//        if (iRet != 0) {
-//            ToastUtil.showToast(IndexActivity.this, "打印机连接问题", msg);
-//        }
-//    }
 }
