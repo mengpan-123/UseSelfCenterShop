@@ -475,20 +475,20 @@ public class IndexActivity extends AppCompatActivity {
 //        showtext.setText(printstr);
 //        showtext.setSingleLine(false);
 
-        ToastUtil.showToast(IndexActivity.this, "异常通知", printstr);
+       // ToastUtil.showToast(IndexActivity.this, "异常通知", printstr);
 
-//        try {
-//
-//            PrintUtil.printReceipt(null,printstr);
-//            getPrintStatus();
-//
-//        }
-//        catch (Exception e) {
-//
-//            ToastUtil.showToast(IndexActivity.this, "异常通知", "打印机信息异常");
-//
-//            e.printStackTrace();
-//        }
+        try {
+
+            PrintUtil.printReceipt(null,printstr);
+            getPrintStatus();
+
+        }
+        catch (Exception e) {
+
+            ToastUtil.showToast(IndexActivity.this, "异常通知", "打印机信息异常");
+
+            e.printStackTrace();
+        }
 
     }
 
@@ -813,7 +813,7 @@ public class IndexActivity extends AppCompatActivity {
                 Uri contentUri = FileProvider.getUriForFile(IndexActivity.this, "com.example.selfshopcenter.fileProvider", new File(getApkPath(), "index.apk"));
                 intent.setDataAndType(contentUri, "application/vnd.android.package-archive");
             } else {
-                intent.setDataAndType(Uri.fromFile(new File(getApkPath(), "index.apk")), "application/vnd.android.package-archive");
+                 intent.setDataAndType(Uri.fromFile(new File(getApkPath(), "index.apk")), "application/vnd.android.package-archive");
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             }
 

@@ -61,7 +61,7 @@ public class LoginActivity extends AppCompatActivity {
     private MyDatabaseHelper dbHelper;
     private SQLiteDatabase querydb;
     String  updateurl = "http://52.81.85.108:8080/uploadapk/AIINBI_2.apk";
-
+    String  update_vername="";
     private String url = "http://192.168.0.108/222/MyApp1.apk";
 
     private int  Appvercode=0;
@@ -268,7 +268,7 @@ public class LoginActivity extends AppCompatActivity {
                             if (response.body().getData().getV_VERSION()> Appvercode){
                                 //准备升级
                                 updateurl=response.body().getData().getV_Updatepath();
-
+                                update_vername=response.body().getData().getVersionName();
                                 downFile(updateurl);
 
                             }
@@ -371,7 +371,7 @@ public class LoginActivity extends AppCompatActivity {
 
             //确认安装之后，更新收音机的状态
             //更新 版本
-            Call<DeleteSpinfoEntity>  update=  RetrofitHelper.getInstance().UPDATEVERSION();
+            Call<DeleteSpinfoEntity>  update=  RetrofitHelper.getInstance().UPDATEVERSION(update_vername);
             update.enqueue(new Callback<DeleteSpinfoEntity>() {
                 @Override
                 public void onResponse(Call<DeleteSpinfoEntity> call, Response<DeleteSpinfoEntity> response) {

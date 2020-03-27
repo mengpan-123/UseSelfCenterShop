@@ -16,15 +16,20 @@ public class CommonData {
     public static String    tablename="CenterTable2";
 
 
+    //该参数决定 是手动输入支付吗还是 自动扫码枪识别
+    public static String    YN_PAY="1";
+
+
+
     public static MediaPlayer player=new MediaPlayer();
 
     public static  boolean   dowloading = false;
 
     //公共的接口访问地址
-    public static String    CommonUrl="http://52.81.85.108:8085";//正式的
+    //public static String    CommonUrl="http://52.81.85.108:8085";//正式的
 
 
-    //public static String    CommonUrl="https://mdata.aiinbi.com";
+    public static String    CommonUrl="https://mdata.aiinbi.com";
     //public static String    CommonUrl="http://122.112.234.28:8017";//测试的
 
 

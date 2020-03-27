@@ -60,13 +60,27 @@ public class ShowpayActivity  extends AppCompatActivity {
         if (CommonData.payWay.equals("WXPaymentCodePay")){
             Drawable d=res.getDrawable(R.mipmap.wxforexe);
             //2020-02-13暂时注释，
-            findViewById(R.id.wxuseinfo).setBackgroundDrawable(d);
+            if (CommonData.YN_PAY.equals("1")) {
+                findViewById(R.id.wxuseinfo).setBackgroundDrawable(d);
+            }
+            else
+            {
+                findViewById(R.id.wxuseinfo).setVisibility(View.GONE);
+
+            }
             CommonData.player=MediaPlayer.create(this,R.raw.weixin);
         }
         else
         {
             Drawable d=res.getDrawable(R.mipmap.aliapyexam);
-            findViewById(R.id.wxuseinfo).setBackgroundDrawable(d);
+            if (CommonData.YN_PAY.equals("1")) {
+                findViewById(R.id.wxuseinfo).setBackgroundDrawable(d);
+            }
+            else
+            {
+                findViewById(R.id.wxuseinfo).setVisibility(View.GONE);
+
+            }
             CommonData.player=MediaPlayer.create(this,R.raw.zhifub);
         }
 
@@ -75,6 +89,7 @@ public class ShowpayActivity  extends AppCompatActivity {
 
 
         //返回上衣界面，重选支付方式
+       if (CommonData.YN_PAY.equals("1")) {
         findViewById(R.id.returnchoose).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -83,6 +98,18 @@ public class ShowpayActivity  extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+           findViewById(R.id.Father).setVisibility(View.GONE);
+           findViewById(R.id.SUB_FATHER).setVisibility(View.GONE);
+        }
+       else {
+           findViewById(R.id.returnchoose).setVisibility(View.GONE);
+
+
+           findViewById(R.id.SUB_FATHER).setVisibility(View.VISIBLE);
+           findViewById(R.id.Father).setVisibility(View.VISIBLE);
+
+       }
 
         //返回购物车
         findViewById(R.id.returnback).setOnClickListener(new View.OnClickListener() {
@@ -96,7 +123,7 @@ public class ShowpayActivity  extends AppCompatActivity {
 
 
         //确认支付
-        /*TextView print = findViewById(R.id.SurePrint);
+        TextView print = findViewById(R.id.SurePrint);
         print.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -110,7 +137,7 @@ public class ShowpayActivity  extends AppCompatActivity {
                 Orderpay();
 
             }
-        });*/
+        });
 
 
 

@@ -108,21 +108,21 @@ public class DownLoadRunnable  implements Runnable {
 
 
                             //调用接口，进行字数收银机器的版本号和状态更新
-                            if (!CommonData.khid.equals("")&&!CommonData.QYID.equals("")) {
-                                Call<DeleteSpinfoEntity> up_apk = RetrofitHelper.getInstance().UPDATEVERSION();
-                                up_apk.enqueue(new Callback<DeleteSpinfoEntity>() {
-                                    @Override
-                                    public void onResponse(Call<DeleteSpinfoEntity> call, Response<DeleteSpinfoEntity> response) {
-
-
-                                    }
-
-                                    @Override
-                                    public void onFailure(Call<DeleteSpinfoEntity> call, Throwable t) {
-
-                                    }
-                                });
-                            }
+//                            if (!CommonData.khid.equals("")&&!CommonData.QYID.equals("")) {
+//                                Call<DeleteSpinfoEntity> up_apk = RetrofitHelper.getInstance().UPDATEVERSION();
+//                                up_apk.enqueue(new Callback<DeleteSpinfoEntity>() {
+//                                    @Override
+//                                    public void onResponse(Call<DeleteSpinfoEntity> call, Response<DeleteSpinfoEntity> response) {
+//
+//
+//                                    }
+//
+//                                    @Override
+//                                    public void onFailure(Call<DeleteSpinfoEntity> call, Throwable t) {
+//
+//                                    }
+//                                });
+//                            }
 
                             break;
                         case DownloadManager.STATUS_FAILED://下载失败
