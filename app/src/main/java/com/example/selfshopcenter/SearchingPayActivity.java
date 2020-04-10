@@ -35,9 +35,12 @@ public class SearchingPayActivity  extends AppCompatActivity {
 
                         getPayresult();
 
-                        if (i>=20){
+                        if (i>=15){
+                            thread.interrupt();
                             Intent intent = new Intent(SearchingPayActivity.this, PayFailActivity.class);
                             startActivity(intent);
+
+                            break;
 
                         }
                         else if (payResult.equals("OK")){

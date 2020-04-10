@@ -17,7 +17,7 @@ public class CommonData {
 
 
     //该参数决定 是手动输入支付吗还是 自动扫码枪识别
-    public static String    YN_PAY="1";
+    public static String    YN_PAY="0";
 
 
 

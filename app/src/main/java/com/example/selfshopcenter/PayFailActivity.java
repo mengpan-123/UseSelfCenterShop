@@ -36,6 +36,7 @@ public class PayFailActivity  extends AppCompatActivity {
 
 
 
+        //重新支付的话，需要 修改一下业务单号，否则，传给支付端的业务单号相同的话，无法再次完成支付
         findViewById(R.id.newtopay).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

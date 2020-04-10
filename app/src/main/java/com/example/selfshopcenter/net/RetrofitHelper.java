@@ -5,6 +5,7 @@ import com.example.selfshopcenter.bean.*;
 import com.example.selfshopcenter.commoncls.CommonData;
 
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.Interceptor;
@@ -253,8 +254,9 @@ public class RetrofitHelper {
 
         }
 
-        dataBeaninfo.setPrepayId(CommonData.orderInfo.prepayId);//支付单号
+        int x=1+(int)(Math.random()*50);
 
+        dataBeaninfo.setPrepayId(CommonData.orderInfo.prepayId+x);//支付单号
 
         dataBeaninfo.setPluMap(pluMap);
         dataBeaninfo.setPayMap(payMap);

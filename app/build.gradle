@@ -8,7 +8,7 @@ android {
         minSdkVersion 15
         targetSdkVersion 29
         versionCode 252
-        versionName "V_PAY121.001"
+        versionName "V_PAY125.112"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
