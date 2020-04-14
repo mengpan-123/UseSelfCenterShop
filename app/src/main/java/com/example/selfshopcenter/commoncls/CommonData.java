@@ -29,8 +29,8 @@ public class CommonData {
     //public static String    CommonUrl="http://52.81.85.108:8085";//正式的
 
 
-    public static String    CommonUrl="https://mdata.aiinbi.com";
-    //public static String    CommonUrl="http://122.112.234.28:8017";//测试的
+    //public static String    CommonUrl="https://mdata.aiinbi.com";
+    public static String    CommonUrl="http://52.81.85.108:8017";//测试的
 
 
     public  static  String  app_version="";

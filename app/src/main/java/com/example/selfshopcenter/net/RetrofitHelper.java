@@ -189,6 +189,28 @@ public class RetrofitHelper {
 
 
     /**
+     * 清空购物车产品信息
+     */
+    public Call<SearchPayEntity> UpdatePaybill() {
+
+        String  s="{\n" +
+                "    \"appid\": \"keengee\",\n" +
+                "    \"apiname\": \"UPDATE_PAYBILL\",\n" +
+                "    \"req_operator\": \"zp\",\n" +
+                "    \"data\": {\n" +
+                "        \"khid\": \""+CommonData.khid+"\",\n" +
+                "        \"prepayId\": \""+CommonData.orderInfo.prepayId+"\",\n" +
+                "        \"posid\": \""+CommonData.posid+"\"\n" +
+                "    }\n" +
+                "}";
+
+
+        RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), s);
+        return mAPIService.UpdatePaybill(requestBody);
+    }
+
+
+    /**
      * 查询自助收银机使用状态
      */
     public Call<SearchPosEntity> SearchUseStatus() {
@@ -254,9 +276,8 @@ public class RetrofitHelper {
 
         }
 
-        int x=1+(int)(Math.random()*50);
 
-        dataBeaninfo.setPrepayId(CommonData.orderInfo.prepayId+x);//支付单号
+        dataBeaninfo.setPrepayId(CommonData.orderInfo.prepayId);//支付单号
 
         dataBeaninfo.setPluMap(pluMap);
         dataBeaninfo.setPayMap(payMap);

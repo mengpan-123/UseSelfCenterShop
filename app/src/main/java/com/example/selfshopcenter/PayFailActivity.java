@@ -7,6 +7,14 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.selfshopcenter.bean.SearchPayEntity;
+import com.example.selfshopcenter.commoncls.CommonData;
+import com.example.selfshopcenter.net.RetrofitHelper;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class PayFailActivity  extends AppCompatActivity {
 
 
@@ -41,8 +49,32 @@ public class PayFailActivity  extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                Intent intent = new Intent(PayFailActivity.this, CarItemsActivity.class);
-                startActivity(intent);
+                    Call<SearchPayEntity> ClearCar = RetrofitHelper.getInstance().UpdatePaybill();
+                    ClearCar.enqueue(new Callback<SearchPayEntity>() {
+                        @Override
+                        public void onResponse(Call<SearchPayEntity> call, Response<SearchPayEntity> response) {
+
+                            if (response.body() != null) {
+                                if (response.body().getData().getPaycode().equals("200")) {
+
+                                    //拿到新的单号重新赋值，重新支付
+                                    CommonData.orderInfo.prepayId = response.body().getData().getOut_trad_no();
+
+                                    Intent intent = new Intent(PayFailActivity.this, CarItemsActivity.class);
+                                    startActivity(intent);
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<SearchPayEntity> call, Throwable t) {
+
+                        }
+                    });
+
+
+
+
 
             }
         });

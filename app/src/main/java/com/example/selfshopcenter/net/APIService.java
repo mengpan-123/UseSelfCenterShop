@@ -45,6 +45,12 @@ public interface APIService {
     Call<ClearCarEntity> ClearCarInfo(@Body RequestBody requestBody);
 
     /**
+     * 修改业务单号
+     */
+    @POST("AddspinDetails/UpdatePaybill")
+    Call<SearchPayEntity> UpdatePaybill(@Body RequestBody requestBody);
+
+    /**
      *查询收银机使用状态
      */
     @POST("AddspinDetails/Device_Control")
